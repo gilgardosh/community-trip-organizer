@@ -14,14 +14,14 @@
 - [x] Frontend Setup
   - [x] Create React app with TypeScript
   - [x] Configure ESLint for frontend
-  - [ ] Configure Prettier for frontend
+  - [x] Configure Prettier for frontend
   - [x] Set up basic folder structure (components, pages, services, utils, etc.)
   - [ ] Configure RTL support for Hebrew
 - [x] Backend Setup
   - [x] Initialize Node.js project with TypeScript
   - [x] Set up Express server
   - [x] Configure ESLint for backend
-  - [ ] Configure Prettier for backend
+  - [x] Configure Prettier for backend
   - [ ] Create folder structure (controllers, models, routes, middleware, etc.)
 - [x] Documentation
   - [x] Create README.md with project overview

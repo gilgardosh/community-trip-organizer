@@ -5,6 +5,7 @@
 This is a responsive web app to manage neighborhood family trips. It supports planning, attendance tracking, dietary requirements, shared gear, and trip schedules. The app integrates with WhatsApp for notifications by generating copy-paste-ready messages. It is designed to be fully in Hebrew with RTL support.
 
 The application has three user roles:
+
 - **Family:** Can view trips, mark attendance, update their family profile, and volunteer for gear.
 - **Trip Admin:** Manages assigned trips, including participants, gear, dietary info, and schedules.
 - **Super-admin:** Approves new families and trips, manages trip admins, and has oversight of all data.
@@ -26,6 +27,7 @@ This project is a monorepo with two main packages:
 ## Setup and Installation
 
 1. **Clone the repository:**
+
    ```bash
    git clone <repository-url>
    cd community-trip-organizer
@@ -47,6 +49,7 @@ To run both the frontend and backend concurrently, you can open two terminal tab
 cd packages/backend
 yarn dev
 ```
+
 The backend server will start on `http://localhost:3001`.
 
 ### Running the Frontend
@@ -55,6 +58,7 @@ The backend server will start on `http://localhost:3001`.
 cd packages/frontend
 yarn dev
 ```
+
 The frontend development server will start on `http://localhost:5173`.
 
 ## Available Scripts
