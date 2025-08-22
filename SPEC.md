@@ -51,31 +51,88 @@ A responsive web app to manage neighborhood family trips.
 
 ---
 
-## 5. **Entities & Relationships**
+## 5. **Entities & Relationships (Updated with Children in Users)**
 
-### 5.1 Family
+### 5.1 User
 
-* Fields: `id`, `name`, `adults[]`, `children[] {name, age}`, `created_at`, `updated_at`
-* Linked to trips via attendance and gear assignments.
+* **Purpose:** Represents an individual who can log in (adult) or a child in a family.
+* **Fields:**
 
-### 5.2 Trip
+  * `id` (PK)
+  * `family_id` (FK to Family)
+  * `type` (`adult` or `child`)
+  * `name` (required)
+  * `age` (required for children, nullable for adults)
+  * `email` (unique, nullable if OAuth only)
+  * `oauth_provider` (e.g., Google, Facebook; nullable for email/password)
+  * `password_hash` (nullable if OAuth only)
+  * `profile_photo_url` (optional)
+  * `created_at`
+  * `updated_at`
+* **Relationships:**
 
-* Fields: `id`, `name`, `location`, `dates` (start/end), `description`, `draft` (bool), `attendance_cutoff_date`, `photo_album_link`, `created_at`, `updated_at`
-* Relationships:
+  * Many-to-one: belongs to a **Family**
+  * One-to-many: can be **trip admin** for multiple trips (adults only)
 
-  * Many-to-many: `Trip ↔ Family` (attendance)
-  * One-to-many: `Trip ↔ GearItem`
-  * Many-to-many: `Trip ↔ Admin (Family)`
+### 5.2 Family
 
-### 5.3 GearItem
+* **Purpose:** Represents a household of users.
+* **Fields:**
 
-* Fields: `id`, `name`, `quantity_needed`, `trip_id`, `assigned_families[] {family_id, quantity_assigned}`
+  * `id` (PK)
+  * `name` (optional)
+  * `created_at`
+  * `updated_at`
+* **Relationships:**
 
-### 5.4 Logs
+  * One-to-many: multiple **Users** (adults and children)
+  * Many-to-many: linked to **Trips** through **attendance** and **gear assignment**
 
-* Track all login attempts and trip/family changes:
+### 5.3 Trip
 
-  * `id`, `user_id`, `entity_type`, `entity_id`, `action_type`, `timestamp`, `changes`
+* **Fields:**
+
+  * `id` (PK)
+  * `name`, `location`, `description`
+  * `start_date`, `end_date`
+  * `draft` (bool)
+  * `attendance_cutoff_date`
+  * `photo_album_link` (external)
+  * `created_at`, `updated_at`
+* **Relationships:**
+
+  * Many-to-many: **Family ↔ Trip** (attendance)
+  * One-to-many: **Trip ↔ GearItem**
+  * Many-to-many: **Trip ↔ Admin (User)**
+
+### 5.4 GearItem
+
+* **Fields:**
+
+  * `id` (PK)
+  * `trip_id` (FK)
+  * `name`
+  * `quantity_needed`
+  * `assigned_families[] {family_id, quantity_assigned}`
+
+### 5.5 Logs
+
+* **Fields:**
+
+  * `id` (PK)
+  * `user_id` (FK)
+  * `entity_type` (e.g., Trip, Family, GearItem)
+  * `entity_id`
+  * `action_type` (create, update, delete, login)
+  * `timestamp`
+  * `changes` (JSON of changed fields)
+
+**Notes:**
+
+* Each child is now a **User record** with `type = child` and `age` field.
+* Adults are `type = adult` and can log in; children cannot log in.
+* Trip attendance and gear assignments remain **linked to the Family**.
+* Trip admins are **Users of type adult**.
 
 ---
 

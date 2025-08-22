@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Family {
+  id             String           @id @default(cuid())
+  name           String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  members        User[]
+  gearAssignments GearAssignment[]
+  tripsAttending TripAttendance[]
+}
+
+model User {
+  id              String    @id @default(cuid())
+  familyId        String
+  family          Family    @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  type            UserType
+  name            String
+  age             Int?
+  email           String?   @unique
+  oauthProvider   String?
+  passwordHash    String?
+  profilePhotoUrl String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  adminOfTrips    Trip[]    @relation("TripAdmins")
+  logs            Log[]
+  role            Role      @default(FAMILY)
+}
+
+model Trip {
+  id                   String           @id @default(cuid())
+  name                 String
+  location             String
+  description          String?
+  startDate            DateTime
+  endDate              DateTime
+  draft                Boolean          @default(true)
+  attendanceCutoffDate DateTime?
+  photoAlbumLink       String?
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  gearItems            GearItem[]
+  admins               User[]           @relation("TripAdmins")
+  attendees            TripAttendance[]
+}
+
+model GearItem {
+  id             String           @id @default(cuid())
+  tripId         String
+  trip           Trip             @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  name           String
+  quantityNeeded Int
+  assignments    GearAssignment[]
+}
+
+model GearAssignment {
+  id               String @id @default(cuid())
+  gearItemId       String
+  gearItem         GearItem @relation(fields: [gearItemId], references: [id], onDelete: Cascade)
+  familyId         String
+  family           Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  quantityAssigned Int
+
+  @@unique([gearItemId, familyId])
+}
+
+model TripAttendance {
+  tripId   String
+  trip     Trip   @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  familyId String
+  family   Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@id([tripId, familyId])
+}
+
+model Log {
+  id         String     @id @default(cuid())
+  userId     String
+  user       User       @relation(fields: [userId], references: [id])
+  entityType String
+  entityId   String
+  actionType ActionType
+  timestamp  DateTime   @default(now())
+  changes    Json?
+}
+
+enum UserType {
+  ADULT
+  CHILD
+}
+
+enum ActionType {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+}
+
+enum Role {
+  FAMILY
+  TRIP_ADMIN
+  SUPER_ADMIN
+}

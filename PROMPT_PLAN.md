@@ -32,7 +32,7 @@ The project should follow the specifications from the SPEC.md file, supporting H
 ```
 Set up the PostgreSQL database schema for our neighborhood trip planning app. Create:
 
-1. A database migration system using knex.js or similar
+1. A database migration system using prisma.io or similar
 2. Initial migration files for the core entities:
    - Family (including adults and children)
    - Trip
@@ -58,7 +58,7 @@ Create the foundation for the backend API with Express and TypeScript:
    - Request logging
 2. Implement a basic health check endpoint
 3. Create API route structure following RESTful principles for future endpoints
-4. Set up Jest for API testing with a sample test
+4. Set up Vitest for API testing with a sample test
 5. Create environment configuration for development/testing
 6. Set up a basic error response format as described in section 9 of SPEC.md
 

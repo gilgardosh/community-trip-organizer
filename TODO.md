@@ -1,6 +1,7 @@
 # Community Trip Organizer - Project Checklist
 
 ## Project Overview
+
 - [ ] Review SPEC.md thoroughly
 - [x] Set up version control repository
 - [x] Set up development environment
@@ -9,17 +10,18 @@
 ## Phase 1: Project Setup and Core Infrastructure
 
 ### 1.1 Initial Project Structure
-- [ ] Frontend Setup
+
+- [x] Frontend Setup
   - [x] Create React app with TypeScript
   - [x] Configure ESLint for frontend
-  - [x] Configure Prettier for frontend
-  - [ ] Set up basic folder structure (components, pages, services, utils, etc.)
+  - [ ] Configure Prettier for frontend
+  - [x] Set up basic folder structure (components, pages, services, utils, etc.)
   - [ ] Configure RTL support for Hebrew
 - [x] Backend Setup
   - [x] Initialize Node.js project with TypeScript
   - [x] Set up Express server
   - [x] Configure ESLint for backend
-  - [x] Configure Prettier for backend
+  - [ ] Configure Prettier for backend
   - [ ] Create folder structure (controllers, models, routes, middleware, etc.)
 - [x] Documentation
   - [x] Create README.md with project overview
@@ -31,29 +33,31 @@
   - [x] Make initial commit
 
 ### 1.2 Database Setup
-- [ ] PostgreSQL Configuration
-  - [ ] Install and configure PostgreSQL locally
-  - [ ] Set up database connection with environment variables
-  - [ ] Install database migration tool (knex.js)
-  - [ ] Configure migration scripts
-- [ ] Core Entity Migrations
-  - [ ] Create User migration
-  - [ ] Create Family migration (with adults and children)
-  - [ ] Create Trip migration
-  - [ ] Create GearItem migration
-  - [ ] Create Logs migration
-- [ ] Relationship Migrations
-  - [ ] Create trip_admins relationship table
-  - [ ] Create trip_attendance relationship table
-  - [ ] Create trip_gear_assignments relationship table
-- [ ] Testing Setup
-  - [ ] Configure test database
+
+- [x] PostgreSQL Configuration
+  - [x] Install and configure PostgreSQL locally
+  - [x] Set up database connection with environment variables
+  - [x] Install database migration tool (prisma.io)
+  - [x] Configure migration scripts
+- [x] Core Entity Migrations
+  - [x] Create User migration
+  - [x] Create Family migration (with adults and children)
+  - [x] Create Trip migration
+  - [x] Create GearItem migration
+  - [x] Create Logs migration
+- [x] Relationship Migrations
+  - [x] Create trip_admins relationship table
+  - [x] Create trip_attendance relationship table
+  - [x] Create trip_gear_assignments relationship table
+- [x] Testing Setup
+  - [x] Configure test database
   - [ ] Create database test utilities
   - [ ] Write sample database tests
 
 ### 1.3 Backend API Foundation
+
 - [ ] Server Setup
-  - [ ] Configure Express server entry point
+  - [x] Configure Express server entry point
   - [ ] Set up CORS middleware
   - [ ] Configure body-parser middleware
   - [ ] Implement error handling middleware
@@ -64,7 +68,7 @@
   - [ ] Implement base controller class
   - [ ] Configure API versioning
 - [ ] Testing Framework
-  - [ ] Set up Jest for API testing
+  - [ ] Set up Vitest for API testing
   - [ ] Create test utilities
   - [ ] Write sample API test
 - [ ] Environment Configuration
@@ -73,8 +77,9 @@
   - [ ] Implement environment variable validation
 
 ### 1.4 Frontend Foundation
+
 - [ ] Core Setup
-  - [ ] Configure create-react-app with TypeScript
+  - [x] Configure create-react-app with TypeScript
   - [ ] Add RTL support libraries
   - [ ] Set up CSS framework (Tailwind or styled-components)
   - [ ] Create basic theme with RTL support
@@ -100,6 +105,7 @@
 ## Phase 2: Authentication System
 
 ### 2.1 User Authentication Backend
+
 - [ ] User Model
   - [ ] Create user model with roles
   - [ ] Implement database operations
@@ -120,6 +126,7 @@
   - [ ] Test different role access scenarios
 
 ### 2.2 OAuth Integration
+
 - [ ] OAuth Configuration
   - [ ] Set up Google OAuth credentials
   - [ ] Configure Facebook OAuth (optional)
@@ -138,6 +145,7 @@
   - [ ] Implement OAuth login logging
 
 ### 2.3 Authentication Frontend
+
 - [ ] Authentication Forms
   - [ ] Create login form with email/password
   - [ ] Add Hebrew form labels and validation messages
@@ -160,6 +168,7 @@
 ## Phase 3: Family Management
 
 ### 3.1 Family Core Backend
+
 - [ ] Family Model
   - [ ] Create Family model with fields from spec
   - [ ] Implement adults/children substructures
@@ -178,6 +187,7 @@
   - [ ] Test role-based access control
 
 ### 3.2 Family Frontend
+
 - [ ] Family Registration
   - [ ] Create family registration form
   - [ ] Implement form validation
@@ -199,6 +209,7 @@
 ## Phase 4: Trip Management
 
 ### 4.1 Trip Core Backend
+
 - [ ] Trip Model
   - [ ] Create Trip model with fields from spec
   - [ ] Implement database operations
@@ -218,6 +229,7 @@
   - [ ] Test role-based access control
 
 ### 4.2 Trip Frontend - Basic Views
+
 - [ ] Trip Listing
   - [ ] Create trip listing page with filters
   - [ ] Implement trip status indicators
@@ -237,6 +249,7 @@
   - [ ] Test responsive design
 
 ### 4.3 Trip Frontend - Advanced Features
+
 - [ ] Trip Extras
   - [ ] Create dietary requirements form
   - [ ] Implement trip schedule display
@@ -255,6 +268,7 @@
 ## Phase 5: Gear Management
 
 ### 5.1 Gear Backend Implementation
+
 - [ ] Gear Model
   - [ ] Create GearItem model with fields from spec
   - [ ] Implement database operations
@@ -274,6 +288,7 @@
   - [ ] Test role-based access control
 
 ### 5.2 Gear Frontend Implementation
+
 - [ ] Gear Listing
   - [ ] Create gear listing by trip
   - [ ] Implement gear detail component
@@ -294,6 +309,7 @@
 ## Phase 6: WhatsApp Integration
 
 ### 6.1 WhatsApp Message Generation
+
 - [ ] Message Templates
   - [ ] Create message template models
   - [ ] Implement template CRUD endpoints
@@ -308,6 +324,7 @@
   - [ ] Create sample templates
 
 ### 6.2 WhatsApp Frontend Integration
+
 - [ ] Template Management
   - [ ] Create template management UI
   - [ ] Implement template editor
@@ -328,6 +345,7 @@
 ## Phase 7: Admin Functions and Dashboard
 
 ### 7.1 Admin Backend Implementation
+
 - [ ] User Management
   - [ ] Create user role management endpoints
   - [ ] Implement family approval workflow API
@@ -347,6 +365,7 @@
   - [ ] Test admin actions logging
 
 ### 7.2 Admin Frontend Implementation
+
 - [ ] Admin Dashboard
   - [ ] Create Super-admin dashboard
   - [ ] Implement user role management interface
@@ -367,6 +386,7 @@
 ## Phase 8: Integration and Refinement
 
 ### 8.1 System Integration
+
 - [ ] Authentication Integration
   - [ ] Connect authentication with family system
   - [ ] Link authentication with trip system
@@ -385,6 +405,7 @@
   - [ ] Verify all components work together
 
 ### 8.2 Optimization and Deployment
+
 - [ ] Performance Optimization
   - [ ] Implement code splitting
   - [ ] Add lazy loading for components
@@ -407,6 +428,7 @@
   - [ ] Create maintenance guide
 
 ## Final Verification
+
 - [ ] Functional Requirements
   - [ ] Verify all features from SPEC.md are implemented
   - [ ] Test all user roles and permissions
