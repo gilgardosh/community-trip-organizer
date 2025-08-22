@@ -2,33 +2,33 @@
 
 ## Project Overview
 - [ ] Review SPEC.md thoroughly
-- [ ] Set up version control repository
-- [ ] Set up development environment
+- [x] Set up version control repository
+- [x] Set up development environment
 - [ ] Schedule regular progress reviews
 
 ## Phase 1: Project Setup and Core Infrastructure
 
 ### 1.1 Initial Project Structure
 - [ ] Frontend Setup
-  - [ ] Create React app with TypeScript
-  - [ ] Configure ESLint for frontend
-  - [ ] Configure Prettier for frontend
+  - [x] Create React app with TypeScript
+  - [x] Configure ESLint for frontend
+  - [x] Configure Prettier for frontend
   - [ ] Set up basic folder structure (components, pages, services, utils, etc.)
   - [ ] Configure RTL support for Hebrew
-- [ ] Backend Setup
-  - [ ] Initialize Node.js project with TypeScript
-  - [ ] Set up Express server
-  - [ ] Configure ESLint for backend
-  - [ ] Configure Prettier for backend
+- [x] Backend Setup
+  - [x] Initialize Node.js project with TypeScript
+  - [x] Set up Express server
+  - [x] Configure ESLint for backend
+  - [x] Configure Prettier for backend
   - [ ] Create folder structure (controllers, models, routes, middleware, etc.)
-- [ ] Documentation
-  - [ ] Create README.md with project overview
-  - [ ] Document setup instructions
+- [x] Documentation
+  - [x] Create README.md with project overview
+  - [x] Document setup instructions
   - [ ] Document development workflow
-- [ ] Version Control
-  - [ ] Initialize Git repository
-  - [ ] Create appropriate .gitignore files
-  - [ ] Make initial commit
+- [x] Version Control
+  - [x] Initialize Git repository
+  - [x] Create appropriate .gitignore files
+  - [x] Make initial commit
 
 ### 1.2 Database Setup
 - [ ] PostgreSQL Configuration
