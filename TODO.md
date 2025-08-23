@@ -58,22 +58,22 @@
 
 - [ ] Server Setup
   - [x] Configure Express server entry point
-  - [ ] Set up CORS middleware
-  - [ ] Configure body-parser middleware
-  - [ ] Implement error handling middleware
-  - [ ] Set up request logging
+  - [x] Set up CORS middleware
+  - [x] Configure body-parser middleware
+  - [x] Implement error handling middleware
+  - [x] Set up request logging
 - [ ] API Structure
-  - [ ] Create health check endpoint
-  - [ ] Set up API route structure (users, families, trips, gear)
+  - [x] Create health check endpoint
+  - [x] Set up API route structure (users, families, trips, gear)
   - [ ] Implement base controller class
   - [ ] Configure API versioning
 - [ ] Testing Framework
-  - [ ] Set up Vitest for API testing
+  - [x] Set up Vitest for API testing
   - [ ] Create test utilities
-  - [ ] Write sample API test
+  - [x] Write sample API test
 - [ ] Environment Configuration
-  - [ ] Create environment configuration files
-  - [ ] Set up development/testing environments
+  - [x] Create environment configuration files
+  - [x] Set up development/testing environments
   - [ ] Implement environment variable validation
 
 ### 1.4 Frontend Foundation
