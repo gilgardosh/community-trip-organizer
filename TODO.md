@@ -16,7 +16,7 @@
   - [x] Configure ESLint for frontend
   - [x] Configure Prettier for frontend
   - [x] Set up basic folder structure (components, pages, services, utils, etc.)
-  - [ ] Configure RTL support for Hebrew
+  - [x] Configure RTL support for Hebrew
 - [x] Backend Setup
   - [x] Initialize Node.js project with TypeScript
   - [x] Set up Express server
