@@ -11,15 +11,17 @@ i18n
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
-    debug: true,
+    supportedLngs: ["he"],
     fallbackLng: "he",
+    debug: true,
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },
     resources: {
       he: {
         translation: {
-          // here we can add translations
+          // Add Hebrew translations here
+          app_title: "ארגונית טיולים קהילתית",
         },
       },
     },

@@ -82,7 +82,7 @@ Set up the React frontend foundation with:
 6. Create basic theme with RTL support
 7. Add a placeholder homepage
 8. Set up React Testing Library with sample tests
-9. Create an API client service placeholder (with axios)
+9. Create an API client service placeholder (with node:fetch)
 
 Focus on the structure and Hebrew RTL support without implementing actual features yet.
 ```
