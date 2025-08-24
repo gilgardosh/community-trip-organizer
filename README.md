@@ -74,6 +74,7 @@ The frontend development server will start on `http://localhost:5173`.
 - `yarn dev`: Starts the development server with `nodemon`.
 - `yarn lint`: Lints the code using ESLint.
 - `yarn format`: Formats the code with Prettier.
+- `yarn test`: Runs API tests using Vitest.
 
 ### Frontend (`packages/frontend`)
 

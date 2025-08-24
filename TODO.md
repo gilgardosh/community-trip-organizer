@@ -22,11 +22,11 @@
   - [x] Set up Express server
   - [x] Configure ESLint for backend
   - [x] Configure Prettier for backend
-  - [ ] Create folder structure (controllers, models, routes, middleware, etc.)
+  - [x] Create folder structure (controllers, models, routes, middleware, etc.)
 - [x] Documentation
   - [x] Create README.md with project overview
   - [x] Document setup instructions
-  - [ ] Document development workflow
+  - [x] Document development workflow
 - [x] Version Control
   - [x] Initialize Git repository
   - [x] Create appropriate .gitignore files
@@ -51,8 +51,8 @@
   - [x] Create trip_gear_assignments relationship table
 - [x] Testing Setup
   - [x] Configure test database
-  - [ ] Create database test utilities
-  - [ ] Write sample database tests
+  - [x] Create database test utilities
+  - [x] Write sample database tests
 
 ### 1.3 Backend API Foundation
 
