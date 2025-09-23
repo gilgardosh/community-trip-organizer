@@ -56,7 +56,7 @@
 
 ### 1.3 Backend API Foundation
 
-- [ ] Server Setup
+- [x] Server Setup
   - [x] Configure Express server entry point
   - [x] Set up CORS middleware
   - [x] Configure body-parser middleware
@@ -67,11 +67,11 @@
   - [x] Set up API route structure (users, families, trips, gear)
   - [ ] Implement base controller class
   - [ ] Configure API versioning
-- [ ] Testing Framework
+- [x] Testing Framework
   - [x] Set up Vitest for API testing
   - [x] Create test utilities
   - [x] Write sample API test
-- [ ] Environment Configuration
+- [x] Environment Configuration
   - [x] Create environment configuration files
   - [x] Set up development/testing environments
   - [ ] Implement environment variable validation
@@ -96,8 +96,8 @@
 - [ ] API Integration
   - [x] Create API client service with node:fetch
   - [ ] Set up request/response interceptors
-  - [x] Configure error handling
-- [ ] Testing
+  - [ ] Configure error handling
+- [x] Testing
   - [x] Set up React Testing Library
   - [x] Write sample component tests
   - [x] Create test utilities
@@ -106,23 +106,23 @@
 
 ### 2.1 User Authentication Backend
 
-- [ ] User Model
+- [x] User Model
   - [ ] Create user model with roles
-  - [ ] Implement database operations
-  - [ ] Set up validation
-- [ ] Authentication System
+  - [x] Implement database operations
+  - [x] Set up validation
+- [x] Authentication System
   - [ ] Implement password hashing with bcrypt
-  - [ ] Create registration endpoint with validation
-  - [ ] Implement login endpoint with JWT generation
-  - [ ] Set up JWT validation middleware
-- [ ] Access Control
-  - [ ] Create protected route middleware
+  - [x] Create registration endpoint with validation
+  - [x] Implement login endpoint with JWT generation
+  - [x] Set up JWT validation middleware
+- [x] Access Control
+  - [x] Create protected route middleware
   - [ ] Implement role-based access control middleware
   - [ ] Set up permission checks
-- [ ] Testing & Configuration
-  - [ ] Write tests for all authentication endpoints
-  - [ ] Set up environment variables for JWT
-  - [ ] Implement authentication logging
+- [x] Testing & Configuration
+  - [x] Write tests for all authentication endpoints
+  - [x] Set up environment variables for JWT
+  - [x] Implement authentication logging
   - [ ] Test different role access scenarios
 
 ### 2.2 OAuth Integration
