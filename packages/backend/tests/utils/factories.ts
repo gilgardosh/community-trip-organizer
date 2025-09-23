@@ -1,5 +1,5 @@
 import { Family } from '@prisma/client';
-import {prisma} from '../../src/utils/db.js';
+import { prisma } from '../../src/utils/db.js';
 
 export const createFamily = (data: Partial<Family> = {}): Promise<Family> => {
   return prisma.family.create({

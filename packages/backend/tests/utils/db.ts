@@ -1,30 +1,28 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import { Prisma } from '@prisma/client';
 import { prisma } from '../../src/utils/db.js';
 
 export async function clearDatabase() {
-  const modelNames = Prisma.dmmf.datamodel.models.map((model) => model.name);
+  // The order of deletion is important to avoid foreign key constraint errors.
+  await prisma.log.deleteMany();
+  await prisma.gearAssignment.deleteMany();
+  await prisma.tripAttendance.deleteMany();
+  await prisma.gearItem.deleteMany();
 
-  for (const modelName of modelNames) {
-    const clientProperty =
-      (modelName.charAt(0).toLowerCase() +
-        modelName.slice(1)) as keyof typeof prisma;
-    try {
-      if (
-        typeof prisma[clientProperty] === 'object' &&
-        prisma[clientProperty] !== null &&
-        'deleteMany' in prisma[clientProperty]
-      ) {
-        await (prisma[clientProperty] as any).deleteMany({});
-      }
-    } catch (error) {
-      if (error instanceof TypeError || (error as any).code === 'P2023') {
-        continue;
-      }
-      console.log({ error });
+  // We need to disconnect the many-to-many relation between User and Trip for admins
+  const trips = await prisma.trip.findMany({ include: { admins: true } });
+  for (const trip of trips) {
+    if (trip.admins.length > 0) {
+      await prisma.trip.update({
+        where: { id: trip.id },
+        data: {
+          admins: {
+            disconnect: trip.admins.map((admin) => ({ id: admin.id })),
+          },
+        },
+      });
     }
   }
-}
 
+  await prisma.user.deleteMany();
+  await prisma.trip.deleteMany();
+  await prisma.family.deleteMany();
+}

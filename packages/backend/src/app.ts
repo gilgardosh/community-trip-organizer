@@ -2,6 +2,7 @@ import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import passport from 'passport';
 import config from './config/index.js';
 import apiRoutes from './routes/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
@@ -14,6 +15,7 @@ app.use(helmet());
 app.use(cors({ origin: config.clientUrl }));
 app.use(express.json());
 app.use(morgan('dev'));
+app.use(passport.initialize());
 
 // API Routes
 app.use('/api', apiRoutes);
