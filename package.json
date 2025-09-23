@@ -5,8 +5,9 @@
   "private": true,
   "scripts": {
     "start": "node .",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier --write .",
+    "lint": "yarn workspaces foreach -A -p -t run lint",
+    "test": "yarn workspaces foreach -A -p -t run test",
+    "format": "yarn workspaces foreach -A -p -t run format",
     "format:check": "prettier --check ."
   },
   "workspaces": [
