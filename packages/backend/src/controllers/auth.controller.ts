@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { authService } from '../services/auth.service.js';
 import { prisma } from '../utils/db.js';
 import { ApiError } from '../utils/ApiError.js';
-import { UserType, ActionType } from '@prisma/client';
+import { UserType, ActionType, Role } from '@prisma/client';
 import { logService } from '../services/log.service.js';
 
 const registerSchema = z.object({
@@ -30,6 +30,7 @@ const register = asyncHandler(async (req: Request, res: Response) => {
     },
   });
 
+  // Create user with default FAMILY role
   const user = await prisma.user.create({
     data: {
       name,
@@ -37,6 +38,7 @@ const register = asyncHandler(async (req: Request, res: Response) => {
       passwordHash,
       familyId: family.id,
       type: UserType.ADULT,
+      role: Role.FAMILY, // Explicitly set the default role
     },
   });
 
@@ -44,6 +46,62 @@ const register = asyncHandler(async (req: Request, res: Response) => {
 
   const token = authService.generateToken(user);
   res.status(201).json({ token });
+});
+
+const createAdminSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  password: z.string().min(6),
+  familyName: z.string().optional(),
+  role: z.enum([Role.TRIP_ADMIN, Role.SUPER_ADMIN]),
+});
+
+const createAdmin = asyncHandler(async (req: Request, res: Response) => {
+  // This endpoint should only be accessible to SUPER_ADMIN users
+  // (authorization middleware will be applied in routes)
+  
+  const { name, email, password, familyName, role } = createAdminSchema.parse(req.body);
+
+  const existingUser = await prisma.user.findUnique({ where: { email } });
+  if (existingUser) {
+    throw new ApiError(400, 'User already exists');
+  }
+
+  const passwordHash = await authService.hashPassword(password);
+
+  const family = await prisma.family.create({
+    data: {
+      name: familyName || `${name}'s Family`,
+    },
+  });
+
+  // Create an admin user with specified role
+  const user = await prisma.user.create({
+    data: {
+      name,
+      email,
+      passwordHash,
+      familyId: family.id,
+      type: UserType.ADULT,
+      role, // Set the role as specified
+    },
+  });
+
+  // Log the creation by the logged-in SUPER_ADMIN user
+  const adminUser = req.user as { id: string };
+  await logService.log(
+    adminUser.id, 
+    ActionType.CREATE, 
+    'User', 
+    user.id, 
+    { role: user.role }
+  );
+
+  res.status(201).json({
+    message: `Successfully created ${role} user`,
+    userId: user.id,
+    email: user.email,
+  });
 });
 
 const loginSchema = z.object({
@@ -76,4 +134,5 @@ const login = asyncHandler(async (req: Request, res: Response) => {
 export const authController = {
   register,
   login,
+  createAdmin,
 };

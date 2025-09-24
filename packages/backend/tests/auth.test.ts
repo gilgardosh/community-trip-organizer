@@ -4,7 +4,7 @@ import app from '../src/app.js';
 import { prisma } from '../src/utils/db.js';
 import { User, Role } from '@prisma/client';
 import { clearDatabase } from './utils/db.js';
-import { createTestUser } from './utils/auth-helper.js';
+import { createTestUser, createTestUserWithRole } from './utils/auth-helper.js';
 import { authService } from '../src/services/auth.service.js';
 
 describe('Auth API', () => {
@@ -111,6 +111,224 @@ describe('Auth API', () => {
       const res = await request(app).get('/api/protected');
       
       expect(res.status).toBe(401);
+    });
+  });
+  
+  describe('Admin Creation', () => {
+    it('should allow SUPER_ADMIN to create a TRIP_ADMIN user', async () => {
+      // Create a super admin user
+      const superAdmin = await createTestUserWithRole(Role.SUPER_ADMIN);
+      
+      // Generate token for super admin
+      const superAdminToken = authService.generateToken(superAdmin);
+      
+      // Test creating a TRIP_ADMIN user
+      const res = await request(app)
+        .post('/api/auth/admin')
+        .set('Authorization', `Bearer ${superAdminToken}`)
+        .send({
+          name: 'New Trip Admin',
+          email: 'trip-admin-test@example.com',
+          password: 'password123',
+          familyName: 'Trip Admin Family',
+          role: Role.TRIP_ADMIN,
+        });
+      
+      expect(res.status).toBe(201);
+      expect(res.body).toHaveProperty('userId');
+      expect(res.body).toHaveProperty('email', 'trip-admin-test@example.com');
+      
+      // Verify user was created with correct role
+      const createdAdmin = await prisma.user.findUnique({
+        where: { email: 'trip-admin-test@example.com' },
+      });
+      
+      expect(createdAdmin).not.toBeNull();
+      expect(createdAdmin?.role).toBe(Role.TRIP_ADMIN);
+    });
+    
+    it('should not allow FAMILY role to create admin users', async () => {
+      // Create a family user
+      const familyUser = await createTestUserWithRole(Role.FAMILY);
+      
+      // Generate token for family user
+      const familyToken = authService.generateToken(familyUser);
+      
+      // Try to create a TRIP_ADMIN user with FAMILY role
+      const res = await request(app)
+        .post('/api/auth/admin')
+        .set('Authorization', `Bearer ${familyToken}`)
+        .send({
+          name: 'Unauthorized Admin',
+          email: 'unauthorized@example.com',
+          password: 'password123',
+          role: Role.TRIP_ADMIN,
+        });
+      
+      // Should be forbidden
+      expect(res.status).toBe(403);
+      
+      // Verify user was not created
+      const notCreated = await prisma.user.findUnique({
+        where: { email: 'unauthorized@example.com' },
+      });
+      
+      expect(notCreated).toBeNull();
+    });
+    
+    it('should not allow TRIP_ADMIN to create SUPER_ADMIN users', async () => {
+      // Create a trip admin user
+      const tripAdmin = await createTestUserWithRole(Role.TRIP_ADMIN);
+      
+      // Generate token for trip admin
+      const tripAdminToken = authService.generateToken(tripAdmin);
+      
+      // Try to create a SUPER_ADMIN user with TRIP_ADMIN role
+      const res = await request(app)
+        .post('/api/auth/admin')
+        .set('Authorization', `Bearer ${tripAdminToken}`)
+        .send({
+          name: 'Unauthorized Super Admin',
+          email: 'super-admin-test@example.com',
+          password: 'password123',
+          role: Role.SUPER_ADMIN,
+        });
+      
+      // Should be forbidden
+      expect(res.status).toBe(403);
+      
+      // Verify user was not created
+      const notCreated = await prisma.user.findUnique({
+        where: { email: 'super-admin-test@example.com' },
+      });
+      
+      expect(notCreated).toBeNull();
+    });
+  });
+  
+  describe('Role-based Access Control', () => {
+    // Test route accessible by all authenticated users
+    it('should allow all authenticated users to access /role-protected/all', async () => {
+      // Create test users with different roles
+      const familyUser = await createTestUserWithRole(Role.FAMILY);
+      const tripAdminUser = await createTestUserWithRole(Role.TRIP_ADMIN);
+      const superAdminUser = await createTestUserWithRole(Role.SUPER_ADMIN);
+      
+      // Generate tokens for each user
+      const familyToken = authService.generateToken(familyUser);
+      const tripAdminToken = authService.generateToken(tripAdminUser);
+      const superAdminToken = authService.generateToken(superAdminUser);
+      
+      // Test access for FAMILY role
+      let res = await request(app)
+        .get('/api/role-protected/all')
+        .set('Authorization', `Bearer ${familyToken}`);
+      expect(res.status).toBe(200);
+      
+      // Test access for TRIP_ADMIN role
+      res = await request(app)
+        .get('/api/role-protected/all')
+        .set('Authorization', `Bearer ${tripAdminToken}`);
+      expect(res.status).toBe(200);
+      
+      // Test access for SUPER_ADMIN role
+      res = await request(app)
+        .get('/api/role-protected/all')
+        .set('Authorization', `Bearer ${superAdminToken}`);
+      expect(res.status).toBe(200);
+    });
+    
+    // Test route accessible only by FAMILY role
+    it('should only allow FAMILY role to access /role-protected/family', async () => {
+      // Create test users with different roles
+      const familyUser = await createTestUserWithRole(Role.FAMILY);
+      const tripAdminUser = await createTestUserWithRole(Role.TRIP_ADMIN);
+      const superAdminUser = await createTestUserWithRole(Role.SUPER_ADMIN);
+      
+      // Generate tokens for each user
+      const familyToken = authService.generateToken(familyUser);
+      const tripAdminToken = authService.generateToken(tripAdminUser);
+      const superAdminToken = authService.generateToken(superAdminUser);
+      
+      // Test access for FAMILY role - should succeed
+      let res = await request(app)
+        .get('/api/role-protected/family')
+        .set('Authorization', `Bearer ${familyToken}`);
+      expect(res.status).toBe(200);
+      
+      // Test access for TRIP_ADMIN role - should fail
+      res = await request(app)
+        .get('/api/role-protected/family')
+        .set('Authorization', `Bearer ${tripAdminToken}`);
+      expect(res.status).toBe(403);
+      
+      // Test access for SUPER_ADMIN role - should fail
+      res = await request(app)
+        .get('/api/role-protected/family')
+        .set('Authorization', `Bearer ${superAdminToken}`);
+      expect(res.status).toBe(403);
+    });
+    
+    // Test route accessible by admin roles
+    it('should only allow TRIP_ADMIN and SUPER_ADMIN roles to access /role-protected/admin', async () => {
+      // Create test users with different roles
+      const familyUser = await createTestUserWithRole(Role.FAMILY);
+      const tripAdminUser = await createTestUserWithRole(Role.TRIP_ADMIN);
+      const superAdminUser = await createTestUserWithRole(Role.SUPER_ADMIN);
+      
+      // Generate tokens for each user
+      const familyToken = authService.generateToken(familyUser);
+      const tripAdminToken = authService.generateToken(tripAdminUser);
+      const superAdminToken = authService.generateToken(superAdminUser);
+      
+      // Test access for FAMILY role - should fail
+      let res = await request(app)
+        .get('/api/role-protected/admin')
+        .set('Authorization', `Bearer ${familyToken}`);
+      expect(res.status).toBe(403);
+      
+      // Test access for TRIP_ADMIN role - should succeed
+      res = await request(app)
+        .get('/api/role-protected/admin')
+        .set('Authorization', `Bearer ${tripAdminToken}`);
+      expect(res.status).toBe(200);
+      
+      // Test access for SUPER_ADMIN role - should succeed
+      res = await request(app)
+        .get('/api/role-protected/admin')
+        .set('Authorization', `Bearer ${superAdminToken}`);
+      expect(res.status).toBe(200);
+    });
+    
+    // Test route accessible only by SUPER_ADMIN role
+    it('should only allow SUPER_ADMIN role to access /role-protected/super-admin', async () => {
+      // Create test users with different roles
+      const familyUser = await createTestUserWithRole(Role.FAMILY);
+      const tripAdminUser = await createTestUserWithRole(Role.TRIP_ADMIN);
+      const superAdminUser = await createTestUserWithRole(Role.SUPER_ADMIN);
+      
+      // Generate tokens for each user
+      const familyToken = authService.generateToken(familyUser);
+      const tripAdminToken = authService.generateToken(tripAdminUser);
+      const superAdminToken = authService.generateToken(superAdminUser);
+      
+      // Test access for FAMILY role - should fail
+      let res = await request(app)
+        .get('/api/role-protected/super-admin')
+        .set('Authorization', `Bearer ${familyToken}`);
+      expect(res.status).toBe(403);
+      
+      // Test access for TRIP_ADMIN role - should fail
+      res = await request(app)
+        .get('/api/role-protected/super-admin')
+        .set('Authorization', `Bearer ${tripAdminToken}`);
+      expect(res.status).toBe(403);
+      
+      // Test access for SUPER_ADMIN role - should succeed
+      res = await request(app)
+        .get('/api/role-protected/super-admin')
+        .set('Authorization', `Bearer ${superAdminToken}`);
+      expect(res.status).toBe(200);
     });
   });
 });

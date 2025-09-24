@@ -27,3 +27,32 @@ export async function createTestUser(email = 'test@example.com', password = 'pas
   
   return user;
 }
+
+/**
+ * Create a test user with a specified role
+ */
+export async function createTestUserWithRole(
+  role: Role,
+  email = `${role.toLowerCase()}@example.com`,
+  password = 'password123'
+): Promise<User> {
+  // Create a family for the user
+  const family = await createFamily();
+
+  // Hash the password
+  const passwordHash = await authService.hashPassword(password);
+  
+  // Create the user with specified role
+  const user = await prisma.user.create({
+    data: {
+      email,
+      name: `${role} Test User`,
+      passwordHash,
+      familyId: family.id,
+      type: UserType.ADULT,
+      role,
+    }
+  });
+  
+  return user;
+}
