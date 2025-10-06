@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, afterEach, vi } from 'vitest';
 import request from 'supertest';
 import app from '../src/app.js';
 import { prisma } from '../src/utils/db.js';
@@ -6,6 +6,26 @@ import { User, Role } from '@prisma/client';
 import { clearDatabase } from './utils/db.js';
 import { createTestUser, createTestUserWithRole } from './utils/auth-helper.js';
 import { authService } from '../src/services/auth.service.js';
+
+// Mock the logging service to avoid DB foreign key constraints
+vi.mock('../src/services/log.service.js', () => ({
+  logService: {
+    log: vi.fn().mockResolvedValue({}),
+    logUserAction: vi.fn().mockResolvedValue({}),
+    logLogin: vi.fn().mockResolvedValue({}),
+    logOAuthLogin: vi.fn().mockResolvedValue({}),
+  },
+  __esModule: true,
+}));
+
+// Mock OAuth middleware
+vi.mock('../src/middleware/oauth.middleware.js', () => ({
+  default: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    authenticate: (_strategy: string) => (req: Request, res: Response, next: () => void) => next(),
+  },
+  __esModule: true,
+}));
 
 describe('Auth API', () => {
   // Clear database once at the beginning

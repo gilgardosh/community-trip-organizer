@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { authService } from '../services/auth.service.js';
 import { prisma } from '../utils/db.js';
 import { ApiError } from '../utils/ApiError.js';
-import { UserType, ActionType, Role } from '@prisma/client';
+import { UserType, ActionType, Role, User } from '@prisma/client';
 import { logService } from '../services/log.service.js';
 
 const registerSchema = z.object({
@@ -131,8 +131,35 @@ const login = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json({ token });
 });
 
+/**
+ * Handle OAuth callback after successful authentication
+ */
+const oauthCallback = asyncHandler(async (req: Request, res: Response) => {
+  // The user object is attached by passport after successful OAuth authentication
+  const user = req.user as User;
+  
+  if (!user) {
+    throw new ApiError(401, 'Authentication failed');
+  }
+  
+  // Log the OAuth login
+  await logService.logOAuthLogin(
+    user.id, 
+    user.oauthProvider || 'unknown',
+    user.id
+  );
+  
+  // Generate a JWT token for the user
+  const token = authService.generateToken(user);
+  
+  // Redirect to the frontend with the token
+  const redirectUrl = authService.getOAuthRedirectUrl(token);
+  res.redirect(redirectUrl);
+});
+
 export const authController = {
   register,
   login,
   createAdmin,
+  oauthCallback,
 };

@@ -127,22 +127,22 @@
 
 ### 2.2 OAuth Integration
 
-- [ ] OAuth Configuration
-  - [ ] Set up Google OAuth credentials
-  - [ ] Configure Facebook OAuth (optional)
-  - [ ] Add OAuth environment variables
-- [ ] OAuth Implementation
-  - [ ] Create OAuth endpoints for Google
-  - [ ] Implement Facebook OAuth integration (optional)
-  - [ ] Set up OAuth callback handling
-- [ ] User Integration
-  - [ ] Update user model for OAuth providers
-  - [ ] Implement OAuth profile data extraction
-  - [ ] Connect OAuth with JWT generation
-- [ ] Testing
-  - [ ] Write tests for OAuth flows
-  - [ ] Test OAuth user creation and linking
-  - [ ] Implement OAuth login logging
+- [x] OAuth Configuration
+  - [x] Set up Google OAuth credentials
+  - [x] Configure Facebook OAuth (optional)
+  - [x] Add OAuth environment variables
+- [x] OAuth Implementation
+  - [x] Create OAuth endpoints for Google
+  - [x] Implement Facebook OAuth integration (optional)
+  - [x] Set up OAuth callback handling
+- [x] User Integration
+  - [x] Update user model for OAuth providers
+  - [x] Implement OAuth profile data extraction
+  - [x] Connect OAuth with JWT generation
+- [x] Testing
+  - [x] Write tests for OAuth flows
+  - [x] Test OAuth user creation and linking
+  - [x] Implement OAuth login logging
 
 ### 2.3 Authentication Frontend
 
