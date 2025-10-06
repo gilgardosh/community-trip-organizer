@@ -3,6 +3,8 @@ import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
+import { AuthProvider } from "@/contexts/AuthContext"
+import { Toaster } from "@/components/ui/toaster"
 import "./globals.css"
 
 /* Updated font configuration to use proper Next.js font loading */
@@ -32,7 +34,10 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
       <body className="font-sans">
-        <Suspense fallback={null}>{children}</Suspense>
+        <AuthProvider>
+          <Suspense fallback={null}>{children}</Suspense>
+          <Toaster />
+        </AuthProvider>
         <Analytics />
       </body>
     </html>

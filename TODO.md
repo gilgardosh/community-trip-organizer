@@ -101,6 +101,7 @@
   - [x] Set up React Testing Library
   - [x] Write sample component tests
   - [x] Create test utilities
+  - [x] Fix all failing frontend tests
 
 ## Phase 2: Authentication System
 
@@ -146,24 +147,27 @@
 
 ### 2.3 Authentication Frontend
 
-- [ ] Authentication Forms
-  - [ ] Create login form with email/password
-  - [ ] Add Hebrew form labels and validation messages
-  - [ ] Implement registration form with validation
-  - [ ] Add OAuth login buttons
-- [ ] State Management
-  - [ ] Create authentication context
-  - [ ] Implement JWT token storage
-  - [ ] Set up token refresh mechanism
-- [ ] UI Components
-  - [ ] Create protected route components
-  - [ ] Implement login/logout UI
-  - [ ] Add authentication status indicator
-  - [ ] Create form validation with error messages
-- [ ] Testing
-  - [ ] Test authentication form submission
-  - [ ] Test protected routes
-  - [ ] Verify authentication persistence
+- [x] Authentication Forms
+  - [x] Create login form with email/password
+  - [x] Add Hebrew form labels and validation messages
+  - [x] Implement registration form with validation
+  - [x] Add OAuth login buttons
+- [x] State Management
+  - [x] Create authentication context
+  - [x] Implement JWT token storage
+  - [x] Set up token refresh mechanism
+- [x] UI Components
+  - [x] Create protected route components
+  - [x] Implement login/logout UI
+  - [x] Add authentication status indicator
+  - [x] Create form validation with error messages
+- [x] Testing
+  - [x] Test authentication form submission
+  - [x] Test protected routes
+  - [x] Verify authentication persistence
+  - [x] Fix phone validation regex for Israeli numbers
+  - [x] Fix LoginForm validation tests
+  - [x] Ensure all 27 frontend tests pass
 
 ## Phase 3: Family Management
 
