@@ -18,7 +18,14 @@ const FAMILY_KEY = 'auth_family'
 export function getStoredTokens(): AuthTokens | null {
   if (typeof window === 'undefined') return null
   const stored = localStorage.getItem(TOKEN_KEY)
-  return stored ? JSON.parse(stored) : null
+  if (!stored || stored === 'undefined' || stored === 'null') return null
+  try {
+    return JSON.parse(stored)
+  } catch {
+    // Clear invalid data
+    localStorage.removeItem(TOKEN_KEY)
+    return null
+  }
 }
 
 export function setStoredTokens(tokens: AuthTokens): void {
@@ -36,7 +43,14 @@ export function clearStoredTokens(): void {
 export function getStoredUser() {
   if (typeof window === 'undefined') return null
   const stored = localStorage.getItem(USER_KEY)
-  return stored ? JSON.parse(stored) : null
+  if (!stored || stored === 'undefined' || stored === 'null') return null
+  try {
+    return JSON.parse(stored)
+  } catch {
+    // Clear invalid data
+    localStorage.removeItem(USER_KEY)
+    return null
+  }
 }
 
 export function setStoredUser(user: any): void {
@@ -47,7 +61,14 @@ export function setStoredUser(user: any): void {
 export function getStoredFamily() {
   if (typeof window === 'undefined') return null
   const stored = localStorage.getItem(FAMILY_KEY)
-  return stored ? JSON.parse(stored) : null
+  if (!stored || stored === 'undefined' || stored === 'null') return null
+  try {
+    return JSON.parse(stored)
+  } catch {
+    // Clear invalid data
+    localStorage.removeItem(FAMILY_KEY)
+    return null
+  }
 }
 
 export function setStoredFamily(family: any): void {

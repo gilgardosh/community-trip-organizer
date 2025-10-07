@@ -13,18 +13,18 @@ export default function AdminFamiliesPage() {
   const [description, setDescription] = useState('')
 
   useEffect(() => {
-    if (user?.role === 'super_admin') {
+    if (user?.role === 'SUPER_ADMIN') {
       setDescription('צפייה וחיפוש בכל המשפחות הרשומות במערכת')
-    } else if (user?.role === 'trip_admin') {
+    } else if (user?.role === 'TRIP_ADMIN') {
       setDescription('צפייה במשפחות המשתתפות בטיולים שאתה מנהל')
     }
   }, [user])
 
   return (
-    <ProtectedRoute allowedRoles={['trip_admin', 'super_admin']}>
+    <ProtectedRoute allowedRoles={['TRIP_ADMIN', 'SUPER_ADMIN']}>
       <div className="min-h-screen bg-background p-6" dir="rtl">
         <div className="max-w-7xl mx-auto space-y-4">
-          {user?.role === 'trip_admin' && (
+          {user?.role === 'TRIP_ADMIN' && (
             <Alert>
               <InfoIcon className="h-4 w-4" />
               <AlertDescription>

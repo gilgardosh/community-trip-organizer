@@ -2,7 +2,7 @@
 
 export type UserType = 'adult' | 'child'
 
-export type Role = 'family' | 'trip_admin' | 'super_admin'
+export type Role = 'FAMILY' | 'TRIP_ADMIN' | 'SUPER_ADMIN'
 
 export interface User {
   id: string

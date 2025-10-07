@@ -45,6 +45,9 @@ router.get(
 );
 
 // Protected routes
+// Get current user information
+router.get('/me', protect, authController.getCurrentUser);
+
 // Only SUPER_ADMIN can create admin accounts
 router.post(
   '/admin',

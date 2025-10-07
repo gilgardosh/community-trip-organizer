@@ -12,7 +12,7 @@ export default function FamilyPage() {
   }
 
   return (
-    <ProtectedRoute allowedRoles={['family']}>
+    <ProtectedRoute allowedRoles={['FAMILY', 'TRIP_ADMIN', 'SUPER_ADMIN']}>
       <FamilyDashboard familyId={user.familyId} />
     </ProtectedRoute>
   )

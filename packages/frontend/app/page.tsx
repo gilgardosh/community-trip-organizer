@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
@@ -10,6 +10,11 @@ import { Calendar, Users, MapPin, Shield } from 'lucide-react'
 export default function HomePage() {
   const router = useRouter()
   const { isAuthenticated, isLoading } = useAuth()
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
@@ -17,15 +22,14 @@ export default function HomePage() {
     }
   }, [isAuthenticated, isLoading, router])
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">טוען...</div>
-      </div>
-    )
+  // During SSR and initial hydration, always show the landing page content
+  // to avoid hydration mismatch
+  if (!isMounted || isLoading) {
+    // Show landing page content immediately to avoid hydration mismatch
+    // The redirect will happen after mount if user is authenticated
   }
 
-  if (isAuthenticated) {
+  if (isMounted && !isLoading && isAuthenticated) {
     return null // Will redirect to /family
   }
 

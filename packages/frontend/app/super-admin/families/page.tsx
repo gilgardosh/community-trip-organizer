@@ -28,7 +28,7 @@ export default function SuperAdminFamiliesPage() {
   }, [])
 
   return (
-    <ProtectedRoute allowedRoles={['super_admin']}>
+    <ProtectedRoute allowedRoles={['SUPER_ADMIN']}>
       <div className="min-h-screen bg-background p-6" dir="rtl">
         <div className="max-w-7xl mx-auto">
           <Card>

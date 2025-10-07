@@ -45,7 +45,21 @@ const register = asyncHandler(async (req: Request, res: Response) => {
   await logService.log(user.id, ActionType.CREATE, 'User', user.id);
 
   const token = authService.generateToken(user);
-  res.status(201).json({ token });
+  
+  // Get family with members for response
+  const familyWithMembers = await prisma.family.findUnique({
+    where: { id: family.id },
+    include: { members: true },
+  });
+
+  res.status(201).json({
+    user,
+    family: familyWithMembers,
+    tokens: {
+      accessToken: token,
+      refreshToken: token, // For now, using same token (can be improved later)
+    },
+  });
 });
 
 const createAdminSchema = z.object({
@@ -126,7 +140,21 @@ const login = asyncHandler(async (req: Request, res: Response) => {
   await logService.log(user.id, ActionType.LOGIN, 'User', user.id);
 
   const token = authService.generateToken(user);
-  res.status(200).json({ token });
+  
+  // Get family with members for response
+  const family = await prisma.family.findUnique({
+    where: { id: user.familyId },
+    include: { members: true },
+  });
+
+  res.status(200).json({
+    user,
+    family,
+    tokens: {
+      accessToken: token,
+      refreshToken: token, // For now, using same token (can be improved later)
+    },
+  });
 });
 
 /**
@@ -155,9 +183,36 @@ const oauthCallback = asyncHandler(async (req: Request, res: Response) => {
   res.redirect(redirectUrl);
 });
 
+/**
+ * Get current user's information
+ */
+const getCurrentUser = asyncHandler(async (req: Request, res: Response) => {
+  const user = req.user as User;
+
+  if (!user) {
+    throw new ApiError(401, 'Not authenticated');
+  }
+
+  // Get family with members
+  const family = await prisma.family.findUnique({
+    where: { id: user.familyId },
+    include: { members: true },
+  });
+
+  res.status(200).json({
+    user,
+    family,
+    tokens: {
+      accessToken: '', // Not needed for this endpoint
+      refreshToken: '',
+    },
+  });
+});
+
 export const authController = {
   register,
   login,
   createAdmin,
   oauthCallback,
+  getCurrentUser,
 };

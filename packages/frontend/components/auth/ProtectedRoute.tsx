@@ -35,13 +35,13 @@ export function ProtectedRoute({
     if (allowedRoles && user && !allowedRoles.includes(user.role)) {
       // Redirect based on user role
       switch (user.role) {
-        case 'super_admin':
+        case 'SUPER_ADMIN':
           router.push('/super-admin')
           break
-        case 'trip_admin':
+        case 'TRIP_ADMIN':
           router.push('/admin')
           break
-        case 'family':
+        case 'FAMILY':
           router.push('/family')
           break
         default:
