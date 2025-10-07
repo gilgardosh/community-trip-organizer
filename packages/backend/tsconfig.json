@@ -10,7 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "useUnknownInCatchVariables": true
   },
-  "include": ["src/**/*", "tests/**/*"],
+  "include": ["src/**/*", "tests/**/*", "prisma/**/*"],
   "exclude": ["node_modules"],
   "ts-node": {
     "esm": true,

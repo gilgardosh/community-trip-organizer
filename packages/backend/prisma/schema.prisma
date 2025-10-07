@@ -10,6 +10,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Seed configuration
+// Run with: yarn db:seed
+
 model Family {
   id              String           @id @default(cuid())
   name            String?
