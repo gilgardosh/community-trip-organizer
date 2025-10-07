@@ -12,6 +12,7 @@ import { createFamilySchema, type CreateFamilyFormData, adultSchema, childSchema
 import type { CreateAdultData, CreateChildData } from '@/types/family'
 import { Plus, X, Users, UserPlus, Baby } from 'lucide-react'
 import bcrypt from 'bcryptjs'
+import { ZodError } from 'zod'
 
 export default function FamilyRegistrationForm() {
   const router = useRouter()
@@ -101,10 +102,10 @@ export default function FamilyRegistrationForm() {
       // Redirect to success page or login
       router.push('/auth/login?registered=true')
     } catch (error: any) {
-      if (error.errors) {
+      if (error instanceof ZodError) {
         // Zod validation errors
         const zodErrors: Record<string, string> = {}
-        error.errors.forEach((err: any) => {
+        error.issues.forEach((err) => {
           const path = err.path.join('.')
           zodErrors[path] = err.message
         })

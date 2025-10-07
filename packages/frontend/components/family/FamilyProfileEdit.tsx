@@ -10,6 +10,7 @@ import { updateFamily } from '@/lib/api'
 import { updateFamilySchema, type UpdateFamilyFormData } from '@/lib/validation'
 import type { Family } from '@/types/family'
 import { Save, X } from 'lucide-react'
+import { ZodError } from 'zod'
 
 interface FamilyProfileEditProps {
   family: Family
@@ -44,10 +45,10 @@ export default function FamilyProfileEdit({ family, onSuccess, onCancel }: Famil
         onSuccess(updatedFamily)
       }
     } catch (error: any) {
-      if (error.errors) {
+      if (error instanceof ZodError) {
         // Zod validation errors
         const zodErrors: Record<string, string> = {}
-        error.errors.forEach((err: any) => {
+        error.issues.forEach((err) => {
           const path = err.path.join('.')
           zodErrors[path] = err.message
         })

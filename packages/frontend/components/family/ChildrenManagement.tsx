@@ -13,6 +13,7 @@ import { addMemberSchema, updateMemberSchema } from '@/lib/validation'
 import type { FamilyMember } from '@/types/family'
 import { Baby, Edit, Trash2, Save, X, Calendar } from 'lucide-react'
 import { differenceInYears } from 'date-fns'
+import { ZodError } from 'zod'
 
 interface ChildrenManagementProps {
   familyId: string
@@ -85,9 +86,9 @@ export default function ChildrenManagement({ familyId, children, onUpdate }: Chi
       resetAddForm()
       onUpdate?.()
     } catch (error: any) {
-      if (error.errors) {
+      if (error instanceof ZodError) {
         const zodErrors: Record<string, string> = {}
-        error.errors.forEach((err: any) => {
+        error.issues.forEach((err: any) => {
           const path = err.path.join('.')
           zodErrors[path] = err.message
         })
@@ -121,9 +122,9 @@ export default function ChildrenManagement({ familyId, children, onUpdate }: Chi
       resetEditForm()
       onUpdate?.()
     } catch (error: any) {
-      if (error.errors) {
+      if (error instanceof ZodError) {
         const zodErrors: Record<string, string> = {}
-        error.errors.forEach((err: any) => {
+        error.issues.forEach((err) => {
           const path = err.path.join('.')
           zodErrors[path] = err.message
         })
