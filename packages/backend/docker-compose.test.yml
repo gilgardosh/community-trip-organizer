@@ -1,7 +1,8 @@
 version: '3.8'
 services:
   postgres:
-    image: postgres:13
+    image: postgres:16-alpine
+    container_name: community-trip-db-test
     restart: always
     environment:
       - POSTGRES_USER=test

@@ -4,7 +4,21 @@ This is the backend API for the Community Trip Organizer application.
 
 ## Development
 
-### Setup
+### Quick Setup (Recommended)
+
+Use the automated setup script:
+
+```bash
+./setup-dev.sh
+```
+
+This will:
+- Start PostgreSQL with Docker
+- Create `.env` from template
+- Run database migrations
+- Seed the database with development data
+
+### Manual Setup
 
 1. Install dependencies:
 
@@ -12,19 +26,27 @@ This is the backend API for the Community Trip Organizer application.
 yarn install
 ```
 
-2. Set up your environment variables (create `.env` file based on `.env.example`)
+2. Start the development database:
 
-3. Run database migrations:
+```bash
+yarn db:dev:start
+```
+
+3. Set up your environment variables (create `.env` file based on `.env.example`)
+
+4. Run database migrations:
 
 ```bash
 npx prisma migrate dev
 ```
 
-4. Seed the database with development data:
+5. Seed the database with development data:
 
 ```bash
 yarn db:seed
 ```
+
+For detailed setup instructions, see [DEV_SETUP.md](./DEV_SETUP.md)
 
 ### Running the Server
 
@@ -59,12 +81,33 @@ For complete seed data documentation, see [SEED_DATA.md](./prisma/SEED_DATA.md)
 
 ## Scripts
 
+### Development
 - `yarn dev` - Start development server with hot reload
+- `yarn setup:dev` - Complete setup (start DB, migrate, seed)
+
+### Database - Development
+- `yarn db:dev:start` - Start PostgreSQL with Docker
+- `yarn db:dev:stop` - Stop the database
+- `yarn db:dev:restart` - Restart the database
+- `yarn db:dev:logs` - View database logs
+- `yarn db:dev:clean` - Stop and remove all data
+- `yarn db:seed` - Seed database with development data
+- `yarn db:reset` - Reset and reseed database
+
+### Database - Testing
+- `yarn db:test:start` - Start test database
+- `yarn db:test:stop` - Stop test database
+- `yarn db:test:migrate` - Run migrations on test DB
+
+### Build & Deploy
 - `yarn build` - Build for production
 - `yarn start` - Start production server
+
+### Testing
 - `yarn test` - Run tests
 - `yarn test:watch` - Run tests in watch mode
-- `yarn db:seed` - Seed database with development data
+
+### Code Quality
 - `yarn lint` - Lint code
 - `yarn format` - Format code with Prettier
 
