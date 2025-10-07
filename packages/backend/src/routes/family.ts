@@ -13,7 +13,8 @@ router.post('/', familyController.createFamily);
 router.use(protect);
 
 // Get all families
-// SUPER_ADMIN, TRIP_ADMIN: see all families
+// SUPER_ADMIN: see all families
+// TRIP_ADMIN: see only families attending trips they manage
 // FAMILY: see only their own family
 router.get('/', familyController.getAllFamilies);
 

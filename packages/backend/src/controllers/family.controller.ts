@@ -72,7 +72,7 @@ const createFamily = asyncHandler(async (req: Request, res: Response) => {
 
 /**
  * Get all families
- * Accessible by: SUPER_ADMIN, TRIP_ADMIN (filtered), FAMILY (own family only)
+ * Accessible by: SUPER_ADMIN (all families), TRIP_ADMIN (families in their trips only), FAMILY (own family only)
  */
 const getAllFamilies = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as User;
@@ -93,8 +93,14 @@ const getAllFamilies = asyncHandler(async (req: Request, res: Response) => {
   if (user.role === 'FAMILY') {
     const family = await familyService.getFamilyById(user.familyId);
     res.status(200).json([family]);
-  } else {
-    // SUPER_ADMIN and TRIP_ADMIN can see all families
+  } 
+  // TRIP_ADMIN can only see families in trips they admin
+  else if (user.role === 'TRIP_ADMIN') {
+    const families = await familyService.getFamiliesForTripAdmin(user.id, filters);
+    res.status(200).json(families);
+  }
+  // SUPER_ADMIN can see all families
+  else {
     const families = await familyService.getAllFamilies(filters);
     res.status(200).json(families);
   }

@@ -180,6 +180,59 @@ export const familyService = {
   },
 
   /**
+   * Get families attending trips that a specific trip admin manages
+   * Trip admins should only see families registered for their trips
+   */
+  getFamiliesForTripAdmin: async (tripAdminId: string, filters?: FamilyFilters) => {
+    const where: Prisma.FamilyWhereInput = {};
+
+    if (filters?.status) {
+      where.status = filters.status;
+    }
+
+    if (filters?.isActive !== undefined) {
+      where.isActive = filters.isActive;
+    }
+
+    // Get families that are attending trips managed by this admin
+    where.tripsAttending = {
+      some: {
+        trip: {
+          admins: {
+            some: {
+              id: tripAdminId,
+            },
+          },
+        },
+      },
+    };
+
+    const families = await prisma.family.findMany({
+      where,
+      include: {
+        members: {
+          select: {
+            id: true,
+            type: true,
+            name: true,
+            age: true,
+            email: true,
+            profilePhotoUrl: true,
+            role: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return families;
+  },
+
+  /**
    * Update family details
    */
   updateFamily: async (id: string, data: UpdateFamilyData) => {

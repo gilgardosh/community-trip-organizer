@@ -85,6 +85,72 @@ export const childSchema = z.object({
 
 export type ChildFormData = z.infer<typeof childSchema>
 
+// Family validation schemas
+export const adultSchema = z.object({
+  name: nameSchema,
+  email: emailSchema,
+  password: passwordSchema.optional(),
+  profilePhotoUrl: z.string().url('קישור תמונה לא תקין').optional().or(z.literal('')),
+})
+
+export type AdultFormData = z.infer<typeof adultSchema>
+
+export const createFamilySchema = z.object({
+  name: z.string().min(2, 'שם המשפחה חייב להכיל לפחות 2 תווים').optional().or(z.literal('')),
+  adults: z.array(adultSchema).min(1, 'נדרש לפחות מבוגר אחד'),
+  children: z.array(childSchema).optional(),
+})
+
+export type CreateFamilyFormData = z.infer<typeof createFamilySchema>
+
+export const updateFamilySchema = z.object({
+  name: z.string().min(2, 'שם המשפחה חייב להכיל לפחות 2 תווים').optional().or(z.literal('')),
+})
+
+export type UpdateFamilyFormData = z.infer<typeof updateFamilySchema>
+
+export const addMemberSchema = z.object({
+  type: z.enum(['ADULT', 'CHILD'], { message: 'יש לבחור סוג חבר' }),
+  name: nameSchema,
+  age: z.number().int().min(0).max(18).optional(),
+  email: emailSchema.optional(),
+  password: passwordSchema.optional(),
+  profilePhotoUrl: z.string().url('קישור תמונה לא תקין').optional().or(z.literal('')),
+}).refine(
+  (data) => {
+    if (data.type === 'ADULT') {
+      return !!data.email
+    }
+    return true
+  },
+  {
+    message: 'מבוגר חייב לכלול כתובת דוא״ל',
+    path: ['email'],
+  }
+).refine(
+  (data) => {
+    if (data.type === 'CHILD') {
+      return data.age !== undefined && data.age >= 0 && data.age <= 18
+    }
+    return true
+  },
+  {
+    message: 'ילד חייב לכלול גיל בין 0 ל-18',
+    path: ['age'],
+  }
+)
+
+export type AddMemberFormData = z.infer<typeof addMemberSchema>
+
+export const updateMemberSchema = z.object({
+  name: nameSchema.optional(),
+  age: z.number().int().min(0).max(18).optional(),
+  email: emailSchema.optional(),
+  profilePhotoUrl: z.string().url('קישור תמונה לא תקין').optional().or(z.literal('')),
+})
+
+export type UpdateMemberFormData = z.infer<typeof updateMemberSchema>
+
 // Helper functions for form validation
 export function validateEmail(email: string): boolean {
   try {
