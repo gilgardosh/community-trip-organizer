@@ -29,35 +29,35 @@ router.get('/:id', familyController.getFamilyById);
 router.put(
   '/:id',
   authorize(Role.SUPER_ADMIN, Role.FAMILY),
-  familyController.updateFamily
+  familyController.updateFamily,
 );
 
 // Approve family (SUPER_ADMIN only)
 router.post(
   '/:id/approve',
   authorize(Role.SUPER_ADMIN),
-  familyController.approveFamily
+  familyController.approveFamily,
 );
 
 // Deactivate family (SUPER_ADMIN only)
 router.post(
   '/:id/deactivate',
   authorize(Role.SUPER_ADMIN),
-  familyController.deactivateFamily
+  familyController.deactivateFamily,
 );
 
 // Reactivate family (SUPER_ADMIN only)
 router.post(
   '/:id/reactivate',
   authorize(Role.SUPER_ADMIN),
-  familyController.reactivateFamily
+  familyController.reactivateFamily,
 );
 
 // Delete family permanently (SUPER_ADMIN only)
 router.delete(
   '/:id',
   authorize(Role.SUPER_ADMIN),
-  familyController.deleteFamily
+  familyController.deleteFamily,
 );
 
 // Family member management routes
@@ -77,7 +77,7 @@ router.get('/:id/children', familyController.getFamilyChildren);
 router.post(
   '/:id/members',
   authorize(Role.SUPER_ADMIN, Role.FAMILY),
-  familyController.addMember
+  familyController.addMember,
 );
 
 // Update a member in a family
@@ -86,7 +86,7 @@ router.post(
 router.put(
   '/:id/members/:memberId',
   authorize(Role.SUPER_ADMIN, Role.FAMILY),
-  familyController.updateMember
+  familyController.updateMember,
 );
 
 // Remove a member from a family
@@ -95,7 +95,7 @@ router.put(
 router.delete(
   '/:id/members/:memberId',
   authorize(Role.SUPER_ADMIN, Role.FAMILY),
-  familyController.removeMember
+  familyController.removeMember,
 );
 
 export default router;

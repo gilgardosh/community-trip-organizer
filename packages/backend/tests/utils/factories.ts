@@ -18,9 +18,13 @@ export const createFamily = (data: Partial<Family> = {}): Promise<Family> => {
 export const createFamilyWithMembers = async (
   familyData: Partial<Family> = {},
   adults: Array<{ name: string; email: string; password?: string }> = [
-    { name: 'Test Adult', email: `adult_${Date.now()}_${Math.random()}@test.com`, password: 'password123' },
+    {
+      name: 'Test Adult',
+      email: `adult_${Date.now()}_${Math.random()}@test.com`,
+      password: 'password123',
+    },
   ],
-  children: Array<{ name: string; age: number }> = []
+  children: Array<{ name: string; age: number }> = [],
 ): Promise<Family> => {
   const family = await prisma.family.create({
     data: {
@@ -34,7 +38,7 @@ export const createFamilyWithMembers = async (
     const passwordHash = adult.password
       ? await authService.hashPassword(adult.password)
       : undefined;
-    
+
     await prisma.user.create({
       data: {
         familyId: family.id,
@@ -70,10 +74,10 @@ export const createFamilyWithMembers = async (
  */
 export const createAdult = async (
   familyId: string,
-  data: Partial<User> = {}
+  data: Partial<User> = {},
 ): Promise<User> => {
   const passwordHash = await authService.hashPassword('password123');
-  
+
   return prisma.user.create({
     data: {
       familyId,
@@ -91,7 +95,7 @@ export const createAdult = async (
  */
 export const createChild = async (
   familyId: string,
-  data: Partial<User> = {}
+  data: Partial<User> = {},
 ): Promise<User> => {
   return prisma.user.create({
     data: {
@@ -104,4 +108,3 @@ export const createChild = async (
     },
   });
 };
-

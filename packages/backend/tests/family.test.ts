@@ -1,11 +1,24 @@
-import { describe, it, expect, beforeAll, afterAll, afterEach, vi } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  afterAll,
+  afterEach,
+  vi,
+} from 'vitest';
 import request from 'supertest';
 import app from '../src/app.js';
 import { prisma } from '../src/utils/db.js';
 import { Role, UserType } from '@prisma/client';
 import { clearDatabase } from './utils/db.js';
 import { createTestUserWithRole } from './utils/auth-helper.js';
-import { createFamilyWithMembers, createFamily, createAdult, createChild } from './utils/factories.js';
+import {
+  createFamilyWithMembers,
+  createFamily,
+  createAdult,
+  createChild,
+} from './utils/factories.js';
 import { authService } from '../src/services/auth.service.js';
 
 // Mock the logging service
@@ -36,7 +49,7 @@ describe('Family API', () => {
   describe('POST /api/families', () => {
     it('should create a new family with adults and children', async () => {
       const passwordHash = await authService.hashPassword('password123');
-      
+
       const res = await request(app)
         .post('/api/families')
         .send({
@@ -65,11 +78,15 @@ describe('Family API', () => {
       expect(res.body.members).toHaveLength(4);
 
       // Verify adults
-      const adults = res.body.members.filter((m: any) => m.type === UserType.ADULT);
+      const adults = res.body.members.filter(
+        (m: any) => m.type === UserType.ADULT,
+      );
       expect(adults).toHaveLength(2);
 
       // Verify children
-      const children = res.body.members.filter((m: any) => m.type === UserType.CHILD);
+      const children = res.body.members.filter(
+        (m: any) => m.type === UserType.CHILD,
+      );
       expect(children).toHaveLength(2);
     });
 
@@ -87,7 +104,7 @@ describe('Family API', () => {
 
     it('should fail if adult email already exists', async () => {
       const passwordHash = await authService.hashPassword('password123');
-      
+
       // Create first family
       await request(app)
         .post('/api/families')
@@ -147,8 +164,10 @@ describe('Family API', () => {
       const token = authService.generateToken(superAdmin);
 
       // Create families with different statuses
-      const pendingFamily = await createFamilyWithMembers({ name: 'Pending Family' });
-      
+      const pendingFamily = await createFamilyWithMembers({
+        name: 'Pending Family',
+      });
+
       // Approve one family
       await prisma.family.update({
         where: { id: pendingFamily.id },
@@ -169,9 +188,13 @@ describe('Family API', () => {
       const token = authService.generateToken(superAdmin);
 
       // Create families
-      const activeFamily = await createFamilyWithMembers({ name: 'Active Family' });
-      const inactiveFamily = await createFamilyWithMembers({ name: 'Inactive Family' });
-      
+      const activeFamily = await createFamilyWithMembers({
+        name: 'Active Family',
+      });
+      const inactiveFamily = await createFamilyWithMembers({
+        name: 'Inactive Family',
+      });
+
       // Deactivate one family
       await prisma.family.update({
         where: { id: inactiveFamily.id },
@@ -208,7 +231,9 @@ describe('Family API', () => {
       const familyUser = await createTestUserWithRole(Role.FAMILY);
       const token = authService.generateToken(familyUser);
 
-      const otherFamily = await createFamilyWithMembers({ name: 'Other Family' });
+      const otherFamily = await createFamilyWithMembers({
+        name: 'Other Family',
+      });
 
       const res = await request(app)
         .get(`/api/families/${otherFamily.id}`)
@@ -262,7 +287,9 @@ describe('Family API', () => {
       const familyUser = await createTestUserWithRole(Role.FAMILY);
       const token = authService.generateToken(familyUser);
 
-      const otherFamily = await createFamilyWithMembers({ name: 'Other Family' });
+      const otherFamily = await createFamilyWithMembers({
+        name: 'Other Family',
+      });
 
       const res = await request(app)
         .put(`/api/families/${otherFamily.id}`)
@@ -352,7 +379,10 @@ describe('Family API', () => {
       const superAdmin = await createTestUserWithRole(Role.SUPER_ADMIN);
       const token = authService.generateToken(superAdmin);
 
-      const family = await createFamilyWithMembers({ name: 'Inactive Family', isActive: false });
+      const family = await createFamilyWithMembers({
+        name: 'Inactive Family',
+        isActive: false,
+      });
 
       const res = await request(app)
         .post(`/api/families/${family.id}/reactivate`)
@@ -441,7 +471,9 @@ describe('Family API', () => {
       const familyUser = await createTestUserWithRole(Role.FAMILY);
       const token = authService.generateToken(familyUser);
 
-      const otherFamily = await createFamilyWithMembers({ name: 'Other Family' });
+      const otherFamily = await createFamilyWithMembers({
+        name: 'Other Family',
+      });
 
       const res = await request(app)
         .post(`/api/families/${otherFamily.id}/members`)
@@ -491,13 +523,13 @@ describe('Family API', () => {
       const family = await createFamilyWithMembers(
         { name: 'Test Family' },
         [{ name: 'Adult', email: 'adult@test.com' }],
-        [{ name: 'Child', age: 8 }]
+        [{ name: 'Child', age: 8 }],
       );
-      
+
       const adult = await prisma.user.findFirst({
         where: { familyId: family.id, type: UserType.ADULT },
       });
-      
+
       const token = authService.generateToken(adult!);
       const child = await prisma.user.findFirst({
         where: { familyId: family.id, type: UserType.CHILD },
@@ -514,24 +546,22 @@ describe('Family API', () => {
     });
 
     it('should not allow updating member from different family', async () => {
-      const family1 = await createFamilyWithMembers(
-        { name: 'Family 1' },
-        [{ name: 'Adult 1', email: 'adult1@test.com' }]
-      );
-      
-      const family2 = await createFamilyWithMembers(
-        { name: 'Family 2' },
-        [{ name: 'Adult 2', email: 'adult2@test.com' }]
-      );
-      
+      const family1 = await createFamilyWithMembers({ name: 'Family 1' }, [
+        { name: 'Adult 1', email: 'adult1@test.com' },
+      ]);
+
+      const family2 = await createFamilyWithMembers({ name: 'Family 2' }, [
+        { name: 'Adult 2', email: 'adult2@test.com' },
+      ]);
+
       const adult1 = await prisma.user.findFirst({
         where: { familyId: family1.id, type: UserType.ADULT },
       });
-      
+
       const adult2 = await prisma.user.findFirst({
         where: { familyId: family2.id, type: UserType.ADULT },
       });
-      
+
       const token = authService.generateToken(adult1!);
 
       const res = await request(app)
@@ -548,13 +578,13 @@ describe('Family API', () => {
       const family = await createFamilyWithMembers(
         { name: 'Test Family' },
         [{ name: 'Adult', email: 'adult@test.com' }],
-        [{ name: 'Child', age: 8 }]
+        [{ name: 'Child', age: 8 }],
       );
-      
+
       const adult = await prisma.user.findFirst({
         where: { familyId: family.id, type: UserType.ADULT },
       });
-      
+
       const token = authService.generateToken(adult!);
       const child = await prisma.user.findFirst({
         where: { familyId: family.id, type: UserType.CHILD },
@@ -569,15 +599,14 @@ describe('Family API', () => {
     });
 
     it('should not allow removing the last adult from family', async () => {
-      const family = await createFamilyWithMembers(
-        { name: 'Test Family' },
-        [{ name: 'Only Adult', email: 'only@test.com' }]
-      );
-      
+      const family = await createFamilyWithMembers({ name: 'Test Family' }, [
+        { name: 'Only Adult', email: 'only@test.com' },
+      ]);
+
       const adult = await prisma.user.findFirst({
         where: { familyId: family.id, type: UserType.ADULT },
       });
-      
+
       const token = authService.generateToken(adult!);
 
       const res = await request(app)
@@ -593,14 +622,20 @@ describe('Family API', () => {
     it('should get all members of a family', async () => {
       const family = await createFamilyWithMembers(
         { name: 'Test Family' },
-        [{ name: 'Adult 1', email: 'adult1@test.com' }, { name: 'Adult 2', email: 'adult2@test.com' }],
-        [{ name: 'Child 1', age: 8 }, { name: 'Child 2', age: 5 }]
+        [
+          { name: 'Adult 1', email: 'adult1@test.com' },
+          { name: 'Adult 2', email: 'adult2@test.com' },
+        ],
+        [
+          { name: 'Child 1', age: 8 },
+          { name: 'Child 2', age: 5 },
+        ],
       );
-      
+
       const adult = await prisma.user.findFirst({
         where: { familyId: family.id, type: UserType.ADULT },
       });
-      
+
       const token = authService.generateToken(adult!);
 
       const res = await request(app)
@@ -616,14 +651,17 @@ describe('Family API', () => {
     it('should get only adults of a family', async () => {
       const family = await createFamilyWithMembers(
         { name: 'Test Family' },
-        [{ name: 'Adult 1', email: 'adult1@test.com' }, { name: 'Adult 2', email: 'adult2@test.com' }],
-        [{ name: 'Child 1', age: 8 }]
+        [
+          { name: 'Adult 1', email: 'adult1@test.com' },
+          { name: 'Adult 2', email: 'adult2@test.com' },
+        ],
+        [{ name: 'Child 1', age: 8 }],
       );
-      
+
       const adult = await prisma.user.findFirst({
         where: { familyId: family.id, type: UserType.ADULT },
       });
-      
+
       const token = authService.generateToken(adult!);
 
       const res = await request(app)
@@ -641,13 +679,16 @@ describe('Family API', () => {
       const family = await createFamilyWithMembers(
         { name: 'Test Family' },
         [{ name: 'Adult', email: 'adult@test.com' }],
-        [{ name: 'Child 1', age: 8 }, { name: 'Child 2', age: 5 }]
+        [
+          { name: 'Child 1', age: 8 },
+          { name: 'Child 2', age: 5 },
+        ],
       );
-      
+
       const adult = await prisma.user.findFirst({
         where: { familyId: family.id, type: UserType.ADULT },
       });
-      
+
       const token = authService.generateToken(adult!);
 
       const res = await request(app)

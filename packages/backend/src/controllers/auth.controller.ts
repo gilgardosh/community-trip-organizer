@@ -59,8 +59,10 @@ const createAdminSchema = z.object({
 const createAdmin = asyncHandler(async (req: Request, res: Response) => {
   // This endpoint should only be accessible to SUPER_ADMIN users
   // (authorization middleware will be applied in routes)
-  
-  const { name, email, password, familyName, role } = createAdminSchema.parse(req.body);
+
+  const { name, email, password, familyName, role } = createAdminSchema.parse(
+    req.body,
+  );
 
   const existingUser = await prisma.user.findUnique({ where: { email } });
   if (existingUser) {
@@ -89,13 +91,9 @@ const createAdmin = asyncHandler(async (req: Request, res: Response) => {
 
   // Log the creation by the logged-in SUPER_ADMIN user
   const adminUser = req.user as { id: string };
-  await logService.log(
-    adminUser.id, 
-    ActionType.CREATE, 
-    'User', 
-    user.id, 
-    { role: user.role }
-  );
+  await logService.log(adminUser.id, ActionType.CREATE, 'User', user.id, {
+    role: user.role,
+  });
 
   res.status(201).json({
     message: `Successfully created ${role} user`,
@@ -137,21 +135,21 @@ const login = asyncHandler(async (req: Request, res: Response) => {
 const oauthCallback = asyncHandler(async (req: Request, res: Response) => {
   // The user object is attached by passport after successful OAuth authentication
   const user = req.user as User;
-  
+
   if (!user) {
     throw new ApiError(401, 'Authentication failed');
   }
-  
+
   // Log the OAuth login
   await logService.logOAuthLogin(
-    user.id, 
+    user.id,
     user.oauthProvider || 'unknown',
-    user.id
+    user.id,
   );
-  
+
   // Generate a JWT token for the user
   const token = authService.generateToken(user);
-  
+
   // Redirect to the frontend with the token
   const redirectUrl = authService.getOAuthRedirectUrl(token);
   res.redirect(redirectUrl);

@@ -25,13 +25,13 @@ const generateToken = (user: Pick<User, 'id' | 'role'>): string => {
     id: user.id,
     role: user.role,
   };
-  
+
   // Ensure JWT secret is defined
   const secret = config.jwt.secret;
   if (!secret) {
     throw new Error('JWT secret is not defined');
   }
-  
+
   // Generate token
   return jwt.sign(payload, String(secret), {
     expiresIn: config.jwt.expiresIn ?? '1d',
@@ -42,7 +42,9 @@ const generateToken = (user: Pick<User, 'id' | 'role'>): string => {
  * Check if a user logged in via OAuth
  */
 const isOAuthUser = (user: User): boolean => {
-  return !!user.oauthProvider && (!user.passwordHash || user.passwordHash === '');
+  return (
+    !!user.oauthProvider && (!user.passwordHash || user.passwordHash === '')
+  );
 };
 
 /**

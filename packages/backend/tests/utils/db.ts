@@ -1,4 +1,4 @@
-import { prisma } from "../../src/utils/db.js";
+import { prisma } from '../../src/utils/db.js';
 
 /**
  * Checks if the database is reachable
@@ -53,7 +53,7 @@ export async function clearDatabase() {
     await prisma.$executeRawUnsafe('DELETE FROM "_TripAdmins";');
   } catch (error) {
     console.error('Error clearing trip-user relations:', error);
-    
+
     // Fallback to Prisma ORM approach
     try {
       const trips = await prisma.trip.findMany({ include: { admins: true } });
@@ -70,7 +70,10 @@ export async function clearDatabase() {
         }
       }
     } catch (innerError) {
-      console.error('Fallback for trip-user relations also failed:', innerError);
+      console.error(
+        'Fallback for trip-user relations also failed:',
+        innerError,
+      );
     }
   }
 
@@ -78,7 +81,7 @@ export async function clearDatabase() {
   try {
     // Another attempt to clear logs if needed
     await prisma.log.deleteMany();
-    
+
     // Other tables
     await prisma.user.deleteMany();
     await prisma.trip.deleteMany();

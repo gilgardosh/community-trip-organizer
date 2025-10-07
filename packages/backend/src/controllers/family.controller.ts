@@ -61,10 +61,16 @@ const createFamily = asyncHandler(async (req: Request, res: Response) => {
   // Log family creation by the first adult
   const firstAdult = family.members.find((m) => m.type === UserType.ADULT);
   if (firstAdult) {
-    await logService.log(firstAdult.id, ActionType.CREATE, 'Family', family.id, {
-      name: family.name,
-      memberCount: family.members.length,
-    });
+    await logService.log(
+      firstAdult.id,
+      ActionType.CREATE,
+      'Family',
+      family.id,
+      {
+        name: family.name,
+        memberCount: family.members.length,
+      },
+    );
   }
 
   res.status(201).json(family);
@@ -76,7 +82,7 @@ const createFamily = asyncHandler(async (req: Request, res: Response) => {
  */
 const getAllFamilies = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as User;
-  
+
   // Parse query filters
   const status = req.query.status as FamilyStatus | undefined;
   const isActive = req.query.isActive as string | undefined;
@@ -93,10 +99,13 @@ const getAllFamilies = asyncHandler(async (req: Request, res: Response) => {
   if (user.role === 'FAMILY') {
     const family = await familyService.getFamilyById(user.familyId);
     res.status(200).json([family]);
-  } 
+  }
   // TRIP_ADMIN can only see families in trips they admin
   else if (user.role === 'TRIP_ADMIN') {
-    const families = await familyService.getFamiliesForTripAdmin(user.id, filters);
+    const families = await familyService.getFamiliesForTripAdmin(
+      user.id,
+      filters,
+    );
     res.status(200).json(families);
   }
   // SUPER_ADMIN can see all families

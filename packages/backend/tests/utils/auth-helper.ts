@@ -6,13 +6,16 @@ import { prisma } from '../../src/utils/db.js';
 /**
  * Create a test user for authentication tests
  */
-export async function createTestUser(email = 'test@example.com', password = 'password123'): Promise<User> {
+export async function createTestUser(
+  email = 'test@example.com',
+  password = 'password123',
+): Promise<User> {
   // Create a family for the user
   const family = await createFamily();
 
   // Hash the password
   const passwordHash = await authService.hashPassword(password);
-  
+
   // Create the user
   const user = await prisma.user.create({
     data: {
@@ -22,9 +25,9 @@ export async function createTestUser(email = 'test@example.com', password = 'pas
       familyId: family.id,
       type: UserType.ADULT,
       role: Role.FAMILY,
-    }
+    },
   });
-  
+
   return user;
 }
 
@@ -34,14 +37,14 @@ export async function createTestUser(email = 'test@example.com', password = 'pas
 export async function createTestUserWithRole(
   role: Role,
   email = `${role.toLowerCase()}@example.com`,
-  password = 'password123'
+  password = 'password123',
 ): Promise<User> {
   // Create a family for the user
   const family = await createFamily();
 
   // Hash the password
   const passwordHash = await authService.hashPassword(password);
-  
+
   // Create the user with specified role
   const user = await prisma.user.create({
     data: {
@@ -51,8 +54,8 @@ export async function createTestUserWithRole(
       familyId: family.id,
       type: UserType.ADULT,
       role,
-    }
+    },
   });
-  
+
   return user;
 }

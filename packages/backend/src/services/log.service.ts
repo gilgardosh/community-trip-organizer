@@ -31,15 +31,11 @@ export const logService = {
    * Log an OAuth login
    * Uses the standard LOGIN action type but adds provider info in changes
    */
-  logOAuthLogin: async (
-    userId: string,
-    provider: string,
-    entityId: string,
-  ) => {
+  logOAuthLogin: async (userId: string, provider: string, entityId: string) => {
     await prisma.log.create({
       data: {
         userId,
-        actionType: ActionType.LOGIN,  // Use standard LOGIN until OAUTH_LOGIN is added
+        actionType: ActionType.LOGIN, // Use standard LOGIN until OAUTH_LOGIN is added
         entityType: 'User',
         entityId,
         changes: { provider, authType: 'oauth' }, // Mark as OAuth login in changes

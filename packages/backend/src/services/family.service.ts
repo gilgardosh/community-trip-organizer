@@ -57,7 +57,10 @@ export const familyService = {
 
     // Validate at least one adult is provided
     if (!adults || adults.length === 0) {
-      throw new ApiError(400, 'At least one adult is required to create a family');
+      throw new ApiError(
+        400,
+        'At least one adult is required to create a family',
+      );
     }
 
     // Check if any adult email already exists
@@ -72,7 +75,7 @@ export const familyService = {
     if (existingEmails.length > 0) {
       throw new ApiError(
         400,
-        `Email already exists: ${existingEmails.map((u) => u.email).join(', ')}`
+        `Email already exists: ${existingEmails.map((u) => u.email).join(', ')}`,
       );
     }
 
@@ -183,7 +186,10 @@ export const familyService = {
    * Get families attending trips that a specific trip admin manages
    * Trip admins should only see families registered for their trips
    */
-  getFamiliesForTripAdmin: async (tripAdminId: string, filters?: FamilyFilters) => {
+  getFamiliesForTripAdmin: async (
+    tripAdminId: string,
+    filters?: FamilyFilters,
+  ) => {
     const where: Prisma.FamilyWhereInput = {};
 
     if (filters?.status) {
@@ -475,7 +481,11 @@ export const familyService = {
   /**
    * Update a family member
    */
-  updateMember: async (familyId: string, memberId: string, memberData: UpdateMemberData) => {
+  updateMember: async (
+    familyId: string,
+    memberId: string,
+    memberData: UpdateMemberData,
+  ) => {
     // Check if member exists and belongs to the family
     const member = await prisma.user.findUnique({
       where: { id: memberId },
