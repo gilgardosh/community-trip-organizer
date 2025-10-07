@@ -173,22 +173,34 @@
 
 ### 3.1 Family Core Backend
 
-- [ ] Family Model
-  - [ ] Create Family model with fields from spec
-  - [ ] Implement adults/children substructures
-  - [ ] Set up database operations
-- [ ] API Endpoints
-  - [ ] Create Family CRUD endpoints
-  - [ ] Implement validation for family data
-  - [ ] Set up User-Family relationships
-- [ ] Admin Features
-  - [ ] Implement family approval workflow
-  - [ ] Create endpoints for managing family members
-  - [ ] Add query filters (active/pending)
-- [ ] Testing & Logging
-  - [ ] Write tests for Family endpoints
-  - [ ] Implement family change logging
-  - [ ] Test role-based access control
+- [x] Family Model
+  - [x] Create Family model with fields from spec
+  - [x] Add status field (PENDING/APPROVED) for approval workflow
+  - [x] Add isActive field for soft deletion
+  - [x] Implement adults/children substructures via User model
+  - [x] Set up database operations
+  - [x] Create and apply database migration
+- [x] API Endpoints
+  - [x] Create Family CRUD endpoints (14 total endpoints)
+  - [x] Implement comprehensive Zod validation for family data
+  - [x] Set up User-Family relationships
+  - [x] Add endpoints for member management (add/update/remove)
+  - [x] Create specialized endpoints (get adults/children)
+- [x] Admin Features
+  - [x] Implement family approval workflow (approve endpoint)
+  - [x] Create endpoints for managing family members
+  - [x] Add family deactivation/reactivation endpoints
+  - [x] Add query filters (status: PENDING/APPROVED, isActive: true/false)
+  - [x] Implement soft delete functionality
+- [x] Testing & Logging
+  - [x] Write comprehensive tests for Family endpoints (33 tests)
+  - [x] Test family CRUD operations
+  - [x] Test approval workflow
+  - [x] Test member management (adults & children)
+  - [x] Test query filters
+  - [x] Implement family change logging for all operations
+  - [x] Test role-based access control (FAMILY, TRIP_ADMIN, SUPER_ADMIN)
+  - [x] Verify all 59 backend tests pass
 
 ### 3.2 Family Frontend
 
