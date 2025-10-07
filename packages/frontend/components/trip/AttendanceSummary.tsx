@@ -63,7 +63,7 @@ export function AttendanceSummary({ attendees }: AttendanceSummaryProps) {
         <div className="space-y-3">
           <h4 className="font-semibold text-sm text-foreground">משפחות משתתפות</h4>
           <div className="space-y-2">
-            {attendees.map((attendee) => {
+            {attendees.map((attendee, index) => {
               const familyAdults = attendee.family.members.filter(
                 (m) => m.type === 'ADULT'
               );
@@ -73,7 +73,7 @@ export function AttendanceSummary({ attendees }: AttendanceSummaryProps) {
 
               return (
                 <div
-                  key={attendee.id}
+                  key={`attendee-${attendee.id}-${index}`}
                   className="border border-border rounded-lg p-3 space-y-2"
                 >
                   <div className="flex items-center justify-between">
