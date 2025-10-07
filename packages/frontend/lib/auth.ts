@@ -147,7 +147,7 @@ export async function registerUser(data: RegisterData): Promise<AuthResponse> {
 // OAuth login (Google/Facebook)
 export async function initiateOAuthLogin(provider: OAuthProvider): Promise<void> {
   const redirectUri = provider.redirectUri || `${window.location.origin}/auth/callback`
-  window.location.href = `${API_URL}/api/auth/oauth/${provider.provider}?redirect_uri=${encodeURIComponent(redirectUri)}`
+  window.location.href = `${API_URL}/api/auth/${provider.provider}?redirect_uri=${encodeURIComponent(redirectUri)}`
 }
 
 // Handle OAuth callback
@@ -155,7 +155,7 @@ export async function handleOAuthCallback(
   provider: string,
   code: string
 ): Promise<AuthResponse> {
-  const response = await fetch(`${API_URL}/api/auth/oauth/${provider}/callback`, {
+  const response = await fetch(`${API_URL}/api/auth/${provider}/callback`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

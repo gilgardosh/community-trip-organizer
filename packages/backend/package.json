@@ -57,6 +57,7 @@
     "prisma": "6.14.0",
     "supertest": "7.1.4",
     "ts-node": "10.9.2",
+    "tsx": "4.20.6",
     "typescript": "5.9.2",
     "typescript-eslint": "8.40.0",
     "vitest": "3.2.4",

@@ -46,7 +46,7 @@ sequenceDiagram
     User->>OAuthProvider: Authenticate
     OAuthProvider->>CallbackPage: Redirect with code
     CallbackPage->>AuthAPI: handleOAuthCallback(code)
-    AuthAPI->>Backend: POST /api/auth/oauth/callback
+    AuthAPI->>Backend: POST /api/auth/callback
     Backend-->>AuthAPI: { user, family, tokens }
     AuthAPI->>LocalStorage: Store tokens & data
     AuthAPI-->>CallbackPage: Success
