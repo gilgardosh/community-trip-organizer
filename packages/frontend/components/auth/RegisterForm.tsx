@@ -1,26 +1,26 @@
-'use client'
+'use client';
 
-import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Alert } from '@/components/ui/alert'
-import { registerSchema, type RegisterFormData } from '@/lib/validation'
-import { useAuth } from '@/contexts/AuthContext'
-import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Alert } from '@/components/ui/alert';
+import { registerSchema, type RegisterFormData } from '@/lib/validation';
+import { useAuth } from '@/contexts/AuthContext';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
 interface RegisterFormProps {
-  onSuccess?: () => void
+  onSuccess?: () => void;
 }
 
 export function RegisterForm({ onSuccess }: RegisterFormProps) {
-  const { register: registerUser } = useAuth()
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const { register: registerUser } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const {
     register,
@@ -28,22 +28,22 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
-  })
+  });
 
   const onSubmit = async (data: RegisterFormData) => {
-    setIsLoading(true)
-    setError(null)
+    setIsLoading(true);
+    setError(null);
 
     try {
-      const { confirmPassword, ...registerData } = data
-      await registerUser(registerData)
-      onSuccess?.()
+      const { confirmPassword, ...registerData } = data;
+      await registerUser(registerData);
+      onSuccess?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'שגיאה ברישום')
+      setError(err instanceof Error ? err.message : 'שגיאה ברישום');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -65,7 +65,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           disabled={isLoading}
         />
         {errors.name && (
-          <p className="text-sm text-destructive text-right">{errors.name.message}</p>
+          <p className="text-sm text-destructive text-right">
+            {errors.name.message}
+          </p>
         )}
       </div>
 
@@ -83,13 +85,16 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           disabled={isLoading}
         />
         {errors.email && (
-          <p className="text-sm text-destructive text-right">{errors.email.message}</p>
+          <p className="text-sm text-destructive text-right">
+            {errors.email.message}
+          </p>
         )}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="phone" className="text-right block">
-          טלפון <span className="text-muted-foreground text-sm">(אופציונלי)</span>
+          טלפון{' '}
+          <span className="text-muted-foreground text-sm">(אופציונלי)</span>
         </Label>
         <Input
           id="phone"
@@ -101,13 +106,16 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           disabled={isLoading}
         />
         {errors.phone && (
-          <p className="text-sm text-destructive text-right">{errors.phone.message}</p>
+          <p className="text-sm text-destructive text-right">
+            {errors.phone.message}
+          </p>
         )}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="familyName" className="text-right block">
-          שם משפחה <span className="text-muted-foreground text-sm">(אופציונלי)</span>
+          שם משפחה{' '}
+          <span className="text-muted-foreground text-sm">(אופציונלי)</span>
         </Label>
         <Input
           id="familyName"
@@ -117,7 +125,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           disabled={isLoading}
         />
         {errors.familyName && (
-          <p className="text-sm text-destructive text-right">{errors.familyName.message}</p>
+          <p className="text-sm text-destructive text-right">
+            {errors.familyName.message}
+          </p>
         )}
       </div>
 
@@ -139,11 +149,17 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             tabIndex={-1}
           >
-            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {showPassword ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
           </button>
         </div>
         {errors.password && (
-          <p className="text-sm text-destructive text-right">{errors.password.message}</p>
+          <p className="text-sm text-destructive text-right">
+            {errors.password.message}
+          </p>
         )}
         <p className="text-xs text-muted-foreground text-right">
           הסיסמה חייבת להכיל לפחות 8 תווים, אותיות גדולות, אותיות קטנות ומספרים
@@ -168,11 +184,17 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             tabIndex={-1}
           >
-            {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {showConfirmPassword ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
           </button>
         </div>
         {errors.confirmPassword && (
-          <p className="text-sm text-destructive text-right">{errors.confirmPassword.message}</p>
+          <p className="text-sm text-destructive text-right">
+            {errors.confirmPassword.message}
+          </p>
         )}
       </div>
 
@@ -193,5 +215,5 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         ההרשמה כפופה לאישור מנהל המערכת
       </p>
     </form>
-  )
+  );
 }

@@ -1,100 +1,120 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Select } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import { Avatar } from '@/components/ui/avatar'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Alert } from '@/components/ui/alert'
-import { getFamilies } from '@/lib/api'
-import type { Family, FamilyFilters } from '@/types/family'
-import { Users, Search, Filter, Eye, UserCheck, Baby, Calendar } from 'lucide-react'
-import { format } from 'date-fns'
-import { he } from 'date-fns/locale'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Avatar } from '@/components/ui/avatar';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Alert } from '@/components/ui/alert';
+import { getFamilies } from '@/lib/api';
+import type { Family, FamilyFilters } from '@/types/family';
+import {
+  Users,
+  Search,
+  Filter,
+  Eye,
+  UserCheck,
+  Baby,
+  Calendar,
+} from 'lucide-react';
+import { format } from 'date-fns';
+import { he } from 'date-fns/locale';
+import { useRouter } from 'next/navigation';
 
 export default function FamilyListing() {
-  const router = useRouter()
-  const [families, setFamilies] = useState<Family[]>([])
-  const [filteredFamilies, setFilteredFamilies] = useState<Family[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState('')
-  
+  const router = useRouter();
+  const [families, setFamilies] = useState<Family[]>([]);
+  const [filteredFamilies, setFilteredFamilies] = useState<Family[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+
   // Filter states
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<'all' | 'PENDING' | 'APPROVED'>('all')
-  const [activeFilter, setActiveFilter] = useState<'all' | 'active' | 'inactive'>('all')
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<
+    'all' | 'PENDING' | 'APPROVED'
+  >('all');
+  const [activeFilter, setActiveFilter] = useState<
+    'all' | 'active' | 'inactive'
+  >('all');
 
   useEffect(() => {
-    loadFamilies()
-  }, [])
+    loadFamilies();
+  }, []);
 
   useEffect(() => {
-    applyFilters()
-  }, [families, searchQuery, statusFilter, activeFilter])
+    applyFilters();
+  }, [families, searchQuery, statusFilter, activeFilter]);
 
   const loadFamilies = async () => {
-    setIsLoading(true)
-    setError('')
+    setIsLoading(true);
+    setError('');
 
     try {
-      const data = await getFamilies()
-      setFamilies(data)
+      const data = await getFamilies();
+      setFamilies(data);
     } catch (err: any) {
-      setError(err.message || 'אירעה שגיאה בטעינת רשימת המשפחות')
+      setError(err.message || 'אירעה שגיאה בטעינת רשימת המשפחות');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const applyFilters = () => {
-    let filtered = [...families]
+    let filtered = [...families];
 
     // Search filter
     if (searchQuery) {
-      const query = searchQuery.toLowerCase()
-      filtered = filtered.filter(family => {
-        const nameMatch = family.name?.toLowerCase().includes(query)
-        const memberMatch = family.members.some(m => 
-          m.name.toLowerCase().includes(query) || 
-          m.email.toLowerCase().includes(query)
-        )
-        return nameMatch || memberMatch
-      })
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter((family) => {
+        const nameMatch = family.name?.toLowerCase().includes(query);
+        const memberMatch = family.members.some(
+          (m) =>
+            m.name.toLowerCase().includes(query) ||
+            m.email.toLowerCase().includes(query),
+        );
+        return nameMatch || memberMatch;
+      });
     }
 
     // Status filter
     if (statusFilter !== 'all') {
-      filtered = filtered.filter(family => family.status === statusFilter)
+      filtered = filtered.filter((family) => family.status === statusFilter);
     }
 
     // Active filter
     if (activeFilter !== 'all') {
-      filtered = filtered.filter(family => 
-        activeFilter === 'active' ? family.isActive : !family.isActive
-      )
+      filtered = filtered.filter((family) =>
+        activeFilter === 'active' ? family.isActive : !family.isActive,
+      );
     }
 
-    setFilteredFamilies(filtered)
-  }
+    setFilteredFamilies(filtered);
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'APPROVED':
-        return <Badge variant="default">מאושר</Badge>
+        return <Badge variant="default">מאושר</Badge>;
       case 'PENDING':
-        return <Badge variant="secondary">ממתין</Badge>
+        return <Badge variant="secondary">ממתין</Badge>;
       default:
-        return <Badge variant="outline">{status}</Badge>
+        return <Badge variant="outline">{status}</Badge>;
     }
-  }
+  };
 
   const handleViewFamily = (familyId: string) => {
-    router.push(`/family/${familyId}`)
-  }
+    router.push(`/family/${familyId}`);
+  };
 
   if (isLoading) {
     return (
@@ -104,7 +124,7 @@ export default function FamilyListing() {
           <p className="text-muted-foreground">טוען רשימת משפחות...</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -115,7 +135,7 @@ export default function FamilyListing() {
           נסה שוב
         </Button>
       </div>
-    )
+    );
   }
 
   return (
@@ -172,15 +192,19 @@ export default function FamilyListing() {
 
           {/* Results Summary */}
           <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <span>מציג {filteredFamilies.length} מתוך {families.length} משפחות</span>
-            {(searchQuery || statusFilter !== 'all' || activeFilter !== 'all') && (
+            <span>
+              מציג {filteredFamilies.length} מתוך {families.length} משפחות
+            </span>
+            {(searchQuery ||
+              statusFilter !== 'all' ||
+              activeFilter !== 'all') && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => {
-                  setSearchQuery('')
-                  setStatusFilter('all')
-                  setActiveFilter('all')
+                  setSearchQuery('');
+                  setStatusFilter('all');
+                  setActiveFilter('all');
                 }}
               >
                 נקה סינון
@@ -205,14 +229,21 @@ export default function FamilyListing() {
               <TableBody>
                 {filteredFamilies.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                    <TableCell
+                      colSpan={7}
+                      className="text-center py-8 text-muted-foreground"
+                    >
                       לא נמצאו משפחות
                     </TableCell>
                   </TableRow>
                 ) : (
                   filteredFamilies.map((family) => {
-                    const adults = family.members.filter(m => m.type === 'ADULT')
-                    const children = family.members.filter(m => m.type === 'CHILD')
+                    const adults = family.members.filter(
+                      (m) => m.type === 'ADULT',
+                    );
+                    const children = family.members.filter(
+                      (m) => m.type === 'CHILD',
+                    );
 
                     return (
                       <TableRow key={family.id}>
@@ -222,7 +253,9 @@ export default function FamilyListing() {
                               {(family.name || 'M').charAt(0)}
                             </div>
                             <div>
-                              <div className="font-medium">{family.name || 'משפחה ללא שם'}</div>
+                              <div className="font-medium">
+                                {family.name || 'משפחה ללא שם'}
+                              </div>
                               <div className="text-xs text-muted-foreground">
                                 {family.id.slice(0, 8)}...
                               </div>
@@ -243,14 +276,18 @@ export default function FamilyListing() {
                         </TableCell>
                         <TableCell>{getStatusBadge(family.status)}</TableCell>
                         <TableCell>
-                          <Badge variant={family.isActive ? 'default' : 'secondary'}>
+                          <Badge
+                            variant={family.isActive ? 'default' : 'secondary'}
+                          >
                             {family.isActive ? 'פעיל' : 'לא פעיל'}
                           </Badge>
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1 text-sm">
                             <Calendar className="h-3 w-3 text-muted-foreground" />
-                            {format(new Date(family.createdAt), 'dd/MM/yyyy', { locale: he })}
+                            {format(new Date(family.createdAt), 'dd/MM/yyyy', {
+                              locale: he,
+                            })}
                           </div>
                         </TableCell>
                         <TableCell>
@@ -264,7 +301,7 @@ export default function FamilyListing() {
                           </Button>
                         </TableCell>
                       </TableRow>
-                    )
+                    );
                   })
                 )}
               </TableBody>
@@ -277,14 +314,18 @@ export default function FamilyListing() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-6">
-            <div className="text-2xl font-bold text-primary">{families.length}</div>
-            <div className="text-sm text-muted-foreground">סה&quot;כ משפחות</div>
+            <div className="text-2xl font-bold text-primary">
+              {families.length}
+            </div>
+            <div className="text-sm text-muted-foreground">
+              סה&quot;כ משפחות
+            </div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-6">
             <div className="text-2xl font-bold text-primary">
-              {families.filter(f => f.status === 'PENDING').length}
+              {families.filter((f) => f.status === 'PENDING').length}
             </div>
             <div className="text-sm text-muted-foreground">ממתינות לאישור</div>
           </CardContent>
@@ -292,7 +333,7 @@ export default function FamilyListing() {
         <Card>
           <CardContent className="p-6">
             <div className="text-2xl font-bold text-primary">
-              {families.filter(f => f.status === 'APPROVED').length}
+              {families.filter((f) => f.status === 'APPROVED').length}
             </div>
             <div className="text-sm text-muted-foreground">מאושרות</div>
           </CardContent>
@@ -300,12 +341,12 @@ export default function FamilyListing() {
         <Card>
           <CardContent className="p-6">
             <div className="text-2xl font-bold text-primary">
-              {families.filter(f => f.isActive).length}
+              {families.filter((f) => f.isActive).length}
             </div>
             <div className="text-sm text-muted-foreground">פעילות</div>
           </CardContent>
         </Card>
       </div>
     </div>
-  )
+  );
 }

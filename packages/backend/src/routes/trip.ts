@@ -37,11 +37,7 @@ router.put(
 );
 
 // Delete trip permanently (SUPER_ADMIN only)
-router.delete(
-  '/:id',
-  authorize(Role.SUPER_ADMIN),
-  tripController.deleteTrip,
-);
+router.delete('/:id', authorize(Role.SUPER_ADMIN), tripController.deleteTrip);
 
 // Trip publishing workflow
 

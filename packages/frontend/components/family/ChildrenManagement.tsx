@@ -1,168 +1,184 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Alert } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
-import { addFamilyMember, updateFamilyMember, removeFamilyMember } from '@/lib/api'
-import { addMemberSchema, updateMemberSchema } from '@/lib/validation'
-import type { FamilyMember } from '@/types/family'
-import { Baby, Edit, Trash2, Save, X, Calendar } from 'lucide-react'
-import { differenceInYears } from 'date-fns'
-import { ZodError } from 'zod'
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Alert } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import {
+  addFamilyMember,
+  updateFamilyMember,
+  removeFamilyMember,
+} from '@/lib/api';
+import { addMemberSchema, updateMemberSchema } from '@/lib/validation';
+import type { FamilyMember } from '@/types/family';
+import { Baby, Edit, Trash2, Save, X, Calendar } from 'lucide-react';
+import { differenceInYears } from 'date-fns';
+import { ZodError } from 'zod';
 
 interface ChildrenManagementProps {
-  familyId: string
-  children: FamilyMember[]
-  onUpdate?: () => void
+  familyId: string;
+  children: FamilyMember[];
+  onUpdate?: () => void;
 }
 
-export default function ChildrenManagement({ familyId, children, onUpdate }: ChildrenManagementProps) {
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-  const [editingChild, setEditingChild] = useState<FamilyMember | null>(null)
-  const [deletingChild, setDeletingChild] = useState<FamilyMember | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [generalError, setGeneralError] = useState('')
+export default function ChildrenManagement({
+  familyId,
+  children,
+  onUpdate,
+}: ChildrenManagementProps) {
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [editingChild, setEditingChild] = useState<FamilyMember | null>(null);
+  const [deletingChild, setDeletingChild] = useState<FamilyMember | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [generalError, setGeneralError] = useState('');
 
   // Add child form state
   const [newChild, setNewChild] = useState({
     name: '',
     age: 0,
-  })
+  });
 
   // Edit child form state
   const [editForm, setEditForm] = useState({
     name: '',
     age: 0,
-  })
+  });
 
   const resetAddForm = () => {
     setNewChild({
       name: '',
       age: 0,
-    })
-    setErrors({})
-    setGeneralError('')
-  }
+    });
+    setErrors({});
+    setGeneralError('');
+  };
 
   const resetEditForm = () => {
     setEditForm({
       name: '',
       age: 0,
-    })
-    setErrors({})
-    setGeneralError('')
-  }
+    });
+    setErrors({});
+    setGeneralError('');
+  };
 
   const getAgeLabel = (age: number | undefined) => {
-    if (!age) return 'לא צוין'
-    if (age === 1) return 'שנה אחת'
-    if (age === 2) return 'שנתיים'
-    return `${age} שנים`
-  }
+    if (!age) return 'לא צוין';
+    if (age === 1) return 'שנה אחת';
+    if (age === 2) return 'שנתיים';
+    return `${age} שנים`;
+  };
 
   const handleAddChild = async () => {
-    setErrors({})
-    setGeneralError('')
-    setIsLoading(true)
+    setErrors({});
+    setGeneralError('');
+    setIsLoading(true);
 
     try {
       const formData = {
         type: 'CHILD' as const,
         name: newChild.name,
         age: newChild.age,
-      }
+      };
 
-      addMemberSchema.parse(formData)
+      addMemberSchema.parse(formData);
 
-      await addFamilyMember(familyId, formData)
+      await addFamilyMember(familyId, formData);
 
-      setIsAddDialogOpen(false)
-      resetAddForm()
-      onUpdate?.()
+      setIsAddDialogOpen(false);
+      resetAddForm();
+      onUpdate?.();
     } catch (error: any) {
       if (error instanceof ZodError) {
-        const zodErrors: Record<string, string> = {}
+        const zodErrors: Record<string, string> = {};
         error.issues.forEach((err: any) => {
-          const path = err.path.join('.')
-          zodErrors[path] = err.message
-        })
-        setErrors(zodErrors)
+          const path = err.path.join('.');
+          zodErrors[path] = err.message;
+        });
+        setErrors(zodErrors);
       } else {
-        setGeneralError(error.message || 'אירעה שגיאה בעת הוספת הילד')
+        setGeneralError(error.message || 'אירעה שגיאה בעת הוספת הילד');
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleEditChild = async () => {
-    if (!editingChild) return
+    if (!editingChild) return;
 
-    setErrors({})
-    setGeneralError('')
-    setIsLoading(true)
+    setErrors({});
+    setGeneralError('');
+    setIsLoading(true);
 
     try {
       const formData = {
         name: editForm.name || undefined,
         age: editForm.age,
-      }
+      };
 
-      updateMemberSchema.parse(formData)
+      updateMemberSchema.parse(formData);
 
-      await updateFamilyMember(familyId, editingChild.id, formData)
+      await updateFamilyMember(familyId, editingChild.id, formData);
 
-      setEditingChild(null)
-      resetEditForm()
-      onUpdate?.()
+      setEditingChild(null);
+      resetEditForm();
+      onUpdate?.();
     } catch (error: any) {
       if (error instanceof ZodError) {
-        const zodErrors: Record<string, string> = {}
+        const zodErrors: Record<string, string> = {};
         error.issues.forEach((err) => {
-          const path = err.path.join('.')
-          zodErrors[path] = err.message
-        })
-        setErrors(zodErrors)
+          const path = err.path.join('.');
+          zodErrors[path] = err.message;
+        });
+        setErrors(zodErrors);
       } else {
-        setGeneralError(error.message || 'אירעה שגיאה בעת עדכון הילד')
+        setGeneralError(error.message || 'אירעה שגיאה בעת עדכון הילד');
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleDeleteChild = async () => {
-    if (!deletingChild) return
+    if (!deletingChild) return;
 
-    setIsLoading(true)
-    setGeneralError('')
+    setIsLoading(true);
+    setGeneralError('');
 
     try {
-      await removeFamilyMember(familyId, deletingChild.id)
-      setDeletingChild(null)
-      onUpdate?.()
+      await removeFamilyMember(familyId, deletingChild.id);
+      setDeletingChild(null);
+      onUpdate?.();
     } catch (error: any) {
-      setGeneralError(error.message || 'אירעה שגיאה בעת מחיקת הילד')
+      setGeneralError(error.message || 'אירעה שגיאה בעת מחיקת הילד');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const openEditDialog = (child: FamilyMember) => {
-    setEditingChild(child)
+    setEditingChild(child);
     setEditForm({
       name: child.name,
       age: child.age || 0,
-    })
-    setErrors({})
-    setGeneralError('')
-  }
+    });
+    setErrors({});
+    setGeneralError('');
+  };
 
   return (
     <Card dir="rtl">
@@ -187,17 +203,23 @@ export default function ChildrenManagement({ familyId, children, onUpdate }: Chi
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-4">
-                {generalError && <Alert variant="destructive">{generalError}</Alert>}
-                
+                {generalError && (
+                  <Alert variant="destructive">{generalError}</Alert>
+                )}
+
                 <div className="space-y-2">
                   <Label htmlFor="new-child-name">שם *</Label>
                   <Input
                     id="new-child-name"
                     value={newChild.name}
-                    onChange={(e) => setNewChild({ ...newChild, name: e.target.value })}
+                    onChange={(e) =>
+                      setNewChild({ ...newChild, name: e.target.value })
+                    }
                     placeholder="שם הילד"
                   />
-                  {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+                  {errors.name && (
+                    <p className="text-sm text-red-500">{errors.name}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -208,17 +230,28 @@ export default function ChildrenManagement({ familyId, children, onUpdate }: Chi
                     min="0"
                     max="18"
                     value={newChild.age || ''}
-                    onChange={(e) => setNewChild({ ...newChild, age: parseInt(e.target.value) || 0 })}
+                    onChange={(e) =>
+                      setNewChild({
+                        ...newChild,
+                        age: parseInt(e.target.value) || 0,
+                      })
+                    }
                     placeholder="0-18"
                   />
-                  {errors.age && <p className="text-sm text-red-500">{errors.age}</p>}
+                  {errors.age && (
+                    <p className="text-sm text-red-500">{errors.age}</p>
+                  )}
                   <p className="text-xs text-muted-foreground">
                     יש להזין גיל בין 0 ל-18 שנים
                   </p>
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} disabled={isLoading}>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsAddDialogOpen(false)}
+                  disabled={isLoading}
+                >
                   ביטול
                 </Button>
                 <Button onClick={handleAddChild} disabled={isLoading}>
@@ -232,7 +265,10 @@ export default function ChildrenManagement({ familyId, children, onUpdate }: Chi
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {children.map((child) => (
-            <div key={child.id} className="flex items-center gap-4 p-4 border rounded-lg">
+            <div
+              key={child.id}
+              className="flex items-center gap-4 p-4 border rounded-lg"
+            >
               <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary font-semibold">
                 {child.name.charAt(0)}
               </div>
@@ -278,26 +314,33 @@ export default function ChildrenManagement({ familyId, children, onUpdate }: Chi
       </CardContent>
 
       {/* Edit Dialog */}
-      <Dialog open={!!editingChild} onOpenChange={(open) => !open && setEditingChild(null)}>
+      <Dialog
+        open={!!editingChild}
+        onOpenChange={(open) => !open && setEditingChild(null)}
+      >
         <DialogContent dir="rtl">
           <DialogHeader>
             <DialogTitle>עריכת ילד</DialogTitle>
-            <DialogDescription>
-              עדכן את פרטי הילד
-            </DialogDescription>
+            <DialogDescription>עדכן את פרטי הילד</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            {generalError && <Alert variant="destructive">{generalError}</Alert>}
-            
+            {generalError && (
+              <Alert variant="destructive">{generalError}</Alert>
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="edit-child-name">שם</Label>
               <Input
                 id="edit-child-name"
                 value={editForm.name}
-                onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                onChange={(e) =>
+                  setEditForm({ ...editForm, name: e.target.value })
+                }
                 placeholder="שם הילד"
               />
-              {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+              {errors.name && (
+                <p className="text-sm text-red-500">{errors.name}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -308,17 +351,28 @@ export default function ChildrenManagement({ familyId, children, onUpdate }: Chi
                 min="0"
                 max="18"
                 value={editForm.age || ''}
-                onChange={(e) => setEditForm({ ...editForm, age: parseInt(e.target.value) || 0 })}
+                onChange={(e) =>
+                  setEditForm({
+                    ...editForm,
+                    age: parseInt(e.target.value) || 0,
+                  })
+                }
                 placeholder="0-18"
               />
-              {errors.age && <p className="text-sm text-red-500">{errors.age}</p>}
+              {errors.age && (
+                <p className="text-sm text-red-500">{errors.age}</p>
+              )}
               <p className="text-xs text-muted-foreground">
                 יש להזין גיל בין 0 ל-18 שנים
               </p>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditingChild(null)} disabled={isLoading}>
+            <Button
+              variant="outline"
+              onClick={() => setEditingChild(null)}
+              disabled={isLoading}
+            >
               <X className="h-4 w-4 ml-2" />
               ביטול
             </Button>
@@ -331,7 +385,10 @@ export default function ChildrenManagement({ familyId, children, onUpdate }: Chi
       </Dialog>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={!!deletingChild} onOpenChange={(open) => !open && setDeletingChild(null)}>
+      <Dialog
+        open={!!deletingChild}
+        onOpenChange={(open) => !open && setDeletingChild(null)}
+      >
         <DialogContent dir="rtl">
           <DialogHeader>
             <DialogTitle>מחיקת ילד</DialogTitle>
@@ -341,15 +398,23 @@ export default function ChildrenManagement({ familyId, children, onUpdate }: Chi
           </DialogHeader>
           {generalError && <Alert variant="destructive">{generalError}</Alert>}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeletingChild(null)} disabled={isLoading}>
+            <Button
+              variant="outline"
+              onClick={() => setDeletingChild(null)}
+              disabled={isLoading}
+            >
               ביטול
             </Button>
-            <Button variant="destructive" onClick={handleDeleteChild} disabled={isLoading}>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteChild}
+              disabled={isLoading}
+            >
               {isLoading ? 'מוחק...' : 'מחק'}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
     </Card>
-  )
+  );
 }

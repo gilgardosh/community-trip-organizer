@@ -1,6 +1,12 @@
-'use client'
+'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 import type {
   AuthContextType,
   User,
@@ -8,7 +14,7 @@ import type {
   LoginCredentials,
   RegisterData,
   OAuthProvider,
-} from '@/types/auth'
+} from '@/types/auth';
 import {
   loginWithCredentials,
   registerUser,
@@ -19,96 +25,96 @@ import {
   getStoredUser,
   getStoredFamily,
   clearStoredTokens,
-} from '@/lib/auth'
+} from '@/lib/auth';
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [family, setFamily] = useState<Family | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [user, setUser] = useState<User | null>(null);
+  const [family, setFamily] = useState<Family | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Initialize auth state from stored tokens
   useEffect(() => {
     const initAuth = async () => {
-      const tokens = getStoredTokens()
-      
+      const tokens = getStoredTokens();
+
       if (tokens) {
         try {
           // Try to get current user data from API
-          const data = await getCurrentUser()
-          setUser(data.user)
-          setFamily(data.family)
+          const data = await getCurrentUser();
+          setUser(data.user);
+          setFamily(data.family);
         } catch (error) {
           // If token is invalid, try stored data
-          const storedUser = getStoredUser()
-          const storedFamily = getStoredFamily()
-          
+          const storedUser = getStoredUser();
+          const storedFamily = getStoredFamily();
+
           if (storedUser && storedFamily) {
-            setUser(storedUser)
-            setFamily(storedFamily)
+            setUser(storedUser);
+            setFamily(storedFamily);
           } else {
             // Clear invalid tokens
-            clearStoredTokens()
+            clearStoredTokens();
           }
         }
       }
-      
-      setIsLoading(false)
-    }
 
-    initAuth()
-  }, [])
+      setIsLoading(false);
+    };
+
+    initAuth();
+  }, []);
 
   const login = useCallback(async (credentials: LoginCredentials) => {
     try {
-      const data = await loginWithCredentials(credentials)
-      setUser(data.user)
-      setFamily(data.family)
+      const data = await loginWithCredentials(credentials);
+      setUser(data.user);
+      setFamily(data.family);
     } catch (error) {
-      throw error
+      throw error;
     }
-  }, [])
+  }, []);
 
   const loginWithOAuth = useCallback(async (provider: OAuthProvider) => {
     try {
-      await initiateOAuthLogin(provider)
+      await initiateOAuthLogin(provider);
       // OAuth will redirect, so this won't execute
     } catch (error) {
-      throw error
+      throw error;
     }
-  }, [])
+  }, []);
 
   const register = useCallback(async (data: RegisterData) => {
     try {
-      const authData = await registerUser(data)
-      setUser(authData.user)
-      setFamily(authData.family)
+      const authData = await registerUser(data);
+      setUser(authData.user);
+      setFamily(authData.family);
     } catch (error) {
-      throw error
+      throw error;
     }
-  }, [])
+  }, []);
 
   const logout = useCallback(async () => {
     try {
-      await logoutUser()
+      await logoutUser();
     } finally {
-      setUser(null)
-      setFamily(null)
+      setUser(null);
+      setFamily(null);
     }
-  }, [])
+  }, []);
 
   const refreshToken = useCallback(async () => {
     try {
-      const data = await getCurrentUser()
-      setUser(data.user)
-      setFamily(data.family)
+      const data = await getCurrentUser();
+      setUser(data.user);
+      setFamily(data.family);
     } catch (error) {
       // If refresh fails, logout
-      await logout()
-      throw error
+      await logout();
+      throw error;
     }
-  }, [logout])
+  }, [logout]);
 
   const value: AuthContextType = {
     user,
@@ -120,15 +126,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     register,
     logout,
     refreshToken,
-  }
+  };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    throw new Error('useAuth must be used within an AuthProvider');
   }
-  return context
+  return context;
 }

@@ -1,25 +1,25 @@
-'use client'
+'use client';
 
-import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Alert } from '@/components/ui/alert'
-import { loginSchema, type LoginFormData } from '@/lib/validation'
-import { useAuth } from '@/contexts/AuthContext'
-import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Alert } from '@/components/ui/alert';
+import { loginSchema, type LoginFormData } from '@/lib/validation';
+import { useAuth } from '@/contexts/AuthContext';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
 interface LoginFormProps {
-  onSuccess?: () => void
+  onSuccess?: () => void;
 }
 
 export function LoginForm({ onSuccess }: LoginFormProps) {
-  const { login } = useAuth()
-  const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const { login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const {
     register,
@@ -27,21 +27,21 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-  })
+  });
 
   const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true)
-    setError(null)
+    setIsLoading(true);
+    setError(null);
 
     try {
-      await login(data)
-      onSuccess?.()
+      await login(data);
+      onSuccess?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'שגיאה בהתחברות')
+      setError(err instanceof Error ? err.message : 'שגיאה בהתחברות');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -65,7 +65,9 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           disabled={isLoading}
         />
         {errors.email && (
-          <p className="text-sm text-destructive text-right">{errors.email.message}</p>
+          <p className="text-sm text-destructive text-right">
+            {errors.email.message}
+          </p>
         )}
       </div>
 
@@ -87,11 +89,17 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             tabIndex={-1}
           >
-            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {showPassword ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
           </button>
         </div>
         {errors.password && (
-          <p className="text-sm text-destructive text-right">{errors.password.message}</p>
+          <p className="text-sm text-destructive text-right">
+            {errors.password.message}
+          </p>
         )}
       </div>
 
@@ -106,5 +114,5 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
         )}
       </Button>
     </form>
-  )
+  );
 }

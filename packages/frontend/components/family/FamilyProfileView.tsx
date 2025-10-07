@@ -1,20 +1,28 @@
-'use client'
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Avatar } from '@/components/ui/avatar'
-import type { Family } from '@/types/family'
-import { Users, UserCheck, Baby, Mail, Calendar, CheckCircle, Clock } from 'lucide-react'
-import { format } from 'date-fns'
-import { he } from 'date-fns/locale'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar } from '@/components/ui/avatar';
+import type { Family } from '@/types/family';
+import {
+  Users,
+  UserCheck,
+  Baby,
+  Mail,
+  Calendar,
+  CheckCircle,
+  Clock,
+} from 'lucide-react';
+import { format } from 'date-fns';
+import { he } from 'date-fns/locale';
 
 interface FamilyProfileViewProps {
-  family: Family
+  family: Family;
 }
 
 export default function FamilyProfileView({ family }: FamilyProfileViewProps) {
-  const adults = family.members.filter(m => m.type === 'ADULT')
-  const children = family.members.filter(m => m.type === 'CHILD')
+  const adults = family.members.filter((m) => m.type === 'ADULT');
+  const children = family.members.filter((m) => m.type === 'CHILD');
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -24,18 +32,18 @@ export default function FamilyProfileView({ family }: FamilyProfileViewProps) {
             <CheckCircle className="h-3 w-3" />
             מאושר
           </Badge>
-        )
+        );
       case 'PENDING':
         return (
           <Badge variant="secondary" className="flex items-center gap-1">
             <Clock className="h-3 w-3" />
             ממתין לאישור
           </Badge>
-        )
+        );
       default:
-        return <Badge variant="outline">{status}</Badge>
+        return <Badge variant="outline">{status}</Badge>;
     }
-  }
+  };
 
   return (
     <div className="space-y-6" dir="rtl">
@@ -103,7 +111,9 @@ export default function FamilyProfileView({ family }: FamilyProfileViewProps) {
                       <span className="font-semibold">{adult.name}</span>
                       {adult.role !== 'FAMILY' && (
                         <Badge variant="secondary" className="text-xs">
-                          {adult.role === 'SUPER_ADMIN' ? 'מנהל על' : 'מנהל טיול'}
+                          {adult.role === 'SUPER_ADMIN'
+                            ? 'מנהל על'
+                            : 'מנהל טיול'}
                         </Badge>
                       )}
                     </div>
@@ -160,5 +170,5 @@ export default function FamilyProfileView({ family }: FamilyProfileViewProps) {
         </Card>
       )}
     </div>
-  )
+  );
 }

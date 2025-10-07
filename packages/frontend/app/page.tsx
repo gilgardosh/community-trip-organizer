@@ -1,26 +1,32 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Calendar, Users, MapPin, Shield } from 'lucide-react'
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Calendar, Users, MapPin, Shield } from 'lucide-react';
 
 export default function HomePage() {
-  const router = useRouter()
-  const { isAuthenticated, isLoading } = useAuth()
-  const [isMounted, setIsMounted] = useState(false)
+  const router = useRouter();
+  const { isAuthenticated, isLoading } = useAuth();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true)
-  }, [])
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.push('/family')
+      router.push('/family');
     }
-  }, [isAuthenticated, isLoading, router])
+  }, [isAuthenticated, isLoading, router]);
 
   // During SSR and initial hydration, always show the landing page content
   // to avoid hydration mismatch
@@ -30,7 +36,7 @@ export default function HomePage() {
   }
 
   if (isMounted && !isLoading && isAuthenticated) {
-    return null // Will redirect to /family
+    return null; // Will redirect to /family
   }
 
   return (
@@ -38,7 +44,9 @@ export default function HomePage() {
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16 md:py-24">
         <div className="text-center space-y-6 mb-16">
-          <h1 className="text-5xl md:text-6xl font-bold text-foreground">טיולי השכונה</h1>
+          <h1 className="text-5xl md:text-6xl font-bold text-foreground">
+            טיולי השכונה
+          </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
             מערכת ניהול טיולים משפחתיים חכמה ופשוטה
           </p>
@@ -46,7 +54,11 @@ export default function HomePage() {
             <Button size="lg" onClick={() => router.push('/auth/login')}>
               התחבר עכשיו
             </Button>
-            <Button size="lg" variant="outline" onClick={() => router.push('/auth/login?tab=register')}>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => router.push('/auth/login?tab=register')}
+            >
               הירשם כעת
             </Button>
           </div>
@@ -120,7 +132,10 @@ export default function HomePage() {
               <a href="/terms" className="hover:text-primary transition-colors">
                 תנאי שימוש
               </a>
-              <a href="/privacy" className="hover:text-primary transition-colors">
+              <a
+                href="/privacy"
+                className="hover:text-primary transition-colors"
+              >
                 מדיניות פרטיות
               </a>
             </div>
@@ -128,5 +143,5 @@ export default function HomePage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }

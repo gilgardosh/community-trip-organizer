@@ -1,23 +1,23 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { setStoredTokens } from '@/lib/auth'
-import { Loader2 } from 'lucide-react'
-import { Alert } from '@/components/ui/alert'
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { setStoredTokens } from '@/lib/auth';
+import { Loader2 } from 'lucide-react';
+import { Alert } from '@/components/ui/alert';
 
 export default function OAuthSuccessPage() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const [error, setError] = useState<string | null>(null)
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const processOAuthSuccess = async () => {
-      const token = searchParams.get('token')
+      const token = searchParams.get('token');
 
       if (!token) {
-        setError('חסר טוקן אימות')
-        return
+        setError('חסר טוקן אימות');
+        return;
       }
 
       try {
@@ -25,17 +25,17 @@ export default function OAuthSuccessPage() {
         setStoredTokens({
           accessToken: token,
           refreshToken: token, // Using same token for now, adjust if needed
-        })
+        });
 
         // Redirect to family dashboard
-        router.push('/family')
+        router.push('/family');
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'שגיאה בשמירת הטוקן')
+        setError(err instanceof Error ? err.message : 'שגיאה בשמירת הטוקן');
       }
-    }
+    };
 
-    processOAuthSuccess()
-  }, [searchParams, router])
+    processOAuthSuccess();
+  }, [searchParams, router]);
 
   if (error) {
     return (
@@ -52,7 +52,7 @@ export default function OAuthSuccessPage() {
           </button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -62,5 +62,5 @@ export default function OAuthSuccessPage() {
         <p className="text-muted-foreground">מסיים את תהליך האימות...</p>
       </div>
     </div>
-  )
+  );
 }

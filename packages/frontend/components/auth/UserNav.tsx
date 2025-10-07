@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
-import React from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import React from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,53 +12,50 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { LogOut, User, Settings } from 'lucide-react'
+} from '@/components/ui/dropdown-menu';
+import { LogOut, User, Settings } from 'lucide-react';
 
 export function UserNav() {
-  const { user, family, logout } = useAuth()
-  const router = useRouter()
+  const { user, family, logout } = useAuth();
+  const router = useRouter();
 
   if (!user) {
     return (
-      <Button
-        variant="outline"
-        onClick={() => router.push('/auth/login')}
-      >
+      <Button variant="outline" onClick={() => router.push('/auth/login')}>
         התחבר
       </Button>
-    )
+    );
   }
 
   const handleLogout = async () => {
     try {
-      await logout()
-      router.push('/auth/login')
+      await logout();
+      router.push('/auth/login');
     } catch (error) {
-      console.error('Logout failed:', error)
+      console.error('Logout failed:', error);
     }
-  }
+  };
 
   const getUserInitials = () => {
-    const nameParts = user.name.split(' ')
+    const nameParts = user.name.split(' ');
     if (nameParts.length >= 2) {
-      return `${nameParts[0][0]}${nameParts[1][0]}`.toUpperCase()
+      return `${nameParts[0][0]}${nameParts[1][0]}`.toUpperCase();
     }
-    return user.name.slice(0, 2).toUpperCase()
-  }
+    return user.name.slice(0, 2).toUpperCase();
+  };
 
   const getRoleName = () => {
     switch (user.role) {
       case 'super_admin':
-        return 'מנהל מערכת'
+        return 'מנהל מערכת';
       case 'trip_admin':
-        return 'מנהל טיול'
+        return 'מנהל טיול';
       case 'family':
-        return 'משפחה'
+        return 'משפחה';
       default:
-        return ''
+        return '';
     }
-  }
+  };
 
   return (
     <DropdownMenu>
@@ -75,7 +72,10 @@ export function UserNav() {
           <div className="flex flex-col space-y-1 text-right">
             <p className="text-sm font-medium leading-none">{user.name}</p>
             {user.email && (
-              <p className="text-xs leading-none text-muted-foreground" dir="ltr">
+              <p
+                className="text-xs leading-none text-muted-foreground"
+                dir="ltr"
+              >
                 {user.email}
               </p>
             )}
@@ -90,20 +90,29 @@ export function UserNav() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push('/profile')} className="text-right">
+        <DropdownMenuItem
+          onClick={() => router.push('/profile')}
+          className="text-right"
+        >
           <User className="ml-2 h-4 w-4" />
           <span>הפרופיל שלי</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push('/settings')} className="text-right">
+        <DropdownMenuItem
+          onClick={() => router.push('/settings')}
+          className="text-right"
+        >
           <Settings className="ml-2 h-4 w-4" />
           <span>הגדרות</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleLogout} className="text-right text-destructive">
+        <DropdownMenuItem
+          onClick={handleLogout}
+          className="text-right text-destructive"
+        >
           <LogOut className="ml-2 h-4 w-4" />
           <span>התנתק</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

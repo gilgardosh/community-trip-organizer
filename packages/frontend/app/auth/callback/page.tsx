@@ -1,37 +1,37 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { handleOAuthCallback } from '@/lib/auth'
-import { Loader2 } from 'lucide-react'
-import { Alert } from '@/components/ui/alert'
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { handleOAuthCallback } from '@/lib/auth';
+import { Loader2 } from 'lucide-react';
+import { Alert } from '@/components/ui/alert';
 
 export default function OAuthCallbackPage() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const [error, setError] = useState<string | null>(null)
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const processCallback = async () => {
-      const code = searchParams.get('code')
-      const provider = searchParams.get('provider')
-      const returnUrl = searchParams.get('state') || '/family'
+      const code = searchParams.get('code');
+      const provider = searchParams.get('provider');
+      const returnUrl = searchParams.get('state') || '/family';
 
       if (!code || !provider) {
-        setError('חסרים פרמטרים נדרשים')
-        return
+        setError('חסרים פרמטרים נדרשים');
+        return;
       }
 
       try {
-        await handleOAuthCallback(provider, code)
-        router.push(returnUrl)
+        await handleOAuthCallback(provider, code);
+        router.push(returnUrl);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'שגיאה באימות')
+        setError(err instanceof Error ? err.message : 'שגיאה באימות');
       }
-    }
+    };
 
-    processCallback()
-  }, [searchParams, router])
+    processCallback();
+  }, [searchParams, router]);
 
   if (error) {
     return (
@@ -48,7 +48,7 @@ export default function OAuthCallbackPage() {
           </button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -58,5 +58,5 @@ export default function OAuthCallbackPage() {
         <p className="text-muted-foreground">מאמת את החשבון שלך...</p>
       </div>
     </div>
-  )
+  );
 }

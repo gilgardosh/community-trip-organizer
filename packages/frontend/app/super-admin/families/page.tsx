@@ -1,31 +1,37 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
-import { FamilyApprovalInterface } from '@/components/family'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { getFamilies } from '@/lib/api'
-import type { Family } from '@/types/family'
+import { useState, useEffect } from 'react';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { FamilyApprovalInterface } from '@/components/family';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { getFamilies } from '@/lib/api';
+import type { Family } from '@/types/family';
 
 export default function SuperAdminFamiliesPage() {
-  const [families, setFamilies] = useState<Family[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [families, setFamilies] = useState<Family[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const loadFamilies = async () => {
     try {
-      setIsLoading(true)
-      const data = await getFamilies({ status: 'PENDING' })
-      setFamilies(data)
+      setIsLoading(true);
+      const data = await getFamilies({ status: 'PENDING' });
+      setFamilies(data);
     } catch (error) {
-      console.error('Failed to load families:', error)
+      console.error('Failed to load families:', error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    loadFamilies()
-  }, [])
+    loadFamilies();
+  }, []);
 
   return (
     <ProtectedRoute allowedRoles={['SUPER_ADMIN']}>
@@ -40,14 +46,19 @@ export default function SuperAdminFamiliesPage() {
             </CardHeader>
             <CardContent>
               {isLoading ? (
-                <div className="text-center py-8 text-muted-foreground">טוען...</div>
+                <div className="text-center py-8 text-muted-foreground">
+                  טוען...
+                </div>
               ) : (
-                <FamilyApprovalInterface families={families} onUpdate={loadFamilies} />
+                <FamilyApprovalInterface
+                  families={families}
+                  onUpdate={loadFamilies}
+                />
               )}
             </CardContent>
           </Card>
         </div>
       </div>
     </ProtectedRoute>
-  )
+  );
 }

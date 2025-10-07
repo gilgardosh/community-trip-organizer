@@ -13,6 +13,7 @@ Use the automated setup script:
 ```
 
 This will:
+
 - Start PostgreSQL with Docker
 - Create `.env` from template
 - Run database migrations
@@ -82,10 +83,12 @@ For complete seed data documentation, see [SEED_DATA.md](./prisma/SEED_DATA.md)
 ## Scripts
 
 ### Development
+
 - `yarn dev` - Start development server with hot reload
 - `yarn setup:dev` - Complete setup (start DB, migrate, seed)
 
 ### Database - Development
+
 - `yarn db:dev:start` - Start PostgreSQL with Docker
 - `yarn db:dev:stop` - Stop the database
 - `yarn db:dev:restart` - Restart the database
@@ -95,19 +98,23 @@ For complete seed data documentation, see [SEED_DATA.md](./prisma/SEED_DATA.md)
 - `yarn db:reset` - Reset and reseed database
 
 ### Database - Testing
+
 - `yarn db:test:start` - Start test database
 - `yarn db:test:stop` - Stop test database
 - `yarn db:test:migrate` - Run migrations on test DB
 
 ### Build & Deploy
+
 - `yarn build` - Build for production
 - `yarn start` - Start production server
 
 ### Testing
+
 - `yarn test` - Run tests
 - `yarn test:watch` - Run tests in watch mode
 
 ### Code Quality
+
 - `yarn lint` - Lint code
 - `yarn format` - Format code with Prettier
 

@@ -47,15 +47,29 @@ export const tripService = {
    * Only TRIP_ADMIN and SUPER_ADMIN can create trips
    */
   createTrip: async (data: CreateTripData) => {
-    const { name, location, description, startDate, endDate, attendanceCutoffDate, photoAlbumLink } = data;
+    const {
+      name,
+      location,
+      description,
+      startDate,
+      endDate,
+      attendanceCutoffDate,
+      photoAlbumLink,
+    } = data;
 
     // Validate dates
     if (new Date(endDate) < new Date(startDate)) {
       throw new ApiError(400, 'End date must be after start date');
     }
 
-    if (attendanceCutoffDate && new Date(attendanceCutoffDate) > new Date(startDate)) {
-      throw new ApiError(400, 'Attendance cutoff date must be before trip start date');
+    if (
+      attendanceCutoffDate &&
+      new Date(attendanceCutoffDate) > new Date(startDate)
+    ) {
+      throw new ApiError(
+        400,
+        'Attendance cutoff date must be before trip start date',
+      );
     }
 
     // Create trip in draft mode
@@ -66,7 +80,9 @@ export const tripService = {
         description,
         startDate: new Date(startDate),
         endDate: new Date(endDate),
-        attendanceCutoffDate: attendanceCutoffDate ? new Date(attendanceCutoffDate) : null,
+        attendanceCutoffDate: attendanceCutoffDate
+          ? new Date(attendanceCutoffDate)
+          : null,
         photoAlbumLink,
         draft: true, // Always create in draft mode
       },
@@ -162,15 +178,18 @@ export const tripService = {
 
     // Draft trips are only visible to admins and super-admins
     if (trip.draft) {
-      const isTripAdmin = trip.admins.some(admin => admin.id === userId);
+      const isTripAdmin = trip.admins.some((admin) => admin.id === userId);
       if (userRole !== Role.SUPER_ADMIN && !isTripAdmin) {
-        throw new ApiError(403, 'Draft trips are only visible to trip admins and super-admins');
+        throw new ApiError(
+          403,
+          'Draft trips are only visible to trip admins and super-admins',
+        );
       }
     }
 
     // Trip admins can only see trips they manage
     if (userRole === Role.TRIP_ADMIN) {
-      const isTripAdmin = trip.admins.some(admin => admin.id === userId);
+      const isTripAdmin = trip.admins.some((admin) => admin.id === userId);
       if (!isTripAdmin) {
         throw new ApiError(403, 'You can only view trips you manage');
       }
@@ -183,7 +202,11 @@ export const tripService = {
    * Get all trips with optional filters
    * Returns trips based on user role
    */
-  getAllTrips: async (userId: string, userRole: Role, filters?: TripFilters) => {
+  getAllTrips: async (
+    userId: string,
+    userRole: Role,
+    filters?: TripFilters,
+  ) => {
     const where: Prisma.TripWhereInput = {};
 
     // Handle draft filter based on role
@@ -220,7 +243,10 @@ export const tripService = {
       const today = new Date();
       if (!where.startDate) {
         where.startDate = { gte: today };
-      } else if (typeof where.startDate === 'object' && !('gte' in where.startDate)) {
+      } else if (
+        typeof where.startDate === 'object' &&
+        !('gte' in where.startDate)
+      ) {
         (where.startDate as { gte?: Date }).gte = today;
       }
     }
@@ -284,7 +310,12 @@ export const tripService = {
    * Update trip details
    * Only admins of the trip or super-admins can update
    */
-  updateTrip: async (id: string, data: UpdateTripData, userId: string, userRole: Role) => {
+  updateTrip: async (
+    id: string,
+    data: UpdateTripData,
+    userId: string,
+    userRole: Role,
+  ) => {
     const existingTrip = await prisma.trip.findUnique({
       where: { id },
       include: {
@@ -297,25 +328,43 @@ export const tripService = {
     }
 
     // Check permissions
-    const isTripAdmin = existingTrip.admins.some(admin => admin.id === userId);
+    const isTripAdmin = existingTrip.admins.some(
+      (admin) => admin.id === userId,
+    );
     if (userRole !== Role.SUPER_ADMIN && !isTripAdmin) {
-      throw new ApiError(403, 'Only trip admins and super-admins can update trips');
+      throw new ApiError(
+        403,
+        'Only trip admins and super-admins can update trips',
+      );
     }
 
     // Validate dates if provided
-    const startDate = data.startDate ? new Date(data.startDate) : existingTrip.startDate;
-    const endDate = data.endDate ? new Date(data.endDate) : existingTrip.endDate;
+    const startDate = data.startDate
+      ? new Date(data.startDate)
+      : existingTrip.startDate;
+    const endDate = data.endDate
+      ? new Date(data.endDate)
+      : existingTrip.endDate;
 
     if (endDate < startDate) {
       throw new ApiError(400, 'End date must be after start date');
     }
 
-    if (data.attendanceCutoffDate && new Date(data.attendanceCutoffDate) > startDate) {
-      throw new ApiError(400, 'Attendance cutoff date must be before trip start date');
+    if (
+      data.attendanceCutoffDate &&
+      new Date(data.attendanceCutoffDate) > startDate
+    ) {
+      throw new ApiError(
+        400,
+        'Attendance cutoff date must be before trip start date',
+      );
     }
 
     // Prevent updates to past trips
-    if (new Date(existingTrip.startDate) < new Date() && userRole !== Role.SUPER_ADMIN) {
+    if (
+      new Date(existingTrip.startDate) < new Date() &&
+      userRole !== Role.SUPER_ADMIN
+    ) {
       throw new ApiError(400, 'Cannot update past trips');
     }
 
@@ -327,7 +376,9 @@ export const tripService = {
         description: data.description,
         startDate: data.startDate ? new Date(data.startDate) : undefined,
         endDate: data.endDate ? new Date(data.endDate) : undefined,
-        attendanceCutoffDate: data.attendanceCutoffDate ? new Date(data.attendanceCutoffDate) : undefined,
+        attendanceCutoffDate: data.attendanceCutoffDate
+          ? new Date(data.attendanceCutoffDate)
+          : undefined,
         photoAlbumLink: data.photoAlbumLink,
         updatedAt: new Date(),
       },
@@ -403,7 +454,10 @@ export const tripService = {
 
     // Ensure trip has at least one admin before publishing
     if (trip.admins.length === 0) {
-      throw new ApiError(400, 'Trip must have at least one admin before publishing');
+      throw new ApiError(
+        400,
+        'Trip must have at least one admin before publishing',
+      );
     }
 
     const publishedTrip = await prisma.trip.update({
@@ -524,7 +578,7 @@ export const tripService = {
     }
 
     // Ensure all admins are adults
-    const nonAdults = admins.filter(admin => admin.type !== 'ADULT');
+    const nonAdults = admins.filter((admin) => admin.type !== 'ADULT');
     if (nonAdults.length > 0) {
       throw new ApiError(400, 'Only adults can be assigned as trip admins');
     }
@@ -534,7 +588,7 @@ export const tripService = {
       where: { id },
       data: {
         admins: {
-          set: data.adminIds.map(adminId => ({ id: adminId })),
+          set: data.adminIds.map((adminId) => ({ id: adminId })),
         },
         updatedAt: new Date(),
       },
@@ -587,7 +641,7 @@ export const tripService = {
     }
 
     // Check if admin is already assigned
-    if (trip.admins.some(admin => admin.id === adminId)) {
+    if (trip.admins.some((admin) => admin.id === adminId)) {
       throw new ApiError(400, 'Admin is already assigned to this trip');
     }
 
@@ -661,13 +715,16 @@ export const tripService = {
     }
 
     // Check if admin is assigned
-    if (!trip.admins.some(admin => admin.id === adminId)) {
+    if (!trip.admins.some((admin) => admin.id === adminId)) {
       throw new ApiError(400, 'Admin is not assigned to this trip');
     }
 
     // Prevent removing the last admin from a published trip
     if (!trip.draft && trip.admins.length <= 1) {
-      throw new ApiError(400, 'Cannot remove the last admin from a published trip');
+      throw new ApiError(
+        400,
+        'Cannot remove the last admin from a published trip',
+      );
     }
 
     const updatedTrip = await prisma.trip.update({
@@ -738,7 +795,10 @@ export const tripService = {
     }
 
     // Check attendance cutoff date
-    if (trip.attendanceCutoffDate && new Date() > new Date(trip.attendanceCutoffDate)) {
+    if (
+      trip.attendanceCutoffDate &&
+      new Date() > new Date(trip.attendanceCutoffDate)
+    ) {
       throw new ApiError(400, 'Attendance cutoff date has passed');
     }
 
@@ -752,15 +812,21 @@ export const tripService = {
       throw new ApiError(404, 'User not found');
     }
 
-    const isTripAdmin = trip.admins.some(admin => admin.id === userId);
+    const isTripAdmin = trip.admins.some((admin) => admin.id === userId);
     const isOwnFamily = user.familyId === data.familyId;
 
     if (userRole === Role.FAMILY && !isOwnFamily) {
-      throw new ApiError(403, 'You can only mark attendance for your own family');
+      throw new ApiError(
+        403,
+        'You can only mark attendance for your own family',
+      );
     }
 
     if (userRole === Role.TRIP_ADMIN && !isTripAdmin) {
-      throw new ApiError(403, 'You can only mark attendance for trips you manage');
+      throw new ApiError(
+        403,
+        'You can only mark attendance for trips you manage',
+      );
     }
 
     // Validate family exists
@@ -800,16 +866,18 @@ export const tripService = {
       });
     } else {
       // Remove attendance
-      await prisma.tripAttendance.delete({
-        where: {
-          tripId_familyId: {
-            tripId,
-            familyId: data.familyId,
+      await prisma.tripAttendance
+        .delete({
+          where: {
+            tripId_familyId: {
+              tripId,
+              familyId: data.familyId,
+            },
           },
-        },
-      }).catch(() => {
-        // Ignore if attendance doesn't exist
-      });
+        })
+        .catch(() => {
+          // Ignore if attendance doesn't exist
+        });
     }
 
     // Return updated trip
@@ -882,9 +950,12 @@ export const tripService = {
 
     // Check permissions for draft trips
     if (trip.draft) {
-      const isTripAdmin = trip.admins.some(admin => admin.id === userId);
+      const isTripAdmin = trip.admins.some((admin) => admin.id === userId);
       if (userRole !== Role.SUPER_ADMIN && !isTripAdmin) {
-        throw new ApiError(403, 'Draft trips are only visible to trip admins and super-admins');
+        throw new ApiError(
+          403,
+          'Draft trips are only visible to trip admins and super-admins',
+        );
       }
     }
 

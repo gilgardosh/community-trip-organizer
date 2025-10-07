@@ -52,7 +52,13 @@ describe('Trip API', () => {
     // Create approved family with a family user
     approvedFamily = await createFamilyWithMembers(
       { status: FamilyStatus.APPROVED },
-      [{ name: 'Family User', email: 'family@test.com', password: 'password123' }],
+      [
+        {
+          name: 'Family User',
+          email: 'family@test.com',
+          password: 'password123',
+        },
+      ],
     );
     familyUser = approvedFamily.members[0];
     familyUserToken = authService.generateToken(familyUser);
@@ -629,7 +635,13 @@ describe('Trip API', () => {
     it('should fail to mark attendance for other family as FAMILY user', async () => {
       const otherFamily = await createFamilyWithMembers(
         { status: FamilyStatus.APPROVED },
-        [{ name: 'Other User', email: 'other@test.com', password: 'password123' }],
+        [
+          {
+            name: 'Other User',
+            email: 'other@test.com',
+            password: 'password123',
+          },
+        ],
       );
 
       const trip = await prisma.trip.create({

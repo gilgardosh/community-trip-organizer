@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -14,13 +14,17 @@
   --primary: oklch(0.205 0 0); /* Gray-700 for primary actions */
   --primary-foreground: oklch(0.985 0 0); /* White text on primary buttons */
   --secondary: oklch(0.97 0 0); /* Indigo for accents and highlights */
-  --secondary-foreground: oklch(0.205 0 0); /* White text on secondary buttons */
+  --secondary-foreground: oklch(
+    0.205 0 0
+  ); /* White text on secondary buttons */
   --muted: oklch(0.97 0 0); /* Light muted background */
   --muted-foreground: oklch(0.556 0 0); /* Dark muted text */
   --accent: oklch(0.97 0 0); /* Indigo for highlights */
   --accent-foreground: oklch(0.205 0 0); /* White for accent text */
   --destructive: oklch(0.577 0.245 27.325); /* Red for destructive actions */
-  --destructive-foreground: oklch(0.577 0.245 27.325); /* White for destructive text */
+  --destructive-foreground: oklch(
+    0.577 0.245 27.325
+  ); /* White for destructive text */
   --border: oklch(0.922 0 0); /* Light gray for borders */
   --input: oklch(0.922 0 0); /* Light green for input fields */
   --ring: oklch(0.708 0 0); /* Indigo ring around focused elements */
@@ -32,12 +36,20 @@
   --radius: 0.625rem; /* Rounded corners for a professional feel */
   --sidebar: oklch(0.985 0 0); /* Light Gray for sidebar */
   --sidebar-foreground: oklch(0.145 0 0); /* Dark Gray for sidebar text */
-  --sidebar-primary: oklch(0.205 0 0); /* Gray-700 for primary sidebar actions */
-  --sidebar-primary-foreground: oklch(0.985 0 0); /* White for sidebar primary text */
+  --sidebar-primary: oklch(
+    0.205 0 0
+  ); /* Gray-700 for primary sidebar actions */
+  --sidebar-primary-foreground: oklch(
+    0.985 0 0
+  ); /* White for sidebar primary text */
   --sidebar-accent: oklch(0.97 0 0); /* Indigo for sidebar accents */
-  --sidebar-accent-foreground: oklch(0.205 0 0); /* White for sidebar accent text */
+  --sidebar-accent-foreground: oklch(
+    0.205 0 0
+  ); /* White for sidebar accent text */
   --sidebar-border: oklch(0.922 0 0); /* Light gray for sidebar borders */
-  --sidebar-ring: oklch(0.708 0 0); /* Indigo ring for focused sidebar elements */
+  --sidebar-ring: oklch(
+    0.708 0 0
+  ); /* Indigo ring for focused sidebar elements */
 }
 
 .dark {
@@ -126,13 +138,13 @@
     direction: rtl;
   }
   /* Added RTL-specific styles for proper Hebrew layout */
-  [dir="rtl"] {
+  [dir='rtl'] {
     text-align: right;
   }
-  [dir="rtl"] input {
+  [dir='rtl'] input {
     text-align: right;
   }
-  [dir="rtl"] textarea {
+  [dir='rtl'] textarea {
     text-align: right;
   }
 }

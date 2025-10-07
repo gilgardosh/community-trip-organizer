@@ -1,94 +1,140 @@
-"use client"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Textarea } from "@/components/ui/textarea"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { MapPin, Calendar, Users, Package, Clock, MessageCircle, Plus, Edit, Trash2, Copy } from "lucide-react"
+'use client';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  MapPin,
+  Calendar,
+  Users,
+  Package,
+  Clock,
+  MessageCircle,
+  Plus,
+  Edit,
+  Trash2,
+  Copy,
+} from 'lucide-react';
 
 interface Family {
-  id: string
-  name: string
-  adults: { name: string; age: number }[]
-  children: { name: string; age: number }[]
-  attendance: boolean
-  dietaryInfo: string
+  id: string;
+  name: string;
+  adults: { name: string; age: number }[];
+  children: { name: string; age: number }[];
+  attendance: boolean;
+  dietaryInfo: string;
 }
 
 interface GearItem {
-  id: string
-  name: string
-  quantityNeeded: number
-  assignedFamilies: string[]
+  id: string;
+  name: string;
+  quantityNeeded: number;
+  assignedFamilies: string[];
 }
 
 interface ScheduleItem {
-  id: string
-  time: string
-  description: string
+  id: string;
+  time: string;
+  description: string;
 }
 
 export default function TripAdminPage() {
   const [families] = useState<Family[]>([
     {
-      id: "1",
-      name: "משפחת כהן",
+      id: '1',
+      name: 'משפחת כהן',
       adults: [
-        { name: "דוד כהן", age: 35 },
-        { name: "שרה כהן", age: 33 },
+        { name: 'דוד כהן', age: 35 },
+        { name: 'שרה כהן', age: 33 },
       ],
       children: [
-        { name: "יוסי", age: 8 },
-        { name: "מיכל", age: 5 },
+        { name: 'יוסי', age: 8 },
+        { name: 'מיכל', age: 5 },
       ],
       attendance: true,
-      dietaryInfo: "צמחוני",
+      dietaryInfo: 'צמחוני',
     },
     {
-      id: "2",
-      name: "משפחת לוי",
-      adults: [{ name: "אבי לוי", age: 40 }],
+      id: '2',
+      name: 'משפחת לוי',
+      adults: [{ name: 'אבי לוי', age: 40 }],
       children: [
-        { name: "נועה", age: 12 },
-        { name: "רון", age: 9 },
+        { name: 'נועה', age: 12 },
+        { name: 'רון', age: 9 },
       ],
       attendance: false,
-      dietaryInfo: "",
+      dietaryInfo: '',
     },
     {
-      id: "3",
-      name: "משפחת אברהם",
+      id: '3',
+      name: 'משפחת אברהם',
       adults: [
-        { name: "מיכאל אברהם", age: 38 },
-        { name: "רחל אברהם", age: 36 },
+        { name: 'מיכאל אברהם', age: 38 },
+        { name: 'רחל אברהם', age: 36 },
       ],
-      children: [{ name: "אליה", age: 6 }],
+      children: [{ name: 'אליה', age: 6 }],
       attendance: true,
-      dietaryInfo: "ללא אגוזים",
+      dietaryInfo: 'ללא אגוזים',
     },
-  ])
+  ]);
 
   const [gearItems, setGearItems] = useState<GearItem[]>([
-    { id: "1", name: "אוהלים", quantityNeeded: 3, assignedFamilies: ["משפחת כהן", "משפחת אברהם"] },
-    { id: "2", name: "כיסאות קמפינג", quantityNeeded: 8, assignedFamilies: ["משפחת לוי"] },
-    { id: "3", name: "מנגל", quantityNeeded: 2, assignedFamilies: [] },
-  ])
+    {
+      id: '1',
+      name: 'אוהלים',
+      quantityNeeded: 3,
+      assignedFamilies: ['משפחת כהן', 'משפחת אברהם'],
+    },
+    {
+      id: '2',
+      name: 'כיסאות קמפינג',
+      quantityNeeded: 8,
+      assignedFamilies: ['משפחת לוי'],
+    },
+    { id: '3', name: 'מנגל', quantityNeeded: 2, assignedFamilies: [] },
+  ]);
 
   const [scheduleItems, setScheduleItems] = useState<ScheduleItem[]>([
-    { id: "1", time: "08:00", description: "התכנסות בחניון" },
-    { id: "2", time: "08:30", description: "יציאה לטיול" },
-    { id: "3", time: "12:00", description: "ארוחת צהריים" },
-    { id: "4", time: "15:00", description: "חזרה הביתה" },
-  ])
+    { id: '1', time: '08:00', description: 'התכנסות בחניון' },
+    { id: '2', time: '08:30', description: 'יציאה לטיול' },
+    { id: '3', time: '12:00', description: 'ארוחת צהריים' },
+    { id: '4', time: '15:00', description: 'חזרה הביתה' },
+  ]);
 
-  const [newScheduleItem, setNewScheduleItem] = useState({ time: "", description: "" })
-  const [editingSchedule, setEditingSchedule] = useState<string | null>(null)
-  const [whatsappModal, setWhatsappModal] = useState<{ type: string; message: string } | null>(null)
+  const [newScheduleItem, setNewScheduleItem] = useState({
+    time: '',
+    description: '',
+  });
+  const [editingSchedule, setEditingSchedule] = useState<string | null>(null);
+  const [whatsappModal, setWhatsappModal] = useState<{
+    type: string;
+    message: string;
+  } | null>(null);
 
   const addScheduleItem = () => {
     if (newScheduleItem.time && newScheduleItem.description) {
@@ -96,40 +142,48 @@ export default function TripAdminPage() {
         id: Date.now().toString(),
         time: newScheduleItem.time,
         description: newScheduleItem.description,
-      }
-      setScheduleItems([...scheduleItems, newItem])
-      setNewScheduleItem({ time: "", description: "" })
+      };
+      setScheduleItems([...scheduleItems, newItem]);
+      setNewScheduleItem({ time: '', description: '' });
     }
-  }
+  };
 
-  const updateScheduleItem = (id: string, time: string, description: string) => {
-    setScheduleItems(scheduleItems.map((item) => (item.id === id ? { ...item, time, description } : item)))
-    setEditingSchedule(null)
-  }
+  const updateScheduleItem = (
+    id: string,
+    time: string,
+    description: string,
+  ) => {
+    setScheduleItems(
+      scheduleItems.map((item) =>
+        item.id === id ? { ...item, time, description } : item,
+      ),
+    );
+    setEditingSchedule(null);
+  };
 
   const deleteScheduleItem = (id: string) => {
-    setScheduleItems(scheduleItems.filter((item) => item.id !== id))
-  }
+    setScheduleItems(scheduleItems.filter((item) => item.id !== id));
+  };
 
   const generateWhatsAppMessage = (type: string) => {
-    let message = ""
+    let message = '';
     switch (type) {
-      case "attendance":
-        message = `🏕️ תזכורת השתתפות - טיול יער בן שמן\n\nשלום לכולם!\n\nאנא אשרו השתתפות בטיול המתוכנן ליום שבת הקרוב.\n\nפרטי הטיול:\n📅 תאריך: 15/12/2024\n📍 מקום: יער בן שמן\n⏰ שעת התכנסות: 08:00\n\nאנא השיבו עד יום רביעי.\n\nתודה!`
-        break
-      case "gear":
-        message = `🎒 תזכורת ציוד - טיול יער בן שמן\n\nשלום משפחות יקרות!\n\nתזכורת לגבי הציוד הנדרש לטיול:\n\n• אוהלים - משפחת כהן ואברהם\n• כיסאות קמפינג - משפחת לוי\n• מנגל - עדיין זקוק למתנדב\n\nאם יש שינויים, אנא עדכנו.\n\nתודה!`
-        break
-      case "start":
-        message = `🚀 הטיול מתחיל!\n\nבוקר טוב לכולם!\n\nהטיול ליער בן שמן מתחיל בעוד שעה.\n\n📍 נקודת המפגש: חניון יער בן שמן\n⏰ שעה: 08:00\n\nנתראה שם!\n🌲🏕️`
-        break
+      case 'attendance':
+        message = `🏕️ תזכורת השתתפות - טיול יער בן שמן\n\nשלום לכולם!\n\nאנא אשרו השתתפות בטיול המתוכנן ליום שבת הקרוב.\n\nפרטי הטיול:\n📅 תאריך: 15/12/2024\n📍 מקום: יער בן שמן\n⏰ שעת התכנסות: 08:00\n\nאנא השיבו עד יום רביעי.\n\nתודה!`;
+        break;
+      case 'gear':
+        message = `🎒 תזכורת ציוד - טיול יער בן שמן\n\nשלום משפחות יקרות!\n\nתזכורת לגבי הציוד הנדרש לטיול:\n\n• אוהלים - משפחת כהן ואברהם\n• כיסאות קמפינג - משפחת לוי\n• מנגל - עדיין זקוק למתנדב\n\nאם יש שינויים, אנא עדכנו.\n\nתודה!`;
+        break;
+      case 'start':
+        message = `🚀 הטיול מתחיל!\n\nבוקר טוב לכולם!\n\nהטיול ליער בן שמן מתחיל בעוד שעה.\n\n📍 נקודת המפגש: חניון יער בן שמן\n⏰ שעה: 08:00\n\nנתראה שם!\n🌲🏕️`;
+        break;
     }
-    setWhatsappModal({ type, message })
-  }
+    setWhatsappModal({ type, message });
+  };
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text)
-  }
+    navigator.clipboard.writeText(text);
+  };
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-6">
@@ -188,13 +242,17 @@ export default function TripAdminPage() {
                         <TableHead className="text-right">מבוגרים</TableHead>
                         <TableHead className="text-right">ילדים</TableHead>
                         <TableHead className="text-right">השתתפות</TableHead>
-                        <TableHead className="text-right">מידע תזונתי</TableHead>
+                        <TableHead className="text-right">
+                          מידע תזונתי
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {families.map((family) => (
                         <TableRow key={family.id}>
-                          <TableCell className="font-medium">{family.name}</TableCell>
+                          <TableCell className="font-medium">
+                            {family.name}
+                          </TableCell>
                           <TableCell>
                             <div className="space-y-1">
                               {family.adults.map((adult, idx) => (
@@ -215,9 +273,18 @@ export default function TripAdminPage() {
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center space-x-2">
-                              <Checkbox checked={family.attendance} className="ml-2" />
-                              <span className={family.attendance ? "text-green-600" : "text-red-600"}>
-                                {family.attendance ? "כן" : "לא"}
+                              <Checkbox
+                                checked={family.attendance}
+                                className="ml-2"
+                              />
+                              <span
+                                className={
+                                  family.attendance
+                                    ? 'text-green-600'
+                                    : 'text-red-600'
+                                }
+                              >
+                                {family.attendance ? 'כן' : 'לא'}
                               </span>
                             </div>
                           </TableCell>
@@ -260,25 +327,35 @@ export default function TripAdminPage() {
                       <TableRow>
                         <TableHead className="text-right">פריט</TableHead>
                         <TableHead className="text-right">כמות נדרשת</TableHead>
-                        <TableHead className="text-right">משפחות שהוקצו</TableHead>
+                        <TableHead className="text-right">
+                          משפחות שהוקצו
+                        </TableHead>
                         <TableHead className="text-right">פעולות</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {gearItems.map((item) => (
                         <TableRow key={item.id}>
-                          <TableCell className="font-medium">{item.name}</TableCell>
+                          <TableCell className="font-medium">
+                            {item.name}
+                          </TableCell>
                           <TableCell>{item.quantityNeeded}</TableCell>
                           <TableCell>
                             <div className="flex flex-wrap gap-1">
                               {item.assignedFamilies.length > 0 ? (
                                 item.assignedFamilies.map((family, idx) => (
-                                  <Badge key={idx} variant="outline" className="text-xs">
+                                  <Badge
+                                    key={idx}
+                                    variant="outline"
+                                    className="text-xs"
+                                  >
                                     {family}
                                   </Badge>
                                 ))
                               ) : (
-                                <span className="text-muted-foreground text-sm">לא הוקצה</span>
+                                <span className="text-muted-foreground text-sm">
+                                  לא הוקצה
+                                </span>
                               )}
                             </div>
                           </TableCell>
@@ -315,13 +392,23 @@ export default function TripAdminPage() {
                   <Input
                     placeholder="תיאור הפעילות"
                     value={newScheduleItem.description}
-                    onChange={(e) => setNewScheduleItem({ ...newScheduleItem, description: e.target.value })}
+                    onChange={(e) =>
+                      setNewScheduleItem({
+                        ...newScheduleItem,
+                        description: e.target.value,
+                      })
+                    }
                     className="flex-1 text-right"
                   />
                   <Input
                     type="time"
                     value={newScheduleItem.time}
-                    onChange={(e) => setNewScheduleItem({ ...newScheduleItem, time: e.target.value })}
+                    onChange={(e) =>
+                      setNewScheduleItem({
+                        ...newScheduleItem,
+                        time: e.target.value,
+                      })
+                    }
                     className="w-32"
                   />
                 </div>
@@ -329,18 +416,36 @@ export default function TripAdminPage() {
                 {/* Schedule Items */}
                 <div className="space-y-2">
                   {scheduleItems.map((item) => (
-                    <div key={item.id} className="flex items-center gap-2 p-3 border rounded-lg">
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-2 p-3 border rounded-lg"
+                    >
                       {editingSchedule === item.id ? (
                         <>
-                          <Button size="sm" onClick={() => updateScheduleItem(item.id, item.time, item.description)}>
+                          <Button
+                            size="sm"
+                            onClick={() =>
+                              updateScheduleItem(
+                                item.id,
+                                item.time,
+                                item.description,
+                              )
+                            }
+                          >
                             שמור
                           </Button>
-                          <Button size="sm" variant="outline" onClick={() => setEditingSchedule(null)}>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setEditingSchedule(null)}
+                          >
                             ביטול
                           </Button>
                           <Input
                             defaultValue={item.description}
-                            onChange={(e) => (item.description = e.target.value)}
+                            onChange={(e) =>
+                              (item.description = e.target.value)
+                            }
                             className="flex-1 text-right"
                           />
                           <Input
@@ -352,13 +457,23 @@ export default function TripAdminPage() {
                         </>
                       ) : (
                         <>
-                          <Button size="sm" variant="ghost" onClick={() => deleteScheduleItem(item.id)}>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => deleteScheduleItem(item.id)}
+                          >
                             <Trash2 className="w-4 h-4" />
                           </Button>
-                          <Button size="sm" variant="ghost" onClick={() => setEditingSchedule(item.id)}>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setEditingSchedule(item.id)}
+                          >
                             <Edit className="w-4 h-4" />
                           </Button>
-                          <span className="flex-1 text-right">{item.description}</span>
+                          <span className="flex-1 text-right">
+                            {item.description}
+                          </span>
                           <Badge variant="outline">{item.time}</Badge>
                         </>
                       )}
@@ -377,16 +492,21 @@ export default function TripAdminPage() {
                   <MessageCircle className="w-5 h-5" />
                   תזכורות בוואטסאפ
                 </CardTitle>
-                <CardDescription>צור הודעות וואטסאפ מוכנות לשליחה לקבוצת המשפחות</CardDescription>
+                <CardDescription>
+                  צור הודעות וואטסאפ מוכנות לשליחה לקבוצת המשפחות
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-4 md:grid-cols-3">
-                  <Button onClick={() => generateWhatsAppMessage("attendance")} className="h-20 flex-col gap-2">
+                  <Button
+                    onClick={() => generateWhatsAppMessage('attendance')}
+                    className="h-20 flex-col gap-2"
+                  >
                     <Users className="w-6 h-6" />
                     תזכורת השתתפות
                   </Button>
                   <Button
-                    onClick={() => generateWhatsAppMessage("gear")}
+                    onClick={() => generateWhatsAppMessage('gear')}
                     className="h-20 flex-col gap-2"
                     variant="outline"
                   >
@@ -394,7 +514,7 @@ export default function TripAdminPage() {
                     תזכורת ציוד
                   </Button>
                   <Button
-                    onClick={() => generateWhatsAppMessage("start")}
+                    onClick={() => generateWhatsAppMessage('start')}
                     className="h-20 flex-col gap-2"
                     variant="secondary"
                   >
@@ -408,21 +528,36 @@ export default function TripAdminPage() {
         </Tabs>
 
         {/* WhatsApp Message Modal */}
-        <Dialog open={!!whatsappModal} onOpenChange={() => setWhatsappModal(null)}>
+        <Dialog
+          open={!!whatsappModal}
+          onOpenChange={() => setWhatsappModal(null)}
+        >
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>הודעת וואטסאפ</DialogTitle>
-              <DialogDescription>העתק את ההודעה ושלח אותה בקבוצת הוואטסאפ</DialogDescription>
+              <DialogDescription>
+                העתק את ההודעה ושלח אותה בקבוצת הוואטסאפ
+              </DialogDescription>
             </DialogHeader>
             {whatsappModal && (
               <div className="space-y-4">
-                <Textarea value={whatsappModal.message} readOnly className="min-h-[200px] text-right" />
+                <Textarea
+                  value={whatsappModal.message}
+                  readOnly
+                  className="min-h-[200px] text-right"
+                />
                 <div className="flex gap-2">
-                  <Button onClick={() => copyToClipboard(whatsappModal.message)} className="flex-1">
+                  <Button
+                    onClick={() => copyToClipboard(whatsappModal.message)}
+                    className="flex-1"
+                  >
                     <Copy className="w-4 h-4 ml-1" />
                     העתק הודעה
                   </Button>
-                  <Button variant="outline" onClick={() => setWhatsappModal(null)}>
+                  <Button
+                    variant="outline"
+                    onClick={() => setWhatsappModal(null)}
+                  >
                     סגור
                   </Button>
                 </div>
@@ -432,5 +567,5 @@ export default function TripAdminPage() {
         </Dialog>
       </div>
     </div>
-  )
+  );
 }

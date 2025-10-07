@@ -7,6 +7,7 @@ The Family Management System provides comprehensive functionality for managing f
 ## Features
 
 ### 1. Family Registration
+
 - **Component**: `FamilyRegistrationForm`
 - **Purpose**: Allow new families to register with the system
 - **Features**:
@@ -18,6 +19,7 @@ The Family Management System provides comprehensive functionality for managing f
   - RTL layout support
 
 ### 2. Family Profile Management
+
 - **Components**: `FamilyProfileView`, `FamilyProfileEdit`
 - **Purpose**: View and edit family information
 - **Features**:
@@ -28,6 +30,7 @@ The Family Management System provides comprehensive functionality for managing f
   - Status badges (Approved/Pending)
 
 ### 3. Adults Management
+
 - **Component**: `AdultsManagement`
 - **Purpose**: Manage adult family members
 - **Features**:
@@ -38,6 +41,7 @@ The Family Management System provides comprehensive functionality for managing f
   - Profile photo support
 
 ### 4. Children Management
+
 - **Component**: `ChildrenManagement`
 - **Purpose**: Manage child family members with age tracking
 - **Features**:
@@ -48,6 +52,7 @@ The Family Management System provides comprehensive functionality for managing f
   - Automatic age calculation display
 
 ### 5. Family Dashboard
+
 - **Component**: `FamilyDashboard`
 - **Purpose**: Centralized dashboard for family members
 - **Features**:
@@ -58,6 +63,7 @@ The Family Management System provides comprehensive functionality for managing f
   - Member management
 
 ### 6. Family Approval Interface (Super Admin)
+
 - **Component**: `FamilyApprovalInterface`
 - **Purpose**: Allow super-admins to manage family registrations
 - **Features**:
@@ -69,6 +75,7 @@ The Family Management System provides comprehensive functionality for managing f
   - Detailed family information display
 
 ### 7. Family Listing (Admin)
+
 - **Component**: `FamilyListing`
 - **Purpose**: Browse and filter all families
 - **Features**:
@@ -84,6 +91,7 @@ The Family Management System provides comprehensive functionality for managing f
 All components use the centralized API client (`lib/api.ts`) with the following endpoints:
 
 ### Family Endpoints
+
 - `POST /api/families` - Create family
 - `GET /api/families` - Get all families (with filters)
 - `GET /api/families/:id` - Get family by ID
@@ -94,6 +102,7 @@ All components use the centralized API client (`lib/api.ts`) with the following 
 - `DELETE /api/families/:id` - Delete family
 
 ### Member Endpoints
+
 - `GET /api/families/:id/members` - Get all members
 - `GET /api/families/:id/adults` - Get adult members
 - `GET /api/families/:id/children` - Get child members
@@ -104,31 +113,33 @@ All components use the centralized API client (`lib/api.ts`) with the following 
 ## Data Models
 
 ### Family
+
 ```typescript
 interface Family {
-  id: string
-  name?: string
-  status: 'PENDING' | 'APPROVED'
-  isActive: boolean
-  createdAt: string
-  updatedAt: string
-  members: FamilyMember[]
+  id: string;
+  name?: string;
+  status: 'PENDING' | 'APPROVED';
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  members: FamilyMember[];
 }
 ```
 
 ### FamilyMember
+
 ```typescript
 interface FamilyMember {
-  id: string
-  familyId: string
-  type: 'ADULT' | 'CHILD'
-  name: string
-  age?: number
-  email: string
-  profilePhotoUrl?: string
-  role: 'FAMILY' | 'TRIP_ADMIN' | 'SUPER_ADMIN'
-  createdAt: string
-  updatedAt: string
+  id: string;
+  familyId: string;
+  type: 'ADULT' | 'CHILD';
+  name: string;
+  age?: number;
+  email: string;
+  profilePhotoUrl?: string;
+  role: 'FAMILY' | 'TRIP_ADMIN' | 'SUPER_ADMIN';
+  createdAt: string;
+  updatedAt: string;
 }
 ```
 
@@ -146,6 +157,7 @@ All forms use Zod validation with Hebrew error messages:
 ## RTL and Hebrew Support
 
 All components include:
+
 - `dir="rtl"` attribute on main containers
 - Hebrew text for all labels, buttons, and messages
 - Right-aligned layouts
@@ -157,61 +169,60 @@ All components include:
 ### Registering a New Family
 
 ```tsx
-import { FamilyRegistrationForm } from '@/components/family'
+import { FamilyRegistrationForm } from '@/components/family';
 
 function RegisterPage() {
-  return <FamilyRegistrationForm />
+  return <FamilyRegistrationForm />;
 }
 ```
 
 ### Viewing Family Dashboard
 
 ```tsx
-import { FamilyDashboard } from '@/components/family'
+import { FamilyDashboard } from '@/components/family';
 
 function FamilyPage({ familyId }: { familyId: string }) {
-  return <FamilyDashboard familyId={familyId} />
+  return <FamilyDashboard familyId={familyId} />;
 }
 ```
 
 ### Super Admin Approval Interface
 
 ```tsx
-import { FamilyApprovalInterface } from '@/components/family'
+import { FamilyApprovalInterface } from '@/components/family';
 
 function AdminPage() {
-  const [families, setFamilies] = useState<Family[]>([])
-  
+  const [families, setFamilies] = useState<Family[]>([]);
+
   useEffect(() => {
-    loadFamilies()
-  }, [])
-  
+    loadFamilies();
+  }, []);
+
   return (
-    <FamilyApprovalInterface 
-      families={families} 
-      onUpdate={loadFamilies} 
-    />
-  )
+    <FamilyApprovalInterface families={families} onUpdate={loadFamilies} />
+  );
 }
 ```
 
 ### Family Listing with Filters
 
 ```tsx
-import { FamilyListing } from '@/components/family'
+import { FamilyListing } from '@/components/family';
 
 function FamiliesPage() {
-  return <FamilyListing />
+  return <FamilyListing />;
 }
 ```
 
 ## Testing
 
 Comprehensive test coverage is provided in:
+
 - `__tests__/family/family.test.ts` - Validation schema tests
 - `__tests__/family/family-api.test.ts` - API client tests
 
 Run tests with:
+
 ```bash
 npm test family
 ```

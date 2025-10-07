@@ -1,25 +1,31 @@
-'use client'
+'use client';
 
-import React, { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { LoginForm } from '@/components/auth/LoginForm'
-import { RegisterForm } from '@/components/auth/RegisterForm'
-import { OAuthButtons } from '@/components/auth/OAuthButtons'
+import React, { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { LoginForm } from '@/components/auth/LoginForm';
+import { RegisterForm } from '@/components/auth/RegisterForm';
+import { OAuthButtons } from '@/components/auth/OAuthButtons';
 
 export default function AuthPage() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const returnUrl = searchParams.get('returnUrl') || '/family'
-  const tabParam = searchParams.get('tab')
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get('returnUrl') || '/family';
+  const tabParam = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState<'login' | 'register'>(
-    tabParam === 'register' ? 'register' : 'login'
-  )
+    tabParam === 'register' ? 'register' : 'login',
+  );
 
   const handleAuthSuccess = () => {
-    router.push(returnUrl)
-  }
+    router.push(returnUrl);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted p-4">
@@ -43,7 +49,10 @@ export default function AuthPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'login' | 'register')}>
+            <Tabs
+              value={activeTab}
+              onValueChange={(v) => setActiveTab(v as 'login' | 'register')}
+            >
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="login">התחברות</TabsTrigger>
                 <TabsTrigger value="register">הרשמה</TabsTrigger>
@@ -51,7 +60,7 @@ export default function AuthPage() {
 
               <TabsContent value="login" className="space-y-6">
                 <OAuthButtons onSuccess={handleAuthSuccess} />
-                
+
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
@@ -68,7 +77,7 @@ export default function AuthPage() {
 
               <TabsContent value="register" className="space-y-6">
                 <OAuthButtons onSuccess={handleAuthSuccess} />
-                
+
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
@@ -98,5 +107,5 @@ export default function AuthPage() {
         </p>
       </div>
     </div>
-  )
+  );
 }

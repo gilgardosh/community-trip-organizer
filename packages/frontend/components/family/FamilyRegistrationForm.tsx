@@ -1,123 +1,146 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Alert } from '@/components/ui/alert'
-import { createFamily } from '@/lib/api'
-import { createFamilySchema, type CreateFamilyFormData, adultSchema, childSchema } from '@/lib/validation'
-import type { CreateAdultData, CreateChildData } from '@/types/family'
-import { Plus, X, Users, UserPlus, Baby } from 'lucide-react'
-import bcrypt from 'bcryptjs'
-import { ZodError } from 'zod'
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Alert } from '@/components/ui/alert';
+import { createFamily } from '@/lib/api';
+import {
+  createFamilySchema,
+  type CreateFamilyFormData,
+  adultSchema,
+  childSchema,
+} from '@/lib/validation';
+import type { CreateAdultData, CreateChildData } from '@/types/family';
+import { Plus, X, Users, UserPlus, Baby } from 'lucide-react';
+import bcrypt from 'bcryptjs';
+import { ZodError } from 'zod';
 
 export default function FamilyRegistrationForm() {
-  const router = useRouter()
-  const [familyName, setFamilyName] = useState('')
+  const router = useRouter();
+  const [familyName, setFamilyName] = useState('');
   const [adults, setAdults] = useState<CreateAdultData[]>([
-    { name: '', email: '', password: '', profilePhotoUrl: '' }
-  ])
-  const [children, setChildren] = useState<CreateChildData[]>([])
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [isLoading, setIsLoading] = useState(false)
-  const [generalError, setGeneralError] = useState('')
+    { name: '', email: '', password: '', profilePhotoUrl: '' },
+  ]);
+  const [children, setChildren] = useState<CreateChildData[]>([]);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [generalError, setGeneralError] = useState('');
 
   const addAdult = () => {
-    setAdults([...adults, { name: '', email: '', password: '', profilePhotoUrl: '' }])
-  }
+    setAdults([
+      ...adults,
+      { name: '', email: '', password: '', profilePhotoUrl: '' },
+    ]);
+  };
 
   const removeAdult = (index: number) => {
     if (adults.length > 1) {
-      setAdults(adults.filter((_, i) => i !== index))
+      setAdults(adults.filter((_, i) => i !== index));
     }
-  }
+  };
 
-  const updateAdult = (index: number, field: keyof CreateAdultData, value: string) => {
-    const newAdults = [...adults]
-    newAdults[index] = { ...newAdults[index], [field]: value }
-    setAdults(newAdults)
-  }
+  const updateAdult = (
+    index: number,
+    field: keyof CreateAdultData,
+    value: string,
+  ) => {
+    const newAdults = [...adults];
+    newAdults[index] = { ...newAdults[index], [field]: value };
+    setAdults(newAdults);
+  };
 
   const addChild = () => {
-    setChildren([...children, { name: '', age: 0 }])
-  }
+    setChildren([...children, { name: '', age: 0 }]);
+  };
 
   const removeChild = (index: number) => {
-    setChildren(children.filter((_, i) => i !== index))
-  }
+    setChildren(children.filter((_, i) => i !== index));
+  };
 
-  const updateChild = (index: number, field: keyof CreateChildData, value: string | number) => {
-    const newChildren = [...children]
-    newChildren[index] = { ...newChildren[index], [field]: value }
-    setChildren(newChildren)
-  }
+  const updateChild = (
+    index: number,
+    field: keyof CreateChildData,
+    value: string | number,
+  ) => {
+    const newChildren = [...children];
+    newChildren[index] = { ...newChildren[index], [field]: value };
+    setChildren(newChildren);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setErrors({})
-    setGeneralError('')
-    setIsLoading(true)
+    e.preventDefault();
+    setErrors({});
+    setGeneralError('');
+    setIsLoading(true);
 
     try {
       // Validate form data
       const formData: CreateFamilyFormData = {
         name: familyName,
-        adults: adults.map(adult => ({
+        adults: adults.map((adult) => ({
           name: adult.name,
           email: adult.email,
           password: adult.password,
           profilePhotoUrl: adult.profilePhotoUrl || undefined,
         })),
         children: children.length > 0 ? children : undefined,
-      }
+      };
 
-      const validatedData = createFamilySchema.parse(formData)
+      const validatedData = createFamilySchema.parse(formData);
 
       // Hash passwords for adults
       const adultsWithHashedPasswords = await Promise.all(
         validatedData.adults.map(async (adult) => {
-          const passwordHash = adult.password 
+          const passwordHash = adult.password
             ? await bcrypt.hash(adult.password, 10)
-            : undefined
-          
+            : undefined;
+
           return {
             name: adult.name,
             email: adult.email,
             passwordHash,
             profilePhotoUrl: adult.profilePhotoUrl,
-          }
-        })
-      )
+          };
+        }),
+      );
 
       // Create family
       const family = await createFamily({
         name: validatedData.name,
         adults: adultsWithHashedPasswords,
         children: validatedData.children,
-      })
+      });
 
       // Redirect to success page or login
-      router.push('/auth/login?registered=true')
+      router.push('/auth/login?registered=true');
     } catch (error: any) {
       if (error instanceof ZodError) {
         // Zod validation errors
-        const zodErrors: Record<string, string> = {}
+        const zodErrors: Record<string, string> = {};
         error.issues.forEach((err) => {
-          const path = err.path.join('.')
-          zodErrors[path] = err.message
-        })
-        setErrors(zodErrors)
+          const path = err.path.join('.');
+          zodErrors[path] = err.message;
+        });
+        setErrors(zodErrors);
       } else {
         // API or other errors
-        setGeneralError(error.message || 'אירעה שגיאה בעת רישום המשפחה')
+        setGeneralError(error.message || 'אירעה שגיאה בעת רישום המשפחה');
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4" dir="rtl">
@@ -134,9 +157,7 @@ export default function FamilyRegistrationForm() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-6">
             {generalError && (
-              <Alert variant="destructive">
-                {generalError}
-              </Alert>
+              <Alert variant="destructive">{generalError}</Alert>
             )}
 
             {/* Family Name */}
@@ -148,7 +169,9 @@ export default function FamilyRegistrationForm() {
                 onChange={(e) => setFamilyName(e.target.value)}
                 placeholder="לדוגמה: משפחת כהן"
               />
-              {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+              {errors.name && (
+                <p className="text-sm text-red-500">{errors.name}</p>
+              )}
             </div>
 
             {/* Adults Section */}
@@ -158,7 +181,12 @@ export default function FamilyRegistrationForm() {
                   <UserPlus className="h-5 w-5" />
                   מבוגרים
                 </h3>
-                <Button type="button" onClick={addAdult} variant="outline" size="sm">
+                <Button
+                  type="button"
+                  onClick={addAdult}
+                  variant="outline"
+                  size="sm"
+                >
                   <Plus className="h-4 w-4 ml-2" />
                   הוסף מבוגר
                 </Button>
@@ -185,12 +213,16 @@ export default function FamilyRegistrationForm() {
                       <Input
                         id={`adult-name-${index}`}
                         value={adult.name}
-                        onChange={(e) => updateAdult(index, 'name', e.target.value)}
+                        onChange={(e) =>
+                          updateAdult(index, 'name', e.target.value)
+                        }
                         placeholder="שם מלא"
                         required
                       />
                       {errors[`adults.${index}.name`] && (
-                        <p className="text-sm text-red-500">{errors[`adults.${index}.name`]}</p>
+                        <p className="text-sm text-red-500">
+                          {errors[`adults.${index}.name`]}
+                        </p>
                       )}
                     </div>
 
@@ -200,12 +232,16 @@ export default function FamilyRegistrationForm() {
                         id={`adult-email-${index}`}
                         type="email"
                         value={adult.email}
-                        onChange={(e) => updateAdult(index, 'email', e.target.value)}
+                        onChange={(e) =>
+                          updateAdult(index, 'email', e.target.value)
+                        }
                         placeholder="example@email.com"
                         required
                       />
                       {errors[`adults.${index}.email`] && (
-                        <p className="text-sm text-red-500">{errors[`adults.${index}.email`]}</p>
+                        <p className="text-sm text-red-500">
+                          {errors[`adults.${index}.email`]}
+                        </p>
                       )}
                     </div>
 
@@ -215,26 +251,36 @@ export default function FamilyRegistrationForm() {
                         id={`adult-password-${index}`}
                         type="password"
                         value={adult.password || ''}
-                        onChange={(e) => updateAdult(index, 'password', e.target.value)}
+                        onChange={(e) =>
+                          updateAdult(index, 'password', e.target.value)
+                        }
                         placeholder="לפחות 8 תווים"
                         required
                       />
                       {errors[`adults.${index}.password`] && (
-                        <p className="text-sm text-red-500">{errors[`adults.${index}.password`]}</p>
+                        <p className="text-sm text-red-500">
+                          {errors[`adults.${index}.password`]}
+                        </p>
                       )}
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor={`adult-photo-${index}`}>קישור לתמונה (אופציונלי)</Label>
+                      <Label htmlFor={`adult-photo-${index}`}>
+                        קישור לתמונה (אופציונלי)
+                      </Label>
                       <Input
                         id={`adult-photo-${index}`}
                         type="url"
                         value={adult.profilePhotoUrl || ''}
-                        onChange={(e) => updateAdult(index, 'profilePhotoUrl', e.target.value)}
+                        onChange={(e) =>
+                          updateAdult(index, 'profilePhotoUrl', e.target.value)
+                        }
                         placeholder="https://..."
                       />
                       {errors[`adults.${index}.profilePhotoUrl`] && (
-                        <p className="text-sm text-red-500">{errors[`adults.${index}.profilePhotoUrl`]}</p>
+                        <p className="text-sm text-red-500">
+                          {errors[`adults.${index}.profilePhotoUrl`]}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -249,7 +295,12 @@ export default function FamilyRegistrationForm() {
                   <Baby className="h-5 w-5" />
                   ילדים (אופציונלי)
                 </h3>
-                <Button type="button" onClick={addChild} variant="outline" size="sm">
+                <Button
+                  type="button"
+                  onClick={addChild}
+                  variant="outline"
+                  size="sm"
+                >
                   <Plus className="h-4 w-4 ml-2" />
                   הוסף ילד
                 </Button>
@@ -274,12 +325,16 @@ export default function FamilyRegistrationForm() {
                       <Input
                         id={`child-name-${index}`}
                         value={child.name}
-                        onChange={(e) => updateChild(index, 'name', e.target.value)}
+                        onChange={(e) =>
+                          updateChild(index, 'name', e.target.value)
+                        }
                         placeholder="שם הילד"
                         required
                       />
                       {errors[`children.${index}.name`] && (
-                        <p className="text-sm text-red-500">{errors[`children.${index}.name`]}</p>
+                        <p className="text-sm text-red-500">
+                          {errors[`children.${index}.name`]}
+                        </p>
                       )}
                     </div>
 
@@ -291,12 +346,20 @@ export default function FamilyRegistrationForm() {
                         min="0"
                         max="18"
                         value={child.age || ''}
-                        onChange={(e) => updateChild(index, 'age', parseInt(e.target.value) || 0)}
+                        onChange={(e) =>
+                          updateChild(
+                            index,
+                            'age',
+                            parseInt(e.target.value) || 0,
+                          )
+                        }
                         placeholder="0-18"
                         required
                       />
                       {errors[`children.${index}.age`] && (
-                        <p className="text-sm text-red-500">{errors[`children.${index}.age`]}</p>
+                        <p className="text-sm text-red-500">
+                          {errors[`children.${index}.age`]}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -327,5 +390,5 @@ export default function FamilyRegistrationForm() {
         </form>
       </Card>
     </div>
-  )
+  );
 }

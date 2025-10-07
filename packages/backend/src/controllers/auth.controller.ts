@@ -45,7 +45,7 @@ const register = asyncHandler(async (req: Request, res: Response) => {
   await logService.log(user.id, ActionType.CREATE, 'User', user.id);
 
   const token = authService.generateToken(user);
-  
+
   // Get family with members for response
   const familyWithMembers = await prisma.family.findUnique({
     where: { id: family.id },
@@ -140,7 +140,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
   await logService.log(user.id, ActionType.LOGIN, 'User', user.id);
 
   const token = authService.generateToken(user);
-  
+
   // Get family with members for response
   const family = await prisma.family.findUnique({
     where: { id: user.familyId },

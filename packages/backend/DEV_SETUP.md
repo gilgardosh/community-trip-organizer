@@ -24,6 +24,7 @@ docker-compose ps
 ```
 
 This will start:
+
 - **PostgreSQL** on `localhost:5432`
 - Data persists in a Docker volume
 
@@ -36,6 +37,7 @@ cp .env.example .env
 ```
 
 The default `.env` should work with the Docker setup:
+
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/mydb?schema=public"
 ```
@@ -57,6 +59,7 @@ yarn db:seed
 ```
 
 This creates:
+
 - 1 Super Admin
 - 3 Trip Admins
 - 6 Families (various statuses)
@@ -114,10 +117,12 @@ docker-compose --profile tools up -d
 ```
 
 Access pgAdmin at `http://localhost:5050`:
+
 - Email: `admin@example.com`
 - Password: `admin`
 
 To connect to PostgreSQL from pgAdmin:
+
 - Host: `postgres` (or `host.docker.internal` on Mac/Windows)
 - Port: `5432`
 - Database: `mydb`
@@ -165,6 +170,7 @@ npx prisma generate
 ## Development Workflow
 
 1. **Start fresh:**
+
    ```bash
    docker-compose up -d
    npx prisma migrate dev
@@ -173,12 +179,14 @@ npx prisma generate
    ```
 
 2. **Daily development:**
+
    ```bash
    # Database is already running
    yarn dev
    ```
 
 3. **Reset when needed:**
+
    ```bash
    yarn db:reset
    yarn dev

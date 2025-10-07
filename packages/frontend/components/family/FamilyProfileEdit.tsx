@@ -1,66 +1,79 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Alert } from '@/components/ui/alert'
-import { updateFamily } from '@/lib/api'
-import { updateFamilySchema, type UpdateFamilyFormData } from '@/lib/validation'
-import type { Family } from '@/types/family'
-import { Save, X } from 'lucide-react'
-import { ZodError } from 'zod'
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Alert } from '@/components/ui/alert';
+import { updateFamily } from '@/lib/api';
+import {
+  updateFamilySchema,
+  type UpdateFamilyFormData,
+} from '@/lib/validation';
+import type { Family } from '@/types/family';
+import { Save, X } from 'lucide-react';
+import { ZodError } from 'zod';
 
 interface FamilyProfileEditProps {
-  family: Family
-  onSuccess?: (updatedFamily: Family) => void
-  onCancel?: () => void
+  family: Family;
+  onSuccess?: (updatedFamily: Family) => void;
+  onCancel?: () => void;
 }
 
-export default function FamilyProfileEdit({ family, onSuccess, onCancel }: FamilyProfileEditProps) {
-  const [familyName, setFamilyName] = useState(family.name || '')
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [isLoading, setIsLoading] = useState(false)
-  const [generalError, setGeneralError] = useState('')
+export default function FamilyProfileEdit({
+  family,
+  onSuccess,
+  onCancel,
+}: FamilyProfileEditProps) {
+  const [familyName, setFamilyName] = useState(family.name || '');
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [generalError, setGeneralError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setErrors({})
-    setGeneralError('')
-    setIsLoading(true)
+    e.preventDefault();
+    setErrors({});
+    setGeneralError('');
+    setIsLoading(true);
 
     try {
       // Validate form data
       const formData: UpdateFamilyFormData = {
         name: familyName,
-      }
+      };
 
-      const validatedData = updateFamilySchema.parse(formData)
+      const validatedData = updateFamilySchema.parse(formData);
 
       // Update family
-      const updatedFamily = await updateFamily(family.id, validatedData)
+      const updatedFamily = await updateFamily(family.id, validatedData);
 
       if (onSuccess) {
-        onSuccess(updatedFamily)
+        onSuccess(updatedFamily);
       }
     } catch (error: any) {
       if (error instanceof ZodError) {
         // Zod validation errors
-        const zodErrors: Record<string, string> = {}
+        const zodErrors: Record<string, string> = {};
         error.issues.forEach((err) => {
-          const path = err.path.join('.')
-          zodErrors[path] = err.message
-        })
-        setErrors(zodErrors)
+          const path = err.path.join('.');
+          zodErrors[path] = err.message;
+        });
+        setErrors(zodErrors);
       } else {
         // API or other errors
-        setGeneralError(error.message || 'אירעה שגיאה בעת עדכון המשפחה')
+        setGeneralError(error.message || 'אירעה שגיאה בעת עדכון המשפחה');
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Card dir="rtl">
@@ -69,11 +82,7 @@ export default function FamilyProfileEdit({ family, onSuccess, onCancel }: Famil
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
-          {generalError && (
-            <Alert variant="destructive">
-              {generalError}
-            </Alert>
-          )}
+          {generalError && <Alert variant="destructive">{generalError}</Alert>}
 
           <div className="space-y-2">
             <Label htmlFor="familyName">שם המשפחה</Label>
@@ -83,7 +92,9 @@ export default function FamilyProfileEdit({ family, onSuccess, onCancel }: Famil
               onChange={(e) => setFamilyName(e.target.value)}
               placeholder="שם המשפחה"
             />
-            {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+            {errors.name && (
+              <p className="text-sm text-red-500">{errors.name}</p>
+            )}
           </div>
         </CardContent>
 
@@ -104,5 +115,5 @@ export default function FamilyProfileEdit({ family, onSuccess, onCancel }: Famil
         </CardFooter>
       </form>
     </Card>
-  )
+  );
 }

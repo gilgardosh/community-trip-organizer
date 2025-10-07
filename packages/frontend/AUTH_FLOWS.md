@@ -85,14 +85,14 @@ flowchart TD
     B -->|No| C[Redirect to /auth/login]
     C --> D[Store return URL]
     D --> E[Show login page]
-    
+
     B -->|Yes| F{Has required role?}
     F -->|No| G[Redirect to user's default page]
     G --> H{Check user role}
     H -->|family| I[Redirect to /family]
     H -->|trip_admin| J[Redirect to /admin]
     H -->|super_admin| K[Redirect to /super-admin]
-    
+
     F -->|Yes| L[Render protected content]
 ```
 
@@ -124,24 +124,24 @@ graph TB
     A[App Root Layout] --> B[AuthProvider]
     B --> C[Toaster]
     B --> D[Page Components]
-    
+
     D --> E[ProtectedRoute]
     E --> F{Auth Check}
     F -->|Pass| G[Render Children]
     F -->|Fail| H[Redirect]
-    
+
     D --> I[UserNav]
     I --> J[useAuth Hook]
-    
+
     D --> K[LoginForm]
     K --> J
-    
+
     D --> L[RegisterForm]
     L --> J
-    
+
     D --> M[OAuthButtons]
     M --> J
-    
+
     J --> N[AuthContext]
     N --> O[Auth API Client]
     O --> P[Backend]
@@ -154,17 +154,17 @@ stateDiagram-v2
     [*] --> Loading: App starts
     Loading --> Unauthenticated: No tokens
     Loading --> Authenticated: Valid tokens
-    
+
     Unauthenticated --> Authenticating: Login/Register
     Authenticating --> Authenticated: Success
     Authenticating --> Unauthenticated: Failure
-    
+
     Authenticated --> Refreshing: Token expired (401)
     Refreshing --> Authenticated: Refresh success
     Refreshing --> Unauthenticated: Refresh failed
-    
+
     Authenticated --> Unauthenticated: Logout
-    
+
     Authenticated --> [*]: App closes
     Unauthenticated --> [*]: App closes
 ```
@@ -174,22 +174,22 @@ stateDiagram-v2
 ```mermaid
 flowchart LR
     A[User Input] --> B{Zod Validation}
-    
+
     B -->|Email| C[Email Schema]
     C --> D{Valid?}
     D -->|No| E[Show Hebrew error]
     D -->|Yes| F[Continue]
-    
+
     B -->|Password| G[Password Schema]
     G --> H{8+ chars, upper, lower, number?}
     H -->|No| I[Show strength error]
     H -->|Yes| F
-    
+
     B -->|Phone| J[Phone Schema]
     J --> K{Israeli format?}
     K -->|No| L[Show format error]
     K -->|Yes| F
-    
+
     F --> M[Submit Form]
 ```
 
@@ -198,17 +198,17 @@ flowchart LR
 ```mermaid
 graph TD
     A[User] --> B{Role}
-    
+
     B -->|family| C[Family Routes]
     C --> C1[/family]
     C --> C2[/family/trips]
     C --> C3[/profile]
-    
+
     B -->|trip_admin| D[Trip Admin Routes]
     D --> D1[/admin]
     D --> D2[/admin/trip/:id]
     D --> D3[All family routes]
-    
+
     B -->|super_admin| E[Super Admin Routes]
     E --> E1[/super-admin]
     E --> E2[/super-admin/activity-log]
@@ -220,23 +220,23 @@ graph TD
 ```mermaid
 flowchart TD
     A[API Error] --> B{Error Type}
-    
+
     B -->|400| C[Validation Error]
     C --> D[Show field errors]
-    
+
     B -->|401| E[Unauthorized]
     E --> F{Has refresh token?}
     F -->|Yes| G[Try refresh]
     F -->|No| H[Redirect to login]
     G -->|Success| I[Retry request]
     G -->|Fail| H
-    
+
     B -->|403| J[Forbidden]
     J --> K[Redirect to user's page]
-    
+
     B -->|404| L[Not Found]
     L --> M[Show error message]
-    
+
     B -->|500| N[Server Error]
     N --> O[Show generic error]
 ```
@@ -282,12 +282,14 @@ AuthStatus
 ## Key Points
 
 ### Security
+
 1. Tokens stored in localStorage (consider httpOnly cookies for production)
 2. Automatic token refresh on 401
 3. Password strength validation enforced
 4. Role-based access control at route level
 
 ### UX
+
 1. Loading states for all async operations
 2. Hebrew error messages throughout
 3. RTL layout support
@@ -295,6 +297,7 @@ AuthStatus
 5. Toast notifications for user feedback
 
 ### Developer Experience
+
 1. TypeScript for type safety
 2. Zod for runtime validation
 3. React Hook Form for form management

@@ -18,17 +18,19 @@ This authentication system provides a complete solution for user authentication 
 Provides global authentication state management using React Context API.
 
 **Features:**
+
 - User and family state management
 - Login/logout functionality
 - Token persistence
 - Automatic token refresh
 
 **Usage:**
+
 ```tsx
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContext';
 
 function MyComponent() {
-  const { user, isAuthenticated, login, logout } = useAuth()
+  const { user, isAuthenticated, login, logout } = useAuth();
   // ...
 }
 ```
@@ -38,6 +40,7 @@ function MyComponent() {
 Email/password login form with validation.
 
 **Features:**
+
 - Email and password fields with validation
 - Password visibility toggle
 - Loading states
@@ -45,6 +48,7 @@ Email/password login form with validation.
 - RTL layout support
 
 **Props:**
+
 - `onSuccess?: () => void` - Callback after successful login
 
 ### 3. Registration Form (`components/auth/RegisterForm.tsx`)
@@ -52,6 +56,7 @@ Email/password login form with validation.
 User registration form with comprehensive validation.
 
 **Features:**
+
 - Name, email, password, phone, and family name fields
 - Password strength validation
 - Password confirmation
@@ -59,6 +64,7 @@ User registration form with comprehensive validation.
 - Hebrew error messages
 
 **Props:**
+
 - `onSuccess?: () => void` - Callback after successful registration
 
 ### 4. OAuth Buttons (`components/auth/OAuthButtons.tsx`)
@@ -66,12 +72,14 @@ User registration form with comprehensive validation.
 Google and Facebook OAuth login buttons.
 
 **Features:**
+
 - Branded buttons with logos
 - Loading states
 - Error handling
 - Redirect handling
 
 **Props:**
+
 - `onSuccess?: () => void` - Callback after successful OAuth login
 
 ### 5. Protected Route (`components/auth/ProtectedRoute.tsx`)
@@ -79,25 +87,28 @@ Google and Facebook OAuth login buttons.
 Wrapper component for protecting routes based on authentication and role.
 
 **Features:**
+
 - Authentication verification
 - Role-based access control
 - Automatic redirect to login
 - Loading state handling
 
 **Props:**
+
 - `allowedRoles?: Role[]` - Allowed user roles
 - `redirectTo?: string` - Redirect URL (default: `/auth/login`)
 
 **Usage:**
+
 ```tsx
-import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
 export default function AdminPage() {
   return (
     <ProtectedRoute allowedRoles={['trip_admin', 'super_admin']}>
       <div>Admin content</div>
     </ProtectedRoute>
-  )
+  );
 }
 ```
 
@@ -106,6 +117,7 @@ export default function AdminPage() {
 Navigation component showing user status and logout option.
 
 **Features:**
+
 - User avatar with initials
 - User name, email, and role display
 - Dropdown menu with profile and settings links
@@ -117,6 +129,7 @@ Navigation component showing user status and logout option.
 Authentication API client with the following functions:
 
 ### Token Management
+
 - `getStoredTokens()` - Get stored auth tokens
 - `setStoredTokens(tokens)` - Store auth tokens
 - `clearStoredTokens()` - Clear stored tokens
@@ -124,6 +137,7 @@ Authentication API client with the following functions:
 - `getStoredFamily()` - Get stored family data
 
 ### Authentication
+
 - `loginWithCredentials(credentials)` - Login with email/password
 - `registerUser(data)` - Register new user
 - `initiateOAuthLogin(provider)` - Start OAuth flow
@@ -138,6 +152,7 @@ Authentication API client with the following functions:
 Form validation using Zod with Hebrew error messages.
 
 ### Schemas
+
 - `emailSchema` - Email validation
 - `passwordSchema` - Password strength validation
 - `phoneSchema` - Israeli phone number validation
@@ -148,6 +163,7 @@ Form validation using Zod with Hebrew error messages.
 - `childSchema` - Child data validation
 
 ### Helper Functions
+
 - `validateEmail(email)` - Validate email format
 - `validatePassword(password)` - Validate password strength
 - `validatePhone(phone)` - Validate Israeli phone number
@@ -160,12 +176,14 @@ Form validation using Zod with Hebrew error messages.
 Main authentication page with tabs for login and registration.
 
 **Features:**
+
 - Tabbed interface
 - OAuth buttons
 - Email/password forms
 - Return URL support
 
 **URL Parameters:**
+
 - `returnUrl` - URL to redirect to after successful authentication
 
 ### OAuth Callback (`app/auth/callback/page.tsx`)
@@ -173,6 +191,7 @@ Main authentication page with tabs for login and registration.
 Handles OAuth provider callbacks.
 
 **Features:**
+
 - Code exchange
 - Token storage
 - Error handling
@@ -198,6 +217,7 @@ TypeScript types for authentication:
 ### 1. Install Dependencies
 
 The following dependencies are already included in package.json:
+
 - `react-hook-form` - Form handling
 - `@hookform/resolvers` - Form validation integration
 - `zod` - Schema validation
@@ -219,21 +239,21 @@ The `AuthProvider` is already included in `app/layout.tsx`.
 
 ```tsx
 // In any component
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContext';
 
 function MyComponent() {
-  const { user, isAuthenticated, logout } = useAuth()
-  
+  const { user, isAuthenticated, logout } = useAuth();
+
   if (!isAuthenticated) {
-    return <div>Please login</div>
+    return <div>Please login</div>;
   }
-  
+
   return (
     <div>
       <p>Welcome, {user.name}!</p>
       <button onClick={logout}>Logout</button>
     </div>
-  )
+  );
 }
 ```
 
@@ -241,14 +261,14 @@ function MyComponent() {
 
 ```tsx
 // In a page component
-import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
 export default function FamilyPage() {
   return (
     <ProtectedRoute allowedRoles={['family']}>
       <div>Family content</div>
     </ProtectedRoute>
-  )
+  );
 }
 ```
 
@@ -257,6 +277,7 @@ export default function FamilyPage() {
 ### Unit Tests
 
 Run validation tests:
+
 ```bash
 yarn test validation.test.ts
 ```
@@ -264,14 +285,16 @@ yarn test validation.test.ts
 ### Testing Libraries (Need to Install)
 
 For component testing, install:
+
 ```bash
 yarn add --dev @testing-library/react @testing-library/user-event @testing-library/jest-dom vitest jsdom
 ```
 
 Then update `vitest.config.ts` to include:
+
 ```ts
-import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
@@ -279,12 +302,13 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
   },
-})
+});
 ```
 
 Create `vitest.setup.ts`:
+
 ```ts
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom';
 ```
 
 ## Hebrew Text & RTL

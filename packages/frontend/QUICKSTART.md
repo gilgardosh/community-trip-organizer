@@ -30,6 +30,7 @@ The authentication system is already integrated. All dependencies for the auth s
 Navigate to: `http://localhost:3000/auth/login`
 
 Features:
+
 - Login with email/password
 - Register new account
 - Google OAuth login
@@ -38,27 +39,27 @@ Features:
 ### Protecting a Route
 
 ```tsx
-import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
 export default function MyPage() {
   return (
     <ProtectedRoute allowedRoles={['family']}>
       <div>Protected content</div>
     </ProtectedRoute>
-  )
+  );
 }
 ```
 
 ### Using Auth State
 
 ```tsx
-'use client'
+'use client';
 
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContext';
 
 export function MyComponent() {
-  const { user, isAuthenticated, logout } = useAuth()
-  
+  const { user, isAuthenticated, logout } = useAuth();
+
   return (
     <div>
       {isAuthenticated ? (
@@ -70,14 +71,14 @@ export function MyComponent() {
         <p>אנא התחבר</p>
       )}
     </div>
-  )
+  );
 }
 ```
 
 ### Adding User Nav to Header
 
 ```tsx
-import { UserNav } from '@/components/auth/UserNav'
+import { UserNav } from '@/components/auth/UserNav';
 
 export function Header() {
   return (
@@ -87,36 +88,36 @@ export function Header() {
         <UserNav />
       </div>
     </header>
-  )
+  );
 }
 ```
 
 ## 📋 Available Components
 
-| Component | Path | Purpose |
-|-----------|------|---------|
-| `LoginForm` | `@/components/auth/LoginForm` | Email/password login |
-| `RegisterForm` | `@/components/auth/RegisterForm` | User registration |
-| `OAuthButtons` | `@/components/auth/OAuthButtons` | Google/Facebook login |
-| `ProtectedRoute` | `@/components/auth/ProtectedRoute` | Route protection |
-| `UserNav` | `@/components/auth/UserNav` | User menu/status |
+| Component        | Path                               | Purpose               |
+| ---------------- | ---------------------------------- | --------------------- |
+| `LoginForm`      | `@/components/auth/LoginForm`      | Email/password login  |
+| `RegisterForm`   | `@/components/auth/RegisterForm`   | User registration     |
+| `OAuthButtons`   | `@/components/auth/OAuthButtons`   | Google/Facebook login |
+| `ProtectedRoute` | `@/components/auth/ProtectedRoute` | Route protection      |
+| `UserNav`        | `@/components/auth/UserNav`        | User menu/status      |
 
 ## 🔑 Available Hooks
 
 ```tsx
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContext';
 
 const {
-  user,              // Current user data
-  family,            // Current family data
-  isAuthenticated,   // Boolean: is logged in
-  isLoading,         // Boolean: loading state
-  login,             // Function: login(credentials)
-  loginWithOAuth,    // Function: loginWithOAuth(provider)
-  register,          // Function: register(data)
-  logout,            // Function: logout()
-  refreshToken,      // Function: refreshToken()
-} = useAuth()
+  user, // Current user data
+  family, // Current family data
+  isAuthenticated, // Boolean: is logged in
+  isLoading, // Boolean: loading state
+  login, // Function: login(credentials)
+  loginWithOAuth, // Function: loginWithOAuth(provider)
+  register, // Function: register(data)
+  logout, // Function: logout()
+  refreshToken, // Function: refreshToken()
+} = useAuth();
 ```
 
 ## 🧪 Running Tests
@@ -138,16 +139,19 @@ yarn test
 ## 📝 Example Pages
 
 ### Login/Register Page
+
 - **URL**: `/auth/login`
 - **File**: `app/auth/login/page.tsx`
 - Already created and working
 
 ### OAuth Callback
+
 - **URL**: `/auth/callback`
 - **File**: `app/auth/callback/page.tsx`
 - Handles OAuth redirects
 
 ### Family Dashboard (Example)
+
 - **URL**: `/family/dashboard`
 - **File**: `app/family/dashboard/page.tsx`
 - Shows how to use protected routes and auth context
@@ -155,6 +159,7 @@ yarn test
 ## 🎨 Hebrew & RTL
 
 All components are already configured for Hebrew with RTL:
+
 - Text is in Hebrew
 - Layout is right-to-left
 - Email fields use LTR for input
@@ -163,11 +168,13 @@ All components are already configured for Hebrew with RTL:
 ## 🔒 Roles
 
 Three roles are supported:
+
 - `family` - Regular family users
 - `trip_admin` - Trip administrators
 - `super_admin` - System administrators
 
 Use in ProtectedRoute:
+
 ```tsx
 <ProtectedRoute allowedRoles={['trip_admin', 'super_admin']}>
   {/* Admin only content */}
@@ -177,6 +184,7 @@ Use in ProtectedRoute:
 ## 📖 Full Documentation
 
 See `AUTHENTICATION.md` for complete documentation including:
+
 - All component APIs
 - Detailed usage examples
 - Security considerations
@@ -196,11 +204,12 @@ See `AUTHENTICATION.md` for complete documentation including:
 ✅ Form validation with Hebrew errors  
 ✅ RTL layout support  
 ✅ Test examples  
-✅ Complete documentation  
+✅ Complete documentation
 
 ## 🎉 You're Ready!
 
 The authentication system is fully implemented and ready to use. Just:
+
 1. Start the backend server
 2. Start the frontend: `yarn dev`
 3. Visit: `http://localhost:3000/auth/login`

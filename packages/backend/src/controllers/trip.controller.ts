@@ -10,9 +10,19 @@ const createTripSchema = z.object({
   name: z.string().min(1, 'Trip name is required'),
   location: z.string().min(1, 'Location is required'),
   description: z.string().optional(),
-  startDate: z.string().or(z.date()).transform((val) => new Date(val)),
-  endDate: z.string().or(z.date()).transform((val) => new Date(val)),
-  attendanceCutoffDate: z.string().or(z.date()).transform((val) => new Date(val)).optional(),
+  startDate: z
+    .string()
+    .or(z.date())
+    .transform((val) => new Date(val)),
+  endDate: z
+    .string()
+    .or(z.date())
+    .transform((val) => new Date(val)),
+  attendanceCutoffDate: z
+    .string()
+    .or(z.date())
+    .transform((val) => new Date(val))
+    .optional(),
   photoAlbumLink: z.string().url().optional().or(z.literal('')),
 });
 
@@ -20,9 +30,21 @@ const updateTripSchema = z.object({
   name: z.string().min(1).optional(),
   location: z.string().min(1).optional(),
   description: z.string().optional(),
-  startDate: z.string().or(z.date()).transform((val) => new Date(val)).optional(),
-  endDate: z.string().or(z.date()).transform((val) => new Date(val)).optional(),
-  attendanceCutoffDate: z.string().or(z.date()).transform((val) => new Date(val)).optional(),
+  startDate: z
+    .string()
+    .or(z.date())
+    .transform((val) => new Date(val))
+    .optional(),
+  endDate: z
+    .string()
+    .or(z.date())
+    .transform((val) => new Date(val))
+    .optional(),
+  attendanceCutoffDate: z
+    .string()
+    .or(z.date())
+    .transform((val) => new Date(val))
+    .optional(),
   photoAlbumLink: z.string().url().optional().or(z.literal('')),
 });
 
@@ -47,18 +69,12 @@ const createTrip = asyncHandler(async (req: Request, res: Response) => {
   const trip = await tripService.createTrip(data);
 
   // Log trip creation
-  await logService.log(
-    user.id,
-    ActionType.CREATE,
-    'Trip',
-    trip.id,
-    {
-      name: data.name,
-      location: data.location,
-      startDate: data.startDate.toISOString(),
-      endDate: data.endDate.toISOString(),
-    },
-  );
+  await logService.log(user.id, ActionType.CREATE, 'Trip', trip.id, {
+    name: data.name,
+    location: data.location,
+    startDate: data.startDate.toISOString(),
+    endDate: data.endDate.toISOString(),
+  });
 
   res.status(201).json(trip);
 });
@@ -74,7 +90,9 @@ const getAllTrips = asyncHandler(async (req: Request, res: Response) => {
 
   const filters = {
     draft: draft === 'true' ? true : draft === 'false' ? false : undefined,
-    startDateFrom: startDateFrom ? new Date(startDateFrom as string) : undefined,
+    startDateFrom: startDateFrom
+      ? new Date(startDateFrom as string)
+      : undefined,
     startDateTo: startDateTo ? new Date(startDateTo as string) : undefined,
     includePast: includePast === 'true',
   };
@@ -113,18 +131,12 @@ const updateTrip = asyncHandler(async (req: Request, res: Response) => {
   );
 
   // Log trip update
-  await logService.log(
-    user.id,
-    ActionType.UPDATE,
-    'Trip',
-    trip.id,
-    {
-      ...data,
-      startDate: data.startDate?.toISOString(),
-      endDate: data.endDate?.toISOString(),
-      attendanceCutoffDate: data.attendanceCutoffDate?.toISOString(),
-    },
-  );
+  await logService.log(user.id, ActionType.UPDATE, 'Trip', trip.id, {
+    ...data,
+    startDate: data.startDate?.toISOString(),
+    endDate: data.endDate?.toISOString(),
+    attendanceCutoffDate: data.attendanceCutoffDate?.toISOString(),
+  });
 
   res.json(trip);
 });
@@ -139,13 +151,9 @@ const publishTrip = asyncHandler(async (req: Request, res: Response) => {
   const trip = await tripService.publishTrip(req.params.id);
 
   // Log trip publishing
-  await logService.log(
-    user.id,
-    ActionType.UPDATE,
-    'Trip',
-    trip.id,
-    { action: 'published' },
-  );
+  await logService.log(user.id, ActionType.UPDATE, 'Trip', trip.id, {
+    action: 'published',
+  });
 
   res.json(trip);
 });
@@ -160,13 +168,9 @@ const unpublishTrip = asyncHandler(async (req: Request, res: Response) => {
   const trip = await tripService.unpublishTrip(req.params.id);
 
   // Log trip unpublishing
-  await logService.log(
-    user.id,
-    ActionType.UPDATE,
-    'Trip',
-    trip.id,
-    { action: 'unpublished' },
-  );
+  await logService.log(user.id, ActionType.UPDATE, 'Trip', trip.id, {
+    action: 'unpublished',
+  });
 
   res.json(trip);
 });
@@ -183,13 +187,10 @@ const assignAdmins = asyncHandler(async (req: Request, res: Response) => {
   const trip = await tripService.assignAdmins(req.params.id, data);
 
   // Log admin assignment
-  await logService.log(
-    user.id,
-    ActionType.UPDATE,
-    'Trip',
-    trip.id,
-    { action: 'admins_assigned', adminIds: data.adminIds },
-  );
+  await logService.log(user.id, ActionType.UPDATE, 'Trip', trip.id, {
+    action: 'admins_assigned',
+    adminIds: data.adminIds,
+  });
 
   res.json(trip);
 });
@@ -204,13 +205,10 @@ const addAdmin = asyncHandler(async (req: Request, res: Response) => {
   const trip = await tripService.addAdmin(req.params.id, req.params.adminId);
 
   // Log admin addition
-  await logService.log(
-    user.id,
-    ActionType.UPDATE,
-    'Trip',
-    trip.id,
-    { action: 'admin_added', adminId: req.params.adminId },
-  );
+  await logService.log(user.id, ActionType.UPDATE, 'Trip', trip.id, {
+    action: 'admin_added',
+    adminId: req.params.adminId,
+  });
 
   res.json(trip);
 });
@@ -225,13 +223,10 @@ const removeAdmin = asyncHandler(async (req: Request, res: Response) => {
   const trip = await tripService.removeAdmin(req.params.id, req.params.adminId);
 
   // Log admin removal
-  await logService.log(
-    user.id,
-    ActionType.UPDATE,
-    'Trip',
-    trip.id,
-    { action: 'admin_removed', adminId: req.params.adminId },
-  );
+  await logService.log(user.id, ActionType.UPDATE, 'Trip', trip.id, {
+    action: 'admin_removed',
+    adminId: req.params.adminId,
+  });
 
   res.json(trip);
 });
@@ -293,12 +288,7 @@ const deleteTrip = asyncHandler(async (req: Request, res: Response) => {
   const result = await tripService.deleteTrip(req.params.id);
 
   // Log trip deletion
-  await logService.log(
-    user.id,
-    ActionType.DELETE,
-    'Trip',
-    req.params.id,
-  );
+  await logService.log(user.id, ActionType.DELETE, 'Trip', req.params.id);
 
   res.json(result);
 });
@@ -317,4 +307,3 @@ export const tripController = {
   getTripAttendees,
   deleteTrip,
 };
-

@@ -1,51 +1,51 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Alert } from '@/components/ui/alert'
-import { getFamilyById } from '@/lib/api'
-import type { Family } from '@/types/family'
-import FamilyProfileView from './FamilyProfileView'
-import FamilyProfileEdit from './FamilyProfileEdit'
-import AdultsManagement from './AdultsManagement'
-import ChildrenManagement from './ChildrenManagement'
-import { Users, Edit, CheckCircle, Clock, AlertCircle } from 'lucide-react'
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert } from '@/components/ui/alert';
+import { getFamilyById } from '@/lib/api';
+import type { Family } from '@/types/family';
+import FamilyProfileView from './FamilyProfileView';
+import FamilyProfileEdit from './FamilyProfileEdit';
+import AdultsManagement from './AdultsManagement';
+import ChildrenManagement from './ChildrenManagement';
+import { Users, Edit, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 
 interface FamilyDashboardProps {
-  familyId: string
+  familyId: string;
 }
 
 export default function FamilyDashboard({ familyId }: FamilyDashboardProps) {
-  const [family, setFamily] = useState<Family | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [isEditing, setIsEditing] = useState(false)
-  const [activeTab, setActiveTab] = useState('overview')
+  const [family, setFamily] = useState<Family | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
-    loadFamily()
-  }, [familyId])
+    loadFamily();
+  }, [familyId]);
 
   const loadFamily = async () => {
-    setIsLoading(true)
-    setError('')
+    setIsLoading(true);
+    setError('');
 
     try {
-      const data = await getFamilyById(familyId)
-      setFamily(data)
+      const data = await getFamilyById(familyId);
+      setFamily(data);
     } catch (err: any) {
-      setError(err.message || 'אירעה שגיאה בטעינת נתוני המשפחה')
+      setError(err.message || 'אירעה שגיאה בטעינת נתוני המשפחה');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleEditSuccess = (updatedFamily: Family) => {
-    setFamily(updatedFamily)
-    setIsEditing(false)
-  }
+    setFamily(updatedFamily);
+    setIsEditing(false);
+  };
 
   if (isLoading) {
     return (
@@ -55,7 +55,7 @@ export default function FamilyDashboard({ familyId }: FamilyDashboardProps) {
           <p className="text-muted-foreground">טוען נתוני משפחה...</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (error || !family) {
@@ -69,11 +69,11 @@ export default function FamilyDashboard({ familyId }: FamilyDashboardProps) {
           נסה שוב
         </Button>
       </div>
-    )
+    );
   }
 
-  const adults = family.members.filter(m => m.type === 'ADULT')
-  const children = family.members.filter(m => m.type === 'CHILD')
+  const adults = family.members.filter((m) => m.type === 'ADULT');
+  const children = family.members.filter((m) => m.type === 'CHILD');
 
   return (
     <div className="space-y-6 p-4" dir="rtl">
@@ -84,7 +84,8 @@ export default function FamilyDashboard({ familyId }: FamilyDashboardProps) {
           <div>
             <h4 className="font-semibold">בקשת ההצטרפות שלך ממתינה לאישור</h4>
             <p className="text-sm text-muted-foreground mt-1">
-              מנהל המערכת יבדוק את הבקשה ויאשר אותה בהקדם. תקבל הודעה לאחר האישור.
+              מנהל המערכת יבדוק את הבקשה ויאשר אותה בהקדם. תקבל הודעה לאחר
+              האישור.
             </p>
           </div>
         </Alert>
@@ -167,20 +168,28 @@ export default function FamilyDashboard({ familyId }: FamilyDashboardProps) {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 border rounded-lg">
-              <div className="text-2xl font-bold text-primary">{family.members.length}</div>
-              <div className="text-sm text-muted-foreground">סה&quot;כ חברי משפחה</div>
+              <div className="text-2xl font-bold text-primary">
+                {family.members.length}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                סה&quot;כ חברי משפחה
+              </div>
             </div>
             <div className="p-4 border rounded-lg">
-              <div className="text-2xl font-bold text-primary">{adults.length}</div>
+              <div className="text-2xl font-bold text-primary">
+                {adults.length}
+              </div>
               <div className="text-sm text-muted-foreground">מבוגרים</div>
             </div>
             <div className="p-4 border rounded-lg">
-              <div className="text-2xl font-bold text-primary">{children.length}</div>
+              <div className="text-2xl font-bold text-primary">
+                {children.length}
+              </div>
               <div className="text-sm text-muted-foreground">ילדים</div>
             </div>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

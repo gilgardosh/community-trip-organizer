@@ -1,6 +1,6 @@
 // API client for family management and other services
 
-import { getStoredTokens } from '@/lib/auth'
+import { getStoredTokens } from '@/lib/auth';
 import type {
   Family,
   FamilyMember,
@@ -9,40 +9,44 @@ import type {
   AddMemberData,
   UpdateMemberData,
   FamilyFilters,
-} from '@/types/family'
-import type { Trip, FamilyParticipation } from '@/data/mock/trips'
-import type { GearItem } from '@/data/mock/gear'
-import { mockTrips, mockFamilyParticipation } from '@/data/mock/trips'
-import { mockGearItems } from '@/data/mock/gear'
+} from '@/types/family';
+import type { Trip, FamilyParticipation } from '@/data/mock/trips';
+import type { GearItem } from '@/data/mock/gear';
+import { mockTrips, mockFamilyParticipation } from '@/data/mock/trips';
+import { mockGearItems } from '@/data/mock/gear';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 // API helper with auth headers
 async function fetchWithAuth(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<Response> {
-  const tokens = getStoredTokens()
+  const tokens = getStoredTokens();
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
-  }
+  };
 
   if (tokens?.accessToken) {
-    headers['Authorization'] = `Bearer ${tokens.accessToken}`
+    headers['Authorization'] = `Bearer ${tokens.accessToken}`;
   }
 
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
     headers,
-  })
+  });
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'Request failed' }))
-    throw new Error(error.message || `Request failed with status ${response.status}`)
+    const error = await response
+      .json()
+      .catch(() => ({ message: 'Request failed' }));
+    throw new Error(
+      error.message || `Request failed with status ${response.status}`,
+    );
   }
 
-  return response
+  return response;
 }
 
 // ==================== FAMILY API ====================
@@ -57,54 +61,57 @@ export async function createFamily(data: CreateFamilyData): Promise<Family> {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(data),
-  })
+  });
 
   if (!response.ok) {
-    const error = await response.json()
-    throw new Error(error.message || 'Failed to create family')
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to create family');
   }
 
-  return response.json()
+  return response.json();
 }
 
 /**
  * Get all families with optional filters
  */
 export async function getFamilies(filters?: FamilyFilters): Promise<Family[]> {
-  const params = new URLSearchParams()
-  
+  const params = new URLSearchParams();
+
   if (filters?.status) {
-    params.append('status', filters.status)
-  }
-  
-  if (filters?.isActive !== undefined) {
-    params.append('isActive', String(filters.isActive))
+    params.append('status', filters.status);
   }
 
-  const queryString = params.toString()
-  const endpoint = `/api/families${queryString ? `?${queryString}` : ''}`
-  
-  const response = await fetchWithAuth(endpoint)
-  return response.json()
+  if (filters?.isActive !== undefined) {
+    params.append('isActive', String(filters.isActive));
+  }
+
+  const queryString = params.toString();
+  const endpoint = `/api/families${queryString ? `?${queryString}` : ''}`;
+
+  const response = await fetchWithAuth(endpoint);
+  return response.json();
 }
 
 /**
  * Get family by ID
  */
 export async function getFamilyById(id: string): Promise<Family> {
-  const response = await fetchWithAuth(`/api/families/${id}`)
-  return response.json()
+  const response = await fetchWithAuth(`/api/families/${id}`);
+  return response.json();
 }
 
 /**
  * Update family details
  */
-export async function updateFamily(id: string, data: UpdateFamilyData): Promise<Family> {
+export async function updateFamily(
+  id: string,
+  data: UpdateFamilyData,
+): Promise<Family> {
   const response = await fetchWithAuth(`/api/families/${id}`, {
     method: 'PUT',
     body: JSON.stringify(data),
-  })
-  return response.json()
+  });
+  return response.json();
 }
 
 /**
@@ -113,8 +120,8 @@ export async function updateFamily(id: string, data: UpdateFamilyData): Promise<
 export async function approveFamily(id: string): Promise<Family> {
   const response = await fetchWithAuth(`/api/families/${id}/approve`, {
     method: 'POST',
-  })
-  return response.json()
+  });
+  return response.json();
 }
 
 /**
@@ -123,8 +130,8 @@ export async function approveFamily(id: string): Promise<Family> {
 export async function deactivateFamily(id: string): Promise<Family> {
   const response = await fetchWithAuth(`/api/families/${id}/deactivate`, {
     method: 'POST',
-  })
-  return response.json()
+  });
+  return response.json();
 }
 
 /**
@@ -133,8 +140,8 @@ export async function deactivateFamily(id: string): Promise<Family> {
 export async function reactivateFamily(id: string): Promise<Family> {
   const response = await fetchWithAuth(`/api/families/${id}/reactivate`, {
     method: 'POST',
-  })
-  return response.json()
+  });
+  return response.json();
 }
 
 /**
@@ -143,43 +150,52 @@ export async function reactivateFamily(id: string): Promise<Family> {
 export async function deleteFamily(id: string): Promise<{ message: string }> {
   const response = await fetchWithAuth(`/api/families/${id}`, {
     method: 'DELETE',
-  })
-  return response.json()
+  });
+  return response.json();
 }
 
 /**
  * Get family members
  */
-export async function getFamilyMembers(familyId: string): Promise<FamilyMember[]> {
-  const response = await fetchWithAuth(`/api/families/${familyId}/members`)
-  return response.json()
+export async function getFamilyMembers(
+  familyId: string,
+): Promise<FamilyMember[]> {
+  const response = await fetchWithAuth(`/api/families/${familyId}/members`);
+  return response.json();
 }
 
 /**
  * Get family adults
  */
-export async function getFamilyAdults(familyId: string): Promise<FamilyMember[]> {
-  const response = await fetchWithAuth(`/api/families/${familyId}/adults`)
-  return response.json()
+export async function getFamilyAdults(
+  familyId: string,
+): Promise<FamilyMember[]> {
+  const response = await fetchWithAuth(`/api/families/${familyId}/adults`);
+  return response.json();
 }
 
 /**
  * Get family children
  */
-export async function getFamilyChildren(familyId: string): Promise<FamilyMember[]> {
-  const response = await fetchWithAuth(`/api/families/${familyId}/children`)
-  return response.json()
+export async function getFamilyChildren(
+  familyId: string,
+): Promise<FamilyMember[]> {
+  const response = await fetchWithAuth(`/api/families/${familyId}/children`);
+  return response.json();
 }
 
 /**
  * Add a member to a family
  */
-export async function addFamilyMember(familyId: string, data: AddMemberData): Promise<FamilyMember> {
+export async function addFamilyMember(
+  familyId: string,
+  data: AddMemberData,
+): Promise<FamilyMember> {
   const response = await fetchWithAuth(`/api/families/${familyId}/members`, {
     method: 'POST',
     body: JSON.stringify(data),
-  })
-  return response.json()
+  });
+  return response.json();
 }
 
 /**
@@ -188,13 +204,16 @@ export async function addFamilyMember(familyId: string, data: AddMemberData): Pr
 export async function updateFamilyMember(
   familyId: string,
   memberId: string,
-  data: UpdateMemberData
+  data: UpdateMemberData,
 ): Promise<FamilyMember> {
-  const response = await fetchWithAuth(`/api/families/${familyId}/members/${memberId}`, {
-    method: 'PUT',
-    body: JSON.stringify(data),
-  })
-  return response.json()
+  const response = await fetchWithAuth(
+    `/api/families/${familyId}/members/${memberId}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    },
+  );
+  return response.json();
 }
 
 /**
@@ -202,12 +221,15 @@ export async function updateFamilyMember(
  */
 export async function removeFamilyMember(
   familyId: string,
-  memberId: string
+  memberId: string,
 ): Promise<{ message: string }> {
-  const response = await fetchWithAuth(`/api/families/${familyId}/members/${memberId}`, {
-    method: 'DELETE',
-  })
-  return response.json()
+  const response = await fetchWithAuth(
+    `/api/families/${familyId}/members/${memberId}`,
+    {
+      method: 'DELETE',
+    },
+  );
+  return response.json();
 }
 
 // ==================== TRIP API (MOCK - TODO: Implement backend) ====================
@@ -218,34 +240,37 @@ export async function removeFamilyMember(
  */
 export async function getTripWithParticipation(
   tripId: string,
-  familyId: string
+  familyId: string,
 ): Promise<{ trip: Trip; participation: FamilyParticipation | null }> {
   // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 500))
-  
-  const trip = mockTrips.find(t => t.id === tripId)
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  const trip = mockTrips.find((t) => t.id === tripId);
   if (!trip) {
-    throw new Error('Trip not found')
+    throw new Error('Trip not found');
   }
-  
-  const participation = mockFamilyParticipation.find(
-    p => p.tripId === tripId && p.familyId === familyId
-  ) || null
-  
-  return { trip, participation }
+
+  const participation =
+    mockFamilyParticipation.find(
+      (p) => p.tripId === tripId && p.familyId === familyId,
+    ) || null;
+
+  return { trip, participation };
 }
 
 /**
  * Get gear items by trip ID
  * TODO: Replace with actual API call when backend is ready
  */
-export async function getGearItemsByTripId(tripId: string): Promise<GearItem[]> {
+export async function getGearItemsByTripId(
+  tripId: string,
+): Promise<GearItem[]> {
   // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 300))
-  
+  await new Promise((resolve) => setTimeout(resolve, 300));
+
   // For now, return all mock gear items
   // TODO: Filter by tripId when backend is ready
-  return mockGearItems
+  return mockGearItems;
 }
 
 /**
@@ -255,19 +280,19 @@ export async function getGearItemsByTripId(tripId: string): Promise<GearItem[]> 
 export async function updateFamilyParticipation(
   tripId: string,
   familyId: string,
-  data: Partial<FamilyParticipation>
+  data: Partial<FamilyParticipation>,
 ): Promise<FamilyParticipation> {
   // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 300))
-  
+  await new Promise((resolve) => setTimeout(resolve, 300));
+
   // TODO: Make actual API call when backend is ready
-  console.log('Updating participation:', { tripId, familyId, data })
-  
+  console.log('Updating participation:', { tripId, familyId, data });
+
   // Return mock updated data
   const existing = mockFamilyParticipation.find(
-    p => p.tripId === tripId && p.familyId === familyId
-  )
-  
+    (p) => p.tripId === tripId && p.familyId === familyId,
+  );
+
   return {
     tripId,
     familyId,
@@ -276,7 +301,7 @@ export async function updateFamilyParticipation(
     dietaryRequirements: existing?.dietaryRequirements ?? '',
     gearCommitments: existing?.gearCommitments ?? {},
     ...data,
-  }
+  };
 }
 
 /**
@@ -285,8 +310,8 @@ export async function updateFamilyParticipation(
  */
 export async function getTrips(): Promise<Trip[]> {
   // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 500))
-  return mockTrips
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  return mockTrips;
 }
 
 /**
@@ -295,8 +320,8 @@ export async function getTrips(): Promise<Trip[]> {
  */
 export async function getAdmins(): Promise<any[]> {
   // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 500))
-  
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
   // Return mock admin data
   return [
     {
@@ -320,5 +345,5 @@ export async function getAdmins(): Promise<any[]> {
       role: 'סופר אדמין',
       avatar: null,
     },
-  ]
+  ];
 }
