@@ -25,7 +25,7 @@ export const createFamilyWithMembers = async (
     },
   ],
   children: Array<{ name: string; age: number }> = [],
-): Promise<Family> => {
+): Promise<Family & { members: User[] }> => {
   const family = await prisma.family.create({
     data: {
       name: 'Test Family',

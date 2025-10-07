@@ -5,6 +5,7 @@ import protectedRouter from './protected.js';
 import roleProtectedRouter from './role-protected.js';
 import familyRouter from './family.js';
 import tripRouter from './trip.js';
+import gearRouter from './gear.js';
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.use('/protected', protectedRouter);
 router.use('/role-protected', roleProtectedRouter);
 router.use('/families', familyRouter);
 router.use('/trips', tripRouter);
+router.use('/gear', gearRouter);
 
 export default router;

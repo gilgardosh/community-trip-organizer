@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   describe,
   it,
@@ -29,9 +30,8 @@ vi.mock('../src/services/log.service.js', () => ({
 // Mock OAuth middleware
 vi.mock('../src/middleware/oauth.middleware.js', () => ({
   default: {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     authenticate:
-      (_strategy: string) => (req: Request, res: Response, next: () => void) =>
+      () => (req: Request, res: Response, next: () => void) =>
         next(),
   },
   __esModule: true,
@@ -64,7 +64,10 @@ describe('Auth API', () => {
       });
 
       expect(res.status).toBe(201);
-      expect(res.body).toHaveProperty('token');
+      expect(res.body).toHaveProperty('tokens');
+      expect(res.body.tokens).toHaveProperty('accessToken');
+      expect(res.body).toHaveProperty('user');
+      expect(res.body).toHaveProperty('family');
 
       // Verify user was created in the database
       const user = (await prisma.user.findUnique({
@@ -103,7 +106,10 @@ describe('Auth API', () => {
       });
 
       expect(res.status).toBe(200);
-      expect(res.body).toHaveProperty('token');
+      expect(res.body).toHaveProperty('tokens');
+      expect(res.body.tokens).toHaveProperty('accessToken');
+      expect(res.body).toHaveProperty('user');
+      expect(res.body).toHaveProperty('family');
     });
 
     it('should not login with invalid credentials', async () => {
