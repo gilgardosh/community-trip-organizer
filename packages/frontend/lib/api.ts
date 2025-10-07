@@ -10,6 +10,10 @@ import type {
   UpdateMemberData,
   FamilyFilters,
 } from '@/types/family'
+import type { Trip, FamilyParticipation } from '@/data/mock/trips'
+import type { GearItem } from '@/data/mock/gear'
+import { mockTrips, mockFamilyParticipation } from '@/data/mock/trips'
+import { mockGearItems } from '@/data/mock/gear'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 
@@ -204,4 +208,117 @@ export async function removeFamilyMember(
     method: 'DELETE',
   })
   return response.json()
+}
+
+// ==================== TRIP API (MOCK - TODO: Implement backend) ====================
+
+/**
+ * Get trip with participation data
+ * TODO: Replace with actual API call when backend is ready
+ */
+export async function getTripWithParticipation(
+  tripId: string,
+  familyId: string
+): Promise<{ trip: Trip; participation: FamilyParticipation | null }> {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500))
+  
+  const trip = mockTrips.find(t => t.id === tripId)
+  if (!trip) {
+    throw new Error('Trip not found')
+  }
+  
+  const participation = mockFamilyParticipation.find(
+    p => p.tripId === tripId && p.familyId === familyId
+  ) || null
+  
+  return { trip, participation }
+}
+
+/**
+ * Get gear items by trip ID
+ * TODO: Replace with actual API call when backend is ready
+ */
+export async function getGearItemsByTripId(tripId: string): Promise<GearItem[]> {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 300))
+  
+  // For now, return all mock gear items
+  // TODO: Filter by tripId when backend is ready
+  return mockGearItems
+}
+
+/**
+ * Update family participation
+ * TODO: Replace with actual API call when backend is ready
+ */
+export async function updateFamilyParticipation(
+  tripId: string,
+  familyId: string,
+  data: Partial<FamilyParticipation>
+): Promise<FamilyParticipation> {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 300))
+  
+  // TODO: Make actual API call when backend is ready
+  console.log('Updating participation:', { tripId, familyId, data })
+  
+  // Return mock updated data
+  const existing = mockFamilyParticipation.find(
+    p => p.tripId === tripId && p.familyId === familyId
+  )
+  
+  return {
+    tripId,
+    familyId,
+    isParticipating: existing?.isParticipating ?? false,
+    isAttending: existing?.isAttending ?? false,
+    dietaryRequirements: existing?.dietaryRequirements ?? '',
+    gearCommitments: existing?.gearCommitments ?? {},
+    ...data,
+  }
+}
+
+/**
+ * Get all trips
+ * TODO: Replace with actual API call when backend is ready
+ */
+export async function getTrips(): Promise<Trip[]> {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500))
+  return mockTrips
+}
+
+/**
+ * Get all admins (for super-admin panel)
+ * TODO: Replace with actual API call when backend is ready
+ */
+export async function getAdmins(): Promise<any[]> {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500))
+  
+  // Return mock admin data
+  return [
+    {
+      id: 'admin1',
+      name: 'שרה מנהלת',
+      email: 'sarah@example.com',
+      role: 'מנהל טיול',
+      avatar: null,
+    },
+    {
+      id: 'admin2',
+      name: 'יוסי מארגן',
+      email: 'yossi@example.com',
+      role: 'מנהל טיול',
+      avatar: null,
+    },
+    {
+      id: 'superadmin',
+      name: 'אדמין ראשי',
+      email: 'admin@example.com',
+      role: 'סופר אדמין',
+      avatar: null,
+    },
+  ]
 }

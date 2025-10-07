@@ -236,7 +236,7 @@ export default function TripDetailsPage() {
               <Checkbox
                 id="attendance"
                 checked={isAttending}
-                onCheckedChange={setIsAttending}
+                onCheckedChange={(checked) => setIsAttending(checked === true)}
                 disabled={isAttendanceCutoffPassed}
               />
               <Label htmlFor="attendance" className="text-right">
@@ -296,14 +296,16 @@ export default function TripDetailsPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {gearItems.map((item) => (
+                  {gearItems.map((item) => {
+                    const quantityAssigned = item.quantityAssigned ?? 0
+                    return (
                     <div key={item.id} className="border border-border rounded-lg p-4 space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <Badge variant={item.quantityAssigned >= item.quantityNeeded ? "default" : "secondary"}>
-                            {item.quantityAssigned}/{item.quantityNeeded}
+                          <Badge variant={quantityAssigned >= item.quantityNeeded ? "default" : "secondary"}>
+                            {quantityAssigned}/{item.quantityNeeded}
                           </Badge>
-                          {item.quantityAssigned >= item.quantityNeeded && (
+                          {quantityAssigned >= item.quantityNeeded && (
                             <CheckCircle className="w-4 h-4 text-green-600" />
                           )}
                         </div>
@@ -317,12 +319,12 @@ export default function TripDetailsPage() {
                         </div>
                       )}
 
-                      {item.quantityAssigned < item.quantityNeeded && (
+                      {quantityAssigned < item.quantityNeeded && (
                         <div className="flex items-center gap-2">
                           <Input
                             type="number"
                             min="1"
-                            max={item.quantityNeeded - item.quantityAssigned}
+                            max={item.quantityNeeded - quantityAssigned}
                             placeholder="כמות"
                             className="w-20 text-center"
                             value={gearCommitments[item.id] || ""}
@@ -352,7 +354,7 @@ export default function TripDetailsPage() {
                         </div>
                       )}
                     </div>
-                  ))}
+                  )})}
                 </div>
               </CardContent>
             </Card>
