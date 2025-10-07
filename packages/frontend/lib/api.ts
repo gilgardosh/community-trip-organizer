@@ -476,73 +476,111 @@ export async function deleteScheduleItem(
   return response.json();
 }
 
-// ==================== LEGACY MOCK FUNCTIONS (For backward compatibility) ====================
+// ==================== GEAR API ====================
+
+import type {
+  GearItem as GearItemType,
+  CreateGearItemData,
+  UpdateGearItemData,
+  AssignGearData,
+  GearSummary,
+} from '@/types/gear';
 
 /**
- * Get trip with participation data
- * TODO: Remove when all components are migrated to new API
+ * Create a new gear item
  */
-export async function getTripWithParticipation(
-  tripId: string,
-  familyId: string,
-): Promise<{ trip: Trip; participation: FamilyParticipation | null }> {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  const trip = mockTrips.find((t) => t.id === tripId);
-  if (!trip) {
-    throw new Error('Trip not found');
-  }
-
-  const participation =
-    mockFamilyParticipation.find(
-      (p) => p.tripId === tripId && p.familyId === familyId,
-    ) || null;
-
-  return { trip, participation };
+export async function createGearItem(data: CreateGearItemData): Promise<GearItemType> {
+  const response = await fetchWithAuth(`/api/gear`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+  return response.json();
 }
 
 /**
- * Get gear items by trip ID
- * TODO: Remove when all components are migrated to new API
+ * Get all gear items for a trip
  */
-export async function getGearItemsByTripId(
-  tripId: string,
-): Promise<GearItem[]> {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 300));
-
-  // For now, return all mock gear items
-  return mockGearItems;
+export async function getGearItemsByTrip(tripId: string): Promise<GearItemType[]> {
+  const response = await fetchWithAuth(`/api/gear/trip/${tripId}`);
+  return response.json();
 }
 
 /**
- * Update family participation
- * TODO: Remove when all components are migrated to new API
+ * Get gear item by ID
  */
-export async function updateFamilyParticipation(
+export async function getGearItemById(id: string): Promise<GearItemType> {
+  const response = await fetchWithAuth(`/api/gear/${id}`);
+  return response.json();
+}
+
+/**
+ * Update gear item
+ */
+export async function updateGearItem(
+  id: string,
+  data: UpdateGearItemData,
+): Promise<GearItemType> {
+  const response = await fetchWithAuth(`/api/gear/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
+
+/**
+ * Delete gear item
+ */
+export async function deleteGearItem(id: string): Promise<{ message: string }> {
+  const response = await fetchWithAuth(`/api/gear/${id}`, {
+    method: 'DELETE',
+  });
+  return response.json();
+}
+
+/**
+ * Assign gear to a family
+ */
+export async function assignGear(
+  gearItemId: string,
+  data: AssignGearData,
+): Promise<any> {
+  const response = await fetchWithAuth(`/api/gear/${gearItemId}/assign`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
+
+/**
+ * Remove gear assignment from a family
+ */
+export async function removeGearAssignment(
+  gearItemId: string,
+  familyId: string,
+): Promise<{ message: string }> {
+  const response = await fetchWithAuth(`/api/gear/${gearItemId}/assign/${familyId}`, {
+    method: 'DELETE',
+  });
+  return response.json();
+}
+
+/**
+ * Get gear summary for a trip
+ */
+export async function getGearSummary(tripId: string): Promise<GearSummary> {
+  const response = await fetchWithAuth(`/api/gear/trip/${tripId}/summary`);
+  return response.json();
+}
+
+/**
+ * Get family's gear assignments for a trip
+ */
+export async function getFamilyGearAssignments(
   tripId: string,
   familyId: string,
-  data: Partial<FamilyParticipation>,
-): Promise<FamilyParticipation> {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 300));
-
-  console.log('Updating participation:', { tripId, familyId, data });
-
-  const existing = mockFamilyParticipation.find(
-    (p) => p.tripId === tripId && p.familyId === familyId,
-  );
-
-  return {
-    tripId,
-    familyId,
-    isParticipating: existing?.isParticipating ?? false,
-    isAttending: existing?.isAttending ?? false,
-    dietaryRequirements: existing?.dietaryRequirements ?? '',
-    gearCommitments: existing?.gearCommitments ?? {},
-    ...data,
-  };
+): Promise<GearItemType[]> {
+  const response = await fetchWithAuth(`/api/gear/trip/${tripId}/family/${familyId}`);
+  return response.json();
 }
 
 /**
