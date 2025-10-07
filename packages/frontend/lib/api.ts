@@ -232,11 +232,176 @@ export async function removeFamilyMember(
   return response.json();
 }
 
-// ==================== TRIP API (MOCK - TODO: Implement backend) ====================
+// ==================== TRIP API ====================
+
+import type {
+  Trip as TripType,
+  CreateTripData as CreateTripDataType,
+  UpdateTripData as UpdateTripDataType,
+  TripFilters as TripFiltersType,
+  MarkAttendanceData,
+  AssignAdminsData,
+} from '@/types/trip';
+
+/**
+ * Get all trips with optional filters
+ */
+export async function getTrips(filters?: TripFiltersType): Promise<TripType[]> {
+  const params = new URLSearchParams();
+
+  if (filters?.draft !== undefined) {
+    params.append('draft', String(filters.draft));
+  }
+
+  if (filters?.startDateFrom) {
+    params.append('startDateFrom', new Date(filters.startDateFrom).toISOString());
+  }
+
+  if (filters?.startDateTo) {
+    params.append('startDateTo', new Date(filters.startDateTo).toISOString());
+  }
+
+  if (filters?.includePast !== undefined) {
+    params.append('includePast', String(filters.includePast));
+  }
+
+  const queryString = params.toString();
+  const endpoint = `/api/trips${queryString ? `?${queryString}` : ''}`;
+
+  const response = await fetchWithAuth(endpoint);
+  return response.json();
+}
+
+/**
+ * Get trip by ID
+ */
+export async function getTripById(id: string): Promise<TripType> {
+  const response = await fetchWithAuth(`/api/trips/${id}`);
+  return response.json();
+}
+
+/**
+ * Create a new trip
+ */
+export async function createTrip(data: CreateTripDataType): Promise<TripType> {
+  const response = await fetchWithAuth(`/api/trips`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
+
+/**
+ * Update trip
+ */
+export async function updateTrip(
+  id: string,
+  data: UpdateTripDataType,
+): Promise<TripType> {
+  const response = await fetchWithAuth(`/api/trips/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
+
+/**
+ * Publish trip (Super-admin only)
+ */
+export async function publishTrip(id: string): Promise<TripType> {
+  const response = await fetchWithAuth(`/api/trips/${id}/publish`, {
+    method: 'POST',
+  });
+  return response.json();
+}
+
+/**
+ * Unpublish trip (Super-admin only)
+ */
+export async function unpublishTrip(id: string): Promise<TripType> {
+  const response = await fetchWithAuth(`/api/trips/${id}/unpublish`, {
+    method: 'POST',
+  });
+  return response.json();
+}
+
+/**
+ * Assign admins to trip (Super-admin only)
+ */
+export async function assignTripAdmins(
+  id: string,
+  data: AssignAdminsData,
+): Promise<TripType> {
+  const response = await fetchWithAuth(`/api/trips/${id}/admins`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
+
+/**
+ * Add admin to trip (Super-admin only)
+ */
+export async function addTripAdmin(
+  id: string,
+  adminId: string,
+): Promise<TripType> {
+  const response = await fetchWithAuth(`/api/trips/${id}/admins/${adminId}`, {
+    method: 'POST',
+  });
+  return response.json();
+}
+
+/**
+ * Remove admin from trip (Super-admin only)
+ */
+export async function removeTripAdmin(
+  id: string,
+  adminId: string,
+): Promise<TripType> {
+  const response = await fetchWithAuth(`/api/trips/${id}/admins/${adminId}`, {
+    method: 'DELETE',
+  });
+  return response.json();
+}
+
+/**
+ * Mark attendance for a trip
+ */
+export async function markTripAttendance(
+  tripId: string,
+  data: MarkAttendanceData,
+): Promise<TripType> {
+  const response = await fetchWithAuth(`/api/trips/${tripId}/attendance`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
+
+/**
+ * Get trip attendees
+ */
+export async function getTripAttendees(tripId: string): Promise<any[]> {
+  const response = await fetchWithAuth(`/api/trips/${tripId}/attendees`);
+  return response.json();
+}
+
+/**
+ * Delete trip (Super-admin only)
+ */
+export async function deleteTrip(id: string): Promise<{ message: string }> {
+  const response = await fetchWithAuth(`/api/trips/${id}`, {
+    method: 'DELETE',
+  });
+  return response.json();
+}
+
+// ==================== LEGACY MOCK FUNCTIONS (For backward compatibility) ====================
 
 /**
  * Get trip with participation data
- * TODO: Replace with actual API call when backend is ready
+ * TODO: Remove when all components are migrated to new API
  */
 export async function getTripWithParticipation(
   tripId: string,
@@ -260,7 +425,7 @@ export async function getTripWithParticipation(
 
 /**
  * Get gear items by trip ID
- * TODO: Replace with actual API call when backend is ready
+ * TODO: Remove when all components are migrated to new API
  */
 export async function getGearItemsByTripId(
   tripId: string,
@@ -269,13 +434,12 @@ export async function getGearItemsByTripId(
   await new Promise((resolve) => setTimeout(resolve, 300));
 
   // For now, return all mock gear items
-  // TODO: Filter by tripId when backend is ready
   return mockGearItems;
 }
 
 /**
  * Update family participation
- * TODO: Replace with actual API call when backend is ready
+ * TODO: Remove when all components are migrated to new API
  */
 export async function updateFamilyParticipation(
   tripId: string,
@@ -285,10 +449,8 @@ export async function updateFamilyParticipation(
   // Simulate API delay
   await new Promise((resolve) => setTimeout(resolve, 300));
 
-  // TODO: Make actual API call when backend is ready
   console.log('Updating participation:', { tripId, familyId, data });
 
-  // Return mock updated data
   const existing = mockFamilyParticipation.find(
     (p) => p.tripId === tripId && p.familyId === familyId,
   );
@@ -305,18 +467,7 @@ export async function updateFamilyParticipation(
 }
 
 /**
- * Get all trips
- * TODO: Replace with actual API call when backend is ready
- */
-export async function getTrips(): Promise<Trip[]> {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return mockTrips;
-}
-
-/**
  * Get all admins (for super-admin panel)
- * TODO: Replace with actual API call when backend is ready
  */
 export async function getAdmins(): Promise<any[]> {
   // Simulate API delay
