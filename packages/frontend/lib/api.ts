@@ -397,6 +397,85 @@ export async function deleteTrip(id: string): Promise<{ message: string }> {
   return response.json();
 }
 
+/**
+ * Update dietary requirements for a family
+ */
+export async function updateDietaryRequirements(
+  tripId: string,
+  familyId: string,
+  dietaryRequirements?: string,
+): Promise<any> {
+  const response = await fetchWithAuth(`/api/trips/${tripId}/dietary-requirements`, {
+    method: 'PUT',
+    body: JSON.stringify({ familyId, dietaryRequirements }),
+  });
+  return response.json();
+}
+
+/**
+ * Get trip schedule
+ */
+export async function getTripSchedule(tripId: string): Promise<any[]> {
+  const response = await fetchWithAuth(`/api/trips/${tripId}/schedule`);
+  return response.json();
+}
+
+/**
+ * Add schedule item to trip
+ */
+export async function addScheduleItem(
+  tripId: string,
+  data: {
+    day: number;
+    startTime: string;
+    endTime?: string;
+    title: string;
+    description?: string;
+    location?: string;
+  },
+): Promise<any> {
+  const response = await fetchWithAuth(`/api/trips/${tripId}/schedule`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
+
+/**
+ * Update schedule item
+ */
+export async function updateScheduleItem(
+  tripId: string,
+  scheduleId: string,
+  data: Partial<{
+    day: number;
+    startTime: string;
+    endTime?: string;
+    title: string;
+    description?: string;
+    location?: string;
+  }>,
+): Promise<any> {
+  const response = await fetchWithAuth(`/api/trips/${tripId}/schedule/${scheduleId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
+
+/**
+ * Delete schedule item
+ */
+export async function deleteScheduleItem(
+  tripId: string,
+  scheduleId: string,
+): Promise<{ message: string }> {
+  const response = await fetchWithAuth(`/api/trips/${tripId}/schedule/${scheduleId}`, {
+    method: 'DELETE',
+  });
+  return response.json();
+}
+
 // ==================== LEGACY MOCK FUNCTIONS (For backward compatibility) ====================
 
 /**

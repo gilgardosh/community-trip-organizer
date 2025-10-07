@@ -13,6 +13,9 @@ export interface TripAttendee {
   id: string;
   tripId: string;
   familyId: string;
+  dietaryRequirements?: string;
+  createdAt: string;
+  updatedAt: string;
   family: {
     id: string;
     name?: string;
@@ -23,6 +26,19 @@ export interface TripAttendee {
       age?: number;
     }>;
   };
+}
+
+export interface TripScheduleItem {
+  id: string;
+  tripId: string;
+  day: number;
+  startTime: string;
+  endTime?: string;
+  title: string;
+  description?: string;
+  location?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface GearAssignment {
@@ -64,6 +80,7 @@ export interface Trip {
   admins: TripAdmin[];
   attendees: TripAttendee[];
   gearItems: GearItem[];
+  scheduleItems: TripScheduleItem[];
 }
 
 export interface CreateTripData {

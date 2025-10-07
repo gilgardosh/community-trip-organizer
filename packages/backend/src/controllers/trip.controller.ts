@@ -57,6 +57,20 @@ const markAttendanceSchema = z.object({
   attending: z.boolean(),
 });
 
+const updateDietaryRequirementsSchema = z.object({
+  familyId: z.string().min(1, 'Family ID is required'),
+  dietaryRequirements: z.string().optional(),
+});
+
+const scheduleItemSchema = z.object({
+  day: z.number().int().min(1, 'Day must be at least 1'),
+  startTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, 'Start time must be in HH:MM format'),
+  endTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, 'End time must be in HH:MM format').optional(),
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().optional(),
+  location: z.string().optional(),
+});
+
 /**
  * Create a new trip
  * @route POST /api/trips
@@ -293,6 +307,141 @@ const deleteTrip = asyncHandler(async (req: Request, res: Response) => {
   res.json(result);
 });
 
+/**
+ * Update dietary requirements for a family
+ * @route PUT /api/trips/:id/dietary-requirements
+ * @access Families can update their own, trip admins can update for any family in their trips
+ */
+const updateDietaryRequirements = asyncHandler(
+  async (req: Request, res: Response) => {
+    const user = req.user as User;
+    const data = updateDietaryRequirementsSchema.parse(req.body);
+
+    const result = await tripService.updateDietaryRequirements(
+      req.params.id,
+      data,
+      user.id,
+      user.role,
+    );
+
+    // Log dietary requirements update
+    await logService.log(
+      user.id,
+      ActionType.UPDATE,
+      'TripAttendance',
+      req.params.id,
+      {
+        familyId: data.familyId,
+        dietaryRequirements: data.dietaryRequirements,
+      },
+    );
+
+    res.json(result);
+  },
+);
+
+/**
+ * Get trip schedule
+ * @route GET /api/trips/:id/schedule
+ * @access All authenticated users (based on role and trip status)
+ */
+const getTripSchedule = asyncHandler(async (req: Request, res: Response) => {
+  const user = req.user as User;
+  const schedule = await tripService.getTripSchedule(
+    req.params.id,
+    user.id,
+    user.role,
+  );
+
+  res.json(schedule);
+});
+
+/**
+ * Add schedule item to trip
+ * @route POST /api/trips/:id/schedule
+ * @access Trip admins of this trip, SUPER_ADMIN
+ */
+const addScheduleItem = asyncHandler(async (req: Request, res: Response) => {
+  const user = req.user as User;
+  const data = scheduleItemSchema.parse(req.body);
+
+  const scheduleItem = await tripService.addScheduleItem(
+    req.params.id,
+    data,
+    user.id,
+    user.role,
+  );
+
+  // Log schedule item creation
+  await logService.log(
+    user.id,
+    ActionType.CREATE,
+    'TripScheduleItem',
+    scheduleItem.id,
+    data,
+  );
+
+  res.status(201).json(scheduleItem);
+});
+
+/**
+ * Update schedule item
+ * @route PUT /api/trips/:id/schedule/:scheduleId
+ * @access Trip admins of this trip, SUPER_ADMIN
+ */
+const updateScheduleItem = asyncHandler(
+  async (req: Request, res: Response) => {
+    const user = req.user as User;
+    const data = scheduleItemSchema.partial().parse(req.body);
+
+    const scheduleItem = await tripService.updateScheduleItem(
+      req.params.id,
+      req.params.scheduleId,
+      data,
+      user.id,
+      user.role,
+    );
+
+    // Log schedule item update
+    await logService.log(
+      user.id,
+      ActionType.UPDATE,
+      'TripScheduleItem',
+      req.params.scheduleId,
+      data,
+    );
+
+    res.json(scheduleItem);
+  },
+);
+
+/**
+ * Delete schedule item
+ * @route DELETE /api/trips/:id/schedule/:scheduleId
+ * @access Trip admins of this trip, SUPER_ADMIN
+ */
+const deleteScheduleItem = asyncHandler(
+  async (req: Request, res: Response) => {
+    const user = req.user as User;
+    const result = await tripService.deleteScheduleItem(
+      req.params.id,
+      req.params.scheduleId,
+      user.id,
+      user.role,
+    );
+
+    // Log schedule item deletion
+    await logService.log(
+      user.id,
+      ActionType.DELETE,
+      'TripScheduleItem',
+      req.params.scheduleId,
+    );
+
+    res.json(result);
+  },
+);
+
 export const tripController = {
   createTrip,
   getAllTrips,
@@ -306,4 +455,9 @@ export const tripController = {
   markAttendance,
   getTripAttendees,
   deleteTrip,
+  updateDietaryRequirements,
+  getTripSchedule,
+  addScheduleItem,
+  updateScheduleItem,
+  deleteScheduleItem,
 };

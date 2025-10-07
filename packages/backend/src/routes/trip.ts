@@ -90,4 +90,38 @@ router.post('/:id/attendance', tripController.markAttendance);
 // All authenticated users can view (based on role and trip visibility)
 router.get('/:id/attendees', tripController.getTripAttendees);
 
+// Dietary requirements
+
+// Update dietary requirements for a family
+// FAMILY: can update their own dietary requirements
+// TRIP_ADMIN: can update for any family in trips they manage
+// SUPER_ADMIN: can update for any family
+router.put('/:id/dietary-requirements', tripController.updateDietaryRequirements);
+
+// Trip schedule management
+
+// Get trip schedule
+router.get('/:id/schedule', tripController.getTripSchedule);
+
+// Add schedule item (TRIP_ADMIN and SUPER_ADMIN only)
+router.post(
+  '/:id/schedule',
+  authorize(Role.TRIP_ADMIN, Role.SUPER_ADMIN),
+  tripController.addScheduleItem,
+);
+
+// Update schedule item (TRIP_ADMIN and SUPER_ADMIN only)
+router.put(
+  '/:id/schedule/:scheduleId',
+  authorize(Role.TRIP_ADMIN, Role.SUPER_ADMIN),
+  tripController.updateScheduleItem,
+);
+
+// Delete schedule item (TRIP_ADMIN and SUPER_ADMIN only)
+router.delete(
+  '/:id/schedule/:scheduleId',
+  authorize(Role.TRIP_ADMIN, Role.SUPER_ADMIN),
+  tripController.deleteScheduleItem,
+);
+
 export default router;

@@ -45,20 +45,21 @@ model User {
 }
 
 model Trip {
-  id                   String           @id @default(cuid())
+  id                   String              @id @default(cuid())
   name                 String
   location             String
   description          String?
   startDate            DateTime
   endDate              DateTime
-  draft                Boolean          @default(true)
+  draft                Boolean             @default(true)
   attendanceCutoffDate DateTime?
   photoAlbumLink       String?
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
   gearItems            GearItem[]
-  admins               User[]           @relation("TripAdmins")
+  admins               User[]              @relation("TripAdmins")
   attendees            TripAttendance[]
+  scheduleItems        TripScheduleItem[]
 }
 
 model GearItem {
@@ -82,12 +83,29 @@ model GearAssignment {
 }
 
 model TripAttendance {
-  tripId   String
-  trip     Trip   @relation(fields: [tripId], references: [id], onDelete: Cascade)
-  familyId String
-  family   Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  tripId              String
+  trip                Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  familyId            String
+  family              Family   @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  dietaryRequirements String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
   @@id([tripId, familyId])
+}
+
+model TripScheduleItem {
+  id          String   @id @default(cuid())
+  tripId      String
+  trip        Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  day         Int // Day of the trip (1 for first day, 2 for second day, etc.)
+  startTime   String // Time in HH:MM format
+  endTime     String? // Optional end time in HH:MM format
+  title       String
+  description String?
+  location    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Log {

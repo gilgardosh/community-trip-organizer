@@ -38,6 +38,20 @@ export interface MarkAttendanceData {
   attending: boolean;
 }
 
+export interface UpdateDietaryRequirementsData {
+  familyId: string;
+  dietaryRequirements?: string;
+}
+
+export interface ScheduleItemData {
+  day: number;
+  startTime: string;
+  endTime?: string;
+  title: string;
+  description?: string;
+  location?: string;
+}
+
 /**
  * Trip service for managing trip entities
  */
@@ -112,6 +126,9 @@ export const tripService = {
           },
         },
         gearItems: true,
+        scheduleItems: {
+          orderBy: [{ day: 'asc' }, { startTime: 'asc' }],
+        },
       },
     });
 
@@ -168,6 +185,9 @@ export const tripService = {
               },
             },
           },
+        },
+        scheduleItems: {
+          orderBy: [{ day: 'asc' }, { startTime: 'asc' }],
         },
       },
     });
@@ -296,6 +316,9 @@ export const tripService = {
               },
             },
           },
+        },
+        scheduleItems: {
+          orderBy: [{ day: 'asc' }, { startTime: 'asc' }],
         },
       },
       orderBy: {
@@ -998,5 +1021,320 @@ export const tripService = {
     });
 
     return { message: 'Trip deleted successfully' };
+  },
+
+  /**
+   * Update dietary requirements for a family
+   */
+  updateDietaryRequirements: async (
+    tripId: string,
+    data: UpdateDietaryRequirementsData,
+    userId: string,
+    userRole: Role,
+  ) => {
+    const trip = await prisma.trip.findUnique({
+      where: { id: tripId },
+      include: {
+        admins: true,
+        attendees: true,
+      },
+    });
+
+    if (!trip) {
+      throw new ApiError(404, 'Trip not found');
+    }
+
+    // Can't update dietary requirements for draft trips
+    if (trip.draft) {
+      throw new ApiError(
+        400,
+        'Cannot update dietary requirements for draft trips',
+      );
+    }
+
+    // Check permissions
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { family: true },
+    });
+
+    if (!user) {
+      throw new ApiError(404, 'User not found');
+    }
+
+    const isTripAdmin = trip.admins.some((admin) => admin.id === userId);
+    const isOwnFamily = user.familyId === data.familyId;
+
+    if (userRole === Role.FAMILY && !isOwnFamily) {
+      throw new ApiError(
+        403,
+        'You can only update dietary requirements for your own family',
+      );
+    }
+
+    if (userRole === Role.TRIP_ADMIN && !isTripAdmin) {
+      throw new ApiError(
+        403,
+        'You can only update dietary requirements for trips you manage',
+      );
+    }
+
+    // Check if family is attending
+    const attendance = trip.attendees.find(
+      (att) => att.familyId === data.familyId,
+    );
+
+    if (!attendance) {
+      throw new ApiError(
+        400,
+        'Family must be attending the trip to update dietary requirements',
+      );
+    }
+
+    // Update dietary requirements
+    const updatedAttendance = await prisma.tripAttendance.update({
+      where: {
+        tripId_familyId: {
+          tripId,
+          familyId: data.familyId,
+        },
+      },
+      data: {
+        dietaryRequirements: data.dietaryRequirements,
+        updatedAt: new Date(),
+      },
+      include: {
+        family: {
+          include: {
+            members: {
+              select: {
+                id: true,
+                type: true,
+                name: true,
+                age: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return updatedAttendance;
+  },
+
+  /**
+   * Get trip schedule
+   */
+  getTripSchedule: async (tripId: string, userId: string, userRole: Role) => {
+    const trip = await prisma.trip.findUnique({
+      where: { id: tripId },
+      include: {
+        admins: true,
+      },
+    });
+
+    if (!trip) {
+      throw new ApiError(404, 'Trip not found');
+    }
+
+    // Check permissions for draft trips
+    if (trip.draft) {
+      const isTripAdmin = trip.admins.some((admin) => admin.id === userId);
+      if (userRole !== Role.SUPER_ADMIN && !isTripAdmin) {
+        throw new ApiError(
+          403,
+          'Draft trips are only visible to trip admins and super-admins',
+        );
+      }
+    }
+
+    const scheduleItems = await prisma.tripScheduleItem.findMany({
+      where: { tripId },
+      orderBy: [{ day: 'asc' }, { startTime: 'asc' }],
+    });
+
+    return scheduleItems;
+  },
+
+  /**
+   * Add schedule item to trip
+   */
+  addScheduleItem: async (
+    tripId: string,
+    data: ScheduleItemData,
+    userId: string,
+    userRole: Role,
+  ) => {
+    const trip = await prisma.trip.findUnique({
+      where: { id: tripId },
+      include: {
+        admins: true,
+      },
+    });
+
+    if (!trip) {
+      throw new ApiError(404, 'Trip not found');
+    }
+
+    // Check permissions
+    const isTripAdmin = trip.admins.some((admin) => admin.id === userId);
+    if (userRole !== Role.SUPER_ADMIN && !isTripAdmin) {
+      throw new ApiError(
+        403,
+        'Only trip admins and super-admins can add schedule items',
+      );
+    }
+
+    // Validate day is within trip duration
+    const tripDays =
+      Math.ceil(
+        (new Date(trip.endDate).getTime() -
+          new Date(trip.startDate).getTime()) /
+          (1000 * 60 * 60 * 24),
+      ) + 1;
+
+    if (data.day > tripDays) {
+      throw new ApiError(
+        400,
+        `Day ${data.day} is beyond trip duration (${tripDays} days)`,
+      );
+    }
+
+    const scheduleItem = await prisma.tripScheduleItem.create({
+      data: {
+        tripId,
+        day: data.day,
+        startTime: data.startTime,
+        endTime: data.endTime,
+        title: data.title,
+        description: data.description,
+        location: data.location,
+      },
+    });
+
+    return scheduleItem;
+  },
+
+  /**
+   * Update schedule item
+   */
+  updateScheduleItem: async (
+    tripId: string,
+    scheduleId: string,
+    data: Partial<ScheduleItemData>,
+    userId: string,
+    userRole: Role,
+  ) => {
+    const trip = await prisma.trip.findUnique({
+      where: { id: tripId },
+      include: {
+        admins: true,
+      },
+    });
+
+    if (!trip) {
+      throw new ApiError(404, 'Trip not found');
+    }
+
+    const scheduleItem = await prisma.tripScheduleItem.findUnique({
+      where: { id: scheduleId },
+    });
+
+    if (!scheduleItem) {
+      throw new ApiError(404, 'Schedule item not found');
+    }
+
+    if (scheduleItem.tripId !== tripId) {
+      throw new ApiError(400, 'Schedule item does not belong to this trip');
+    }
+
+    // Check permissions
+    const isTripAdmin = trip.admins.some((admin) => admin.id === userId);
+    if (userRole !== Role.SUPER_ADMIN && !isTripAdmin) {
+      throw new ApiError(
+        403,
+        'Only trip admins and super-admins can update schedule items',
+      );
+    }
+
+    // Validate day is within trip duration if provided
+    if (data.day) {
+      const tripDays =
+        Math.ceil(
+          (new Date(trip.endDate).getTime() -
+            new Date(trip.startDate).getTime()) /
+            (1000 * 60 * 60 * 24),
+        ) + 1;
+
+      if (data.day > tripDays) {
+        throw new ApiError(
+          400,
+          `Day ${data.day} is beyond trip duration (${tripDays} days)`,
+        );
+      }
+    }
+
+    const updatedScheduleItem = await prisma.tripScheduleItem.update({
+      where: { id: scheduleId },
+      data: {
+        day: data.day,
+        startTime: data.startTime,
+        endTime: data.endTime,
+        title: data.title,
+        description: data.description,
+        location: data.location,
+        updatedAt: new Date(),
+      },
+    });
+
+    return updatedScheduleItem;
+  },
+
+  /**
+   * Delete schedule item
+   */
+  deleteScheduleItem: async (
+    tripId: string,
+    scheduleId: string,
+    userId: string,
+    userRole: Role,
+  ) => {
+    const trip = await prisma.trip.findUnique({
+      where: { id: tripId },
+      include: {
+        admins: true,
+      },
+    });
+
+    if (!trip) {
+      throw new ApiError(404, 'Trip not found');
+    }
+
+    const scheduleItem = await prisma.tripScheduleItem.findUnique({
+      where: { id: scheduleId },
+    });
+
+    if (!scheduleItem) {
+      throw new ApiError(404, 'Schedule item not found');
+    }
+
+    if (scheduleItem.tripId !== tripId) {
+      throw new ApiError(400, 'Schedule item does not belong to this trip');
+    }
+
+    // Check permissions
+    const isTripAdmin = trip.admins.some((admin) => admin.id === userId);
+    if (userRole !== Role.SUPER_ADMIN && !isTripAdmin) {
+      throw new ApiError(
+        403,
+        'Only trip admins and super-admins can delete schedule items',
+      );
+    }
+
+    await prisma.tripScheduleItem.delete({
+      where: { id: scheduleId },
+    });
+
+    return { message: 'Schedule item deleted successfully' };
   },
 };

@@ -6,3 +6,8 @@ export { AttendanceMarker } from './AttendanceMarker';
 export { TripAdminManager } from './TripAdminManager';
 export { TripPublishControl } from './TripPublishControl';
 export { TripDetailHeader } from './TripDetailHeader';
+export { TripSchedule } from './TripSchedule';
+export { TripLocation } from './TripLocation';
+export { AttendanceSummary } from './AttendanceSummary';
+export { TripFilters } from './TripFilters';
+export type { TripFilterValues } from './TripFilters';
