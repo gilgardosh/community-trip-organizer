@@ -349,22 +349,24 @@
 
 ### 5.2 Gear Frontend Implementation
 
-- [ ] Gear Listing
-  - [ ] Create gear listing by trip
-  - [ ] Implement gear detail component
-  - [ ] Add gear status indicators
-- [ ] Gear Management
-  - [ ] Create gear creation interface for admins
-  - [ ] Implement gear editing functionality
-  - [ ] Add gear volunteer UI for families
-  - [ ] Create quantity tracking display
-- [ ] Admin Features
-  - [ ] Implement gear assignment summary
-  - [ ] Create gear management dashboard
-- [ ] Testing
-  - [ ] Test all gear components
-  - [ ] Verify RTL support and Hebrew text
-  - [ ] Test responsive design
+- [x] Gear Listing
+  - [x] Create gear listing by trip (GearList component)
+  - [x] Implement gear detail component (GearItem component)
+  - [x] Add gear status indicators (GearStatusIndicator component)
+- [x] Gear Management
+  - [x] Create gear creation interface for admins (GearCreateDialog)
+  - [x] Implement gear editing functionality (GearEditDialog)
+  - [x] Add gear volunteer UI for families (GearVolunteerDialog, FamilyGearList)
+  - [x] Create quantity tracking display (with 6 helper functions)
+- [x] Admin Features
+  - [x] Implement gear assignment summary (GearSummary component)
+  - [x] Create gear management dashboard (GearList with admin controls)
+  - [x] Add gear assignment list (GearAssignmentList component)
+  - [x] Add gear deletion with confirmation (GearDeleteDialog)
+- [x] Testing
+  - [x] Test all gear components
+  - [x] Verify RTL support and Hebrew text throughout
+  - [x] Test responsive design
 
 ## Phase 6: WhatsApp Integration
 
