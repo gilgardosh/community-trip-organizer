@@ -10,15 +10,21 @@ interface TripScheduleProps {
   tripStartDate: string;
 }
 
-export function TripSchedule({ scheduleItems, tripStartDate }: TripScheduleProps) {
+export function TripSchedule({
+  scheduleItems,
+  tripStartDate,
+}: TripScheduleProps) {
   // Group schedule items by day
-  const scheduleByDay = scheduleItems.reduce((acc, item) => {
-    if (!acc[item.day]) {
-      acc[item.day] = [];
-    }
-    acc[item.day].push(item);
-    return acc;
-  }, {} as Record<number, TripScheduleItem[]>);
+  const scheduleByDay = scheduleItems.reduce(
+    (acc, item) => {
+      if (!acc[item.day]) {
+        acc[item.day] = [];
+      }
+      acc[item.day].push(item);
+      return acc;
+    },
+    {} as Record<number, TripScheduleItem[]>,
+  );
 
   const getDayDate = (day: number) => {
     const date = new Date(tripStartDate);

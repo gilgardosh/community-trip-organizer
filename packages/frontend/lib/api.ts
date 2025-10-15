@@ -10,10 +10,6 @@ import type {
   UpdateMemberData,
   FamilyFilters,
 } from '@/types/family';
-import type { Trip, FamilyParticipation } from '@/data/mock/trips';
-import type { GearItem } from '@/data/mock/gear';
-import { mockTrips, mockFamilyParticipation } from '@/data/mock/trips';
-import { mockGearItems } from '@/data/mock/gear';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -254,7 +250,10 @@ export async function getTrips(filters?: TripFiltersType): Promise<TripType[]> {
   }
 
   if (filters?.startDateFrom) {
-    params.append('startDateFrom', new Date(filters.startDateFrom).toISOString());
+    params.append(
+      'startDateFrom',
+      new Date(filters.startDateFrom).toISOString(),
+    );
   }
 
   if (filters?.startDateTo) {
@@ -382,7 +381,7 @@ export async function markTripAttendance(
 /**
  * Get trip attendees
  */
-export async function getTripAttendees(tripId: string): Promise<any[]> {
+export async function getTripAttendees(tripId: string): Promise<unknown[]> {
   const response = await fetchWithAuth(`/api/trips/${tripId}/attendees`);
   return response.json();
 }
@@ -404,18 +403,21 @@ export async function updateDietaryRequirements(
   tripId: string,
   familyId: string,
   dietaryRequirements?: string,
-): Promise<any> {
-  const response = await fetchWithAuth(`/api/trips/${tripId}/dietary-requirements`, {
-    method: 'PUT',
-    body: JSON.stringify({ familyId, dietaryRequirements }),
-  });
+): Promise<unknown> {
+  const response = await fetchWithAuth(
+    `/api/trips/${tripId}/dietary-requirements`,
+    {
+      method: 'PUT',
+      body: JSON.stringify({ familyId, dietaryRequirements }),
+    },
+  );
   return response.json();
 }
 
 /**
  * Get trip schedule
  */
-export async function getTripSchedule(tripId: string): Promise<any[]> {
+export async function getTripSchedule(tripId: string): Promise<unknown[]> {
   const response = await fetchWithAuth(`/api/trips/${tripId}/schedule`);
   return response.json();
 }
@@ -433,7 +435,7 @@ export async function addScheduleItem(
     description?: string;
     location?: string;
   },
-): Promise<any> {
+): Promise<unknown> {
   const response = await fetchWithAuth(`/api/trips/${tripId}/schedule`, {
     method: 'POST',
     body: JSON.stringify(data),
@@ -455,11 +457,14 @@ export async function updateScheduleItem(
     description?: string;
     location?: string;
   }>,
-): Promise<any> {
-  const response = await fetchWithAuth(`/api/trips/${tripId}/schedule/${scheduleId}`, {
-    method: 'PUT',
-    body: JSON.stringify(data),
-  });
+): Promise<unknown> {
+  const response = await fetchWithAuth(
+    `/api/trips/${tripId}/schedule/${scheduleId}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    },
+  );
   return response.json();
 }
 
@@ -470,9 +475,12 @@ export async function deleteScheduleItem(
   tripId: string,
   scheduleId: string,
 ): Promise<{ message: string }> {
-  const response = await fetchWithAuth(`/api/trips/${tripId}/schedule/${scheduleId}`, {
-    method: 'DELETE',
-  });
+  const response = await fetchWithAuth(
+    `/api/trips/${tripId}/schedule/${scheduleId}`,
+    {
+      method: 'DELETE',
+    },
+  );
   return response.json();
 }
 
@@ -489,7 +497,9 @@ import type {
 /**
  * Create a new gear item
  */
-export async function createGearItem(data: CreateGearItemData): Promise<GearItemType> {
+export async function createGearItem(
+  data: CreateGearItemData,
+): Promise<GearItemType> {
   const response = await fetchWithAuth(`/api/gear`, {
     method: 'POST',
     body: JSON.stringify(data),
@@ -500,7 +510,9 @@ export async function createGearItem(data: CreateGearItemData): Promise<GearItem
 /**
  * Get all gear items for a trip
  */
-export async function getGearItemsByTrip(tripId: string): Promise<GearItemType[]> {
+export async function getGearItemsByTrip(
+  tripId: string,
+): Promise<GearItemType[]> {
   const response = await fetchWithAuth(`/api/gear/trip/${tripId}`);
   return response.json();
 }
@@ -543,7 +555,7 @@ export async function deleteGearItem(id: string): Promise<{ message: string }> {
 export async function assignGear(
   gearItemId: string,
   data: AssignGearData,
-): Promise<any> {
+): Promise<GearItemType> {
   const response = await fetchWithAuth(`/api/gear/${gearItemId}/assign`, {
     method: 'POST',
     body: JSON.stringify(data),
@@ -558,9 +570,12 @@ export async function removeGearAssignment(
   gearItemId: string,
   familyId: string,
 ): Promise<{ message: string }> {
-  const response = await fetchWithAuth(`/api/gear/${gearItemId}/assign/${familyId}`, {
-    method: 'DELETE',
-  });
+  const response = await fetchWithAuth(
+    `/api/gear/${gearItemId}/assign/${familyId}`,
+    {
+      method: 'DELETE',
+    },
+  );
   return response.json();
 }
 
@@ -579,14 +594,16 @@ export async function getFamilyGearAssignments(
   tripId: string,
   familyId: string,
 ): Promise<GearItemType[]> {
-  const response = await fetchWithAuth(`/api/gear/trip/${tripId}/family/${familyId}`);
+  const response = await fetchWithAuth(
+    `/api/gear/trip/${tripId}/family/${familyId}`,
+  );
   return response.json();
 }
 
 /**
  * Get all admins (for super-admin panel)
  */
-export async function getAdmins(): Promise<any[]> {
+export async function getAdmins(): Promise<unknown[]> {
   // Simulate API delay
   await new Promise((resolve) => setTimeout(resolve, 500));
 

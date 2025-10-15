@@ -27,6 +27,7 @@ import type { FamilyMember } from '@/types/family';
 import { UserPlus, Edit, Trash2, Mail, Save, X } from 'lucide-react';
 import bcrypt from 'bcryptjs';
 import { ZodError } from 'zod';
+import Image from 'next/image';
 
 interface AdultsManagementProps {
   familyId: string;
@@ -109,7 +110,7 @@ export default function AdultsManagement({
       setIsAddDialogOpen(false);
       resetAddForm();
       onUpdate?.();
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error instanceof ZodError) {
         const zodErrors: Record<string, string> = {};
         error.issues.forEach((err) => {
@@ -118,7 +119,11 @@ export default function AdultsManagement({
         });
         setErrors(zodErrors);
       } else {
-        setGeneralError(error.message || 'אירעה שגיאה בעת הוספת המבוגר');
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : 'אירעה שגיאה בעת הוספת המבוגר';
+        setGeneralError(errorMessage);
       }
     } finally {
       setIsLoading(false);
@@ -146,7 +151,7 @@ export default function AdultsManagement({
       setEditingAdult(null);
       resetEditForm();
       onUpdate?.();
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error instanceof ZodError) {
         const zodErrors: Record<string, string> = {};
         error.issues.forEach((err) => {
@@ -155,7 +160,11 @@ export default function AdultsManagement({
         });
         setErrors(zodErrors);
       } else {
-        setGeneralError(error.message || 'אירעה שגיאה בעת עדכון המבוגר');
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : 'אירעה שגיאה בעת עדכון המבוגר';
+        setGeneralError(errorMessage);
       }
     } finally {
       setIsLoading(false);
@@ -172,8 +181,10 @@ export default function AdultsManagement({
       await removeFamilyMember(familyId, deletingAdult.id);
       setDeletingAdult(null);
       onUpdate?.();
-    } catch (error: any) {
-      setGeneralError(error.message || 'אירעה שגיאה בעת מחיקת המבוגר');
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'אירעה שגיאה בעת מחיקת המבוגר';
+      setGeneralError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -312,7 +323,7 @@ export default function AdultsManagement({
             >
               <Avatar className="h-12 w-12">
                 {adult.profilePhotoUrl ? (
-                  <img src={adult.profilePhotoUrl} alt={adult.name} />
+                  <Image src={adult.profilePhotoUrl} alt={adult.name} />
                 ) : (
                   <div className="flex items-center justify-center h-full w-full bg-primary/10 text-primary font-semibold">
                     {adult.name.charAt(0)}

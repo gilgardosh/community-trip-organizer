@@ -4,12 +4,15 @@ import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Package, Edit, Trash2, Users } from 'lucide-react';
-import { GearItem as GearItemType, getTotalQuantityAssigned, getRemainingQuantity } from '@/types/gear';
+import {
+  GearItem as GearItemType,
+  getTotalQuantityAssigned,
+  getRemainingQuantity,
+} from '@/types/gear';
 import GearStatusIndicator from './GearStatusIndicator';
 import GearEditDialog from './GearEditDialog';
 import GearDeleteDialog from './GearDeleteDialog';
 import GearAssignmentList from './GearAssignmentList';
-import { cn } from '@/lib/utils';
 
 interface GearItemProps {
   gearItem: GearItemType;
@@ -45,11 +48,15 @@ export default function GearItem({
 
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <span>
-                  נדרש: <strong className="text-foreground">{gearItem.quantityNeeded}</strong>
+                  נדרש:{' '}
+                  <strong className="text-foreground">
+                    {gearItem.quantityNeeded}
+                  </strong>
                 </span>
                 <span className="text-muted-foreground">|</span>
                 <span>
-                  הוקצה: <strong className="text-foreground">{totalAssigned}</strong>
+                  הוקצה:{' '}
+                  <strong className="text-foreground">{totalAssigned}</strong>
                 </span>
                 {remaining > 0 && (
                   <>
@@ -69,7 +76,9 @@ export default function GearItem({
                   className="text-xs h-7 px-2"
                 >
                   <Users className="h-3 w-3 ml-1" />
-                  {showAssignments ? 'הסתר משפחות' : `הצג משפחות (${gearItem.assignments.length})`}
+                  {showAssignments
+                    ? 'הסתר משפחות'
+                    : `הצג משפחות (${gearItem.assignments.length})`}
                 </Button>
               )}
 

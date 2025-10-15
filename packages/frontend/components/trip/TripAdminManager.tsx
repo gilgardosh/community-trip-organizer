@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardContent,
@@ -19,8 +18,7 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, UserPlus, X, AlertTriangle, CheckCircle } from 'lucide-react';
 import { addTripAdmin, removeTripAdmin, getFamilies } from '@/lib/api';
-import type { Trip, TripAdmin } from '@/types/trip';
-import type { Family } from '@/types/family';
+import type { Trip } from '@/types/trip';
 
 interface TripAdminManagerProps {
   trip: Trip;
@@ -63,7 +61,9 @@ export function TripAdminManager({ trip, onUpdate }: TripAdminManagerProps) {
 
       setAvailableAdmins(admins);
     } catch (err) {
-      setError('שגיאה בטעינת רשימת המנהלים');
+      setError(
+        err instanceof Error ? err.message : 'שגיאה בטעינת רשימת המנהלים',
+      );
     } finally {
       setIsLoading(false);
     }
@@ -211,7 +211,10 @@ export function TripAdminManager({ trip, onUpdate }: TripAdminManagerProps) {
                 )}
                 הוסף
               </Button>
-              <Select value={selectedAdminId} onValueChange={setSelectedAdminId}>
+              <Select
+                value={selectedAdminId}
+                onValueChange={setSelectedAdminId}
+              >
                 <SelectTrigger className="flex-1">
                   <SelectValue placeholder="בחר מנהל" />
                 </SelectTrigger>

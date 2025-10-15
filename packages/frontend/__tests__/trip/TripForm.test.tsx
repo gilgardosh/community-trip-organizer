@@ -40,7 +40,9 @@ describe('TripForm', () => {
   });
 
   it('renders form with trip data for editing', () => {
-    render(<TripForm trip={mockTrip} onSubmit={mockOnSubmit} isEditing={true} />);
+    render(
+      <TripForm trip={mockTrip} onSubmit={mockOnSubmit} isEditing={true} />,
+    );
 
     expect(screen.getByText('עריכת טיול')).toBeInTheDocument();
     expect(screen.getByLabelText(/שם הטיול/)).toHaveValue(mockTrip.name);
@@ -99,9 +101,7 @@ describe('TripForm', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(
-          'תאריך הרשמה אחרון חייב להיות לפני תאריך התחלת הטיול',
-        ),
+        screen.getByText('תאריך הרשמה אחרון חייב להיות לפני תאריך התחלת הטיול'),
       ).toBeInTheDocument();
     });
 

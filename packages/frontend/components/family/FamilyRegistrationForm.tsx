@@ -18,8 +18,6 @@ import { createFamily } from '@/lib/api';
 import {
   createFamilySchema,
   type CreateFamilyFormData,
-  adultSchema,
-  childSchema,
 } from '@/lib/validation';
 import type { CreateAdultData, CreateChildData } from '@/types/family';
 import { Plus, X, Users, UserPlus, Baby } from 'lucide-react';
@@ -116,7 +114,7 @@ export default function FamilyRegistrationForm() {
       );
 
       // Create family
-      const family = await createFamily({
+      await createFamily({
         name: validatedData.name,
         adults: adultsWithHashedPasswords,
         children: validatedData.children,
@@ -124,7 +122,7 @@ export default function FamilyRegistrationForm() {
 
       // Redirect to success page or login
       router.push('/auth/login?registered=true');
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error instanceof ZodError) {
         // Zod validation errors
         const zodErrors: Record<string, string> = {};
@@ -135,7 +133,11 @@ export default function FamilyRegistrationForm() {
         setErrors(zodErrors);
       } else {
         // API or other errors
-        setGeneralError(error.message || 'אירעה שגיאה בעת רישום המשפחה');
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : 'אירעה שגיאה בעת רישום המשפחה';
+        setGeneralError(errorMessage);
       }
     } finally {
       setIsLoading(false);

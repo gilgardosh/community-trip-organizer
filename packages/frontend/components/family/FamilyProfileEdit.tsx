@@ -57,7 +57,7 @@ export default function FamilyProfileEdit({
       if (onSuccess) {
         onSuccess(updatedFamily);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error instanceof ZodError) {
         // Zod validation errors
         const zodErrors: Record<string, string> = {};
@@ -68,7 +68,11 @@ export default function FamilyProfileEdit({
         setErrors(zodErrors);
       } else {
         // API or other errors
-        setGeneralError(error.message || 'אירעה שגיאה בעת עדכון המשפחה');
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : 'אירעה שגיאה בעת עדכון המשפחה';
+        setGeneralError(errorMessage);
       }
     } finally {
       setIsLoading(false);

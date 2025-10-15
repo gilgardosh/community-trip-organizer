@@ -53,7 +53,7 @@ export function getStoredUser() {
   }
 }
 
-export function setStoredUser(user: any): void {
+export function setStoredUser(user: unknown): void {
   if (typeof window === 'undefined') return;
   localStorage.setItem(USER_KEY, JSON.stringify(user));
 }
@@ -71,7 +71,7 @@ export function getStoredFamily() {
   }
 }
 
-export function setStoredFamily(family: any): void {
+export function setStoredFamily(family: unknown): void {
   if (typeof window === 'undefined') return;
   localStorage.setItem(FAMILY_KEY, JSON.stringify(family));
 }

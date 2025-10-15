@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
   Card,
@@ -21,13 +20,11 @@ import {
   Calendar,
   Users,
   Utensils,
-  Backpack,
   Camera,
   ArrowRight,
   AlertTriangle,
   CheckCircle,
   Loader2,
-  Clock,
 } from 'lucide-react';
 import { TripSchedule } from '@/components/trip/TripSchedule';
 import { TripLocation } from '@/components/trip/TripLocation';
@@ -45,14 +42,16 @@ export default function TripDetailsPage() {
   const [trip, setTrip] = useState<Trip | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  
+
   // Current family ID - in production, get from auth context
   const familyId = 'family1';
-  
+
   // Find if current family is attending
-  const familyAttendance = trip?.attendees.find(att => att.familyId === familyId);
+  const familyAttendance = trip?.attendees.find(
+    (att) => att.familyId === familyId,
+  );
   const isAttending = !!familyAttendance;
-  
+
   const [dietaryRequirementsInput, setDietaryRequirementsInput] = useState('');
 
   useEffect(() => {
@@ -63,7 +62,9 @@ export default function TripDetailsPage() {
         setTrip(tripData);
 
         // Set dietary requirements if family is attending
-        const attendance = tripData.attendees.find(att => att.familyId === familyId);
+        const attendance = tripData.attendees.find(
+          (att) => att.familyId === familyId,
+        );
         if (attendance?.dietaryRequirements) {
           setDietaryRequirementsInput(attendance.dietaryRequirements);
         }
@@ -79,25 +80,25 @@ export default function TripDetailsPage() {
 
   const handleSaveDietaryRequirements = async () => {
     if (!trip || !isAttending) return;
-    
+
     try {
       setSaving(true);
       await updateDietaryRequirements(
         trip.id,
         familyId,
-        dietaryRequirementsInput
+        dietaryRequirementsInput,
       );
-      
+
       // Update local state
       setTrip({
         ...trip,
-        attendees: trip.attendees.map(att => 
-          att.familyId === familyId 
+        attendees: trip.attendees.map((att) =>
+          att.familyId === familyId
             ? { ...att, dietaryRequirements: dietaryRequirementsInput }
-            : att
-        )
+            : att,
+        ),
       });
-      
+
       alert('דרישות התזונה נשמרו בהצלחה!');
     } catch (error) {
       alert('שגיאה בשמירת דרישות התזונה');
@@ -108,21 +109,23 @@ export default function TripDetailsPage() {
 
   const handleToggleAttendance = async () => {
     if (!trip) return;
-    
+
     try {
       setSaving(true);
       await markTripAttendance(trip.id, {
         familyId,
-        attending: !isAttending
+        attending: !isAttending,
       });
-      
+
       // Refresh trip data
       const updatedTrip = await getTripById(params.id as string);
       setTrip(updatedTrip);
-      
+
       alert('סטטוס ההשתתפות עודכן בהצלחה!');
-    } catch (error: any) {
-      alert(error.message || 'שגיאה בעדכון סטטוס ההשתתפות');
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'שגיאה בעדכון סטטוס ההשתתפות';
+      alert(errorMessage);
     } finally {
       setSaving(false);
     }
@@ -160,7 +163,6 @@ export default function TripDetailsPage() {
     : false;
   const tripEndDate = new Date(trip.endDate);
   const currentDate = new Date();
-  const isTripPassed = currentDate > tripEndDate;
   const isTripOngoingOrFuture = currentDate <= tripEndDate;
 
   return (
@@ -177,9 +179,7 @@ export default function TripDetailsPage() {
               <ArrowRight className="w-4 h-4" />
               חזרה
             </Button>
-            {trip.draft && (
-              <Badge variant="secondary">טיוטה</Badge>
-            )}
+            {trip.draft && <Badge variant="secondary">טיוטה</Badge>}
           </div>
 
           <div className="space-y-4">
@@ -238,7 +238,9 @@ export default function TripDetailsPage() {
                     <AlertTriangle className="h-4 w-4" />
                     <AlertDescription>
                       תאריך הרשמה אחרון עבר (
-                      {new Date(trip.attendanceCutoffDate).toLocaleDateString('he-IL')}
+                      {new Date(trip.attendanceCutoffDate).toLocaleDateString(
+                        'he-IL',
+                      )}
                       ). לא ניתן לשנות את סטטוס ההשתתפות.
                     </AlertDescription>
                   </Alert>
@@ -267,7 +269,8 @@ export default function TripDetailsPage() {
                     דרישות תזונתיות
                   </CardTitle>
                   <CardDescription>
-                    אנא ציינו אלרגיות, העדפות תזונתיות או דרישות מיוחדות עבור בני המשפחה
+                    אנא ציינו אלרגיות, העדפות תזונתיות או דרישות מיוחדות עבור
+                    בני המשפחה
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -279,7 +282,9 @@ export default function TripDetailsPage() {
                       id="dietary"
                       placeholder="לדוגמה: אלרגיה לאגוזים, צמחוני, כשר, ללא גלוטן..."
                       value={dietaryRequirementsInput}
-                      onChange={(e) => setDietaryRequirementsInput(e.target.value)}
+                      onChange={(e) =>
+                        setDietaryRequirementsInput(e.target.value)
+                      }
                       className="text-right min-h-[100px]"
                       disabled={saving}
                     />
@@ -333,14 +338,14 @@ export default function TripDetailsPage() {
           </TabsContent>
 
           <TabsContent value="schedule">
-            <TripSchedule 
-              scheduleItems={trip.scheduleItems} 
+            <TripSchedule
+              scheduleItems={trip.scheduleItems}
               tripStartDate={trip.startDate}
             />
           </TabsContent>
 
           <TabsContent value="location">
-            <TripLocation 
+            <TripLocation
               location={trip.location}
               description={trip.description}
               showMap={true}

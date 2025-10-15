@@ -20,7 +20,7 @@ export function TripLocation({
     const encodedLocation = encodeURIComponent(location);
     window.open(
       `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`,
-      '_blank'
+      '_blank',
     );
   };
 
@@ -29,7 +29,7 @@ export function TripLocation({
     const encodedLocation = encodeURIComponent(location);
     window.open(
       `https://www.google.com/maps/dir/?api=1&destination=${encodedLocation}`,
-      '_blank'
+      '_blank',
     );
   };
 

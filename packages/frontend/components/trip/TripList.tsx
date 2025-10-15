@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
-import { Loader2, Plus, Search, Filter } from 'lucide-react';
+import { Loader2, Plus, Search } from 'lucide-react';
 import { getTrips } from '@/lib/api';
 import type { Trip, TripFilters } from '@/types/trip';
 import { getTripStatus } from '@/types/trip';
@@ -222,7 +222,9 @@ export function TripList({
           <TabsTrigger value="upcoming">
             קרובים ({upcomingTrips.length})
           </TabsTrigger>
-          <TabsTrigger value="active">פעילים ({activeTrips.length})</TabsTrigger>
+          <TabsTrigger value="active">
+            פעילים ({activeTrips.length})
+          </TabsTrigger>
           <TabsTrigger value="past">הסתיימו ({pastTrips.length})</TabsTrigger>
         </TabsList>
 

@@ -26,7 +26,11 @@ const tripFormSchema = z
     startDate: z.string().min(1, 'תאריך התחלה הוא שדה חובה'),
     endDate: z.string().min(1, 'תאריך סיום הוא שדה חובה'),
     attendanceCutoffDate: z.string().optional(),
-    photoAlbumLink: z.union([z.literal(''), z.undefined(), z.url('כתובת URL לא תקינה')]),
+    photoAlbumLink: z.union([
+      z.literal(''),
+      z.undefined(),
+      z.url('כתובת URL לא תקינה'),
+    ]),
   })
   .refine((data) => new Date(data.endDate) >= new Date(data.startDate), {
     message: 'תאריך הסיום חייב להיות אחרי תאריך ההתחלה',

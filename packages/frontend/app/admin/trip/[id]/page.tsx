@@ -49,7 +49,7 @@ export default function AdminTripDetailPage() {
     }
   };
 
-  const handleUpdateTrip = async (data: UpdateTripData | any) => {
+  const handleUpdateTrip = async (data: UpdateTripData) => {
     try {
       const updatedTrip = await updateTrip(
         params.id as string,
@@ -216,8 +216,8 @@ export default function AdminTripDetailPage() {
           <DialogHeader>
             <DialogTitle className="text-right">מחיקת טיול</DialogTitle>
             <DialogDescription className="text-right">
-              האם אתה בטוח שברצונך למחוק את הטיול "{trip.name}"? פעולה זו בלתי
-              הפיכה.
+              האם אתה בטוח שברצונך למחוק את הטיול &quot;{trip.name}&quot;? פעולה
+              זו בלתי הפיכה.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex gap-2">

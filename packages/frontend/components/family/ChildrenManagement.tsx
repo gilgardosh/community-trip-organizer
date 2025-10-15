@@ -24,18 +24,17 @@ import {
 import { addMemberSchema, updateMemberSchema } from '@/lib/validation';
 import type { FamilyMember } from '@/types/family';
 import { Baby, Edit, Trash2, Save, X, Calendar } from 'lucide-react';
-import { differenceInYears } from 'date-fns';
 import { ZodError } from 'zod';
 
 interface ChildrenManagementProps {
   familyId: string;
-  children: FamilyMember[];
+  childMembers: FamilyMember[];
   onUpdate?: () => void;
 }
 
 export default function ChildrenManagement({
   familyId,
-  children,
+  childMembers,
   onUpdate,
 }: ChildrenManagementProps) {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -44,6 +43,9 @@ export default function ChildrenManagement({
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [generalError, setGeneralError] = useState('');
+
+  // Filter to get only children
+  const childrenList = childMembers.filter((m) => m.type === 'CHILD');
 
   // Add child form state
   const [newChild, setNewChild] = useState({
@@ -101,16 +103,18 @@ export default function ChildrenManagement({
       setIsAddDialogOpen(false);
       resetAddForm();
       onUpdate?.();
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error instanceof ZodError) {
         const zodErrors: Record<string, string> = {};
-        error.issues.forEach((err: any) => {
+        error.issues.forEach((err) => {
           const path = err.path.join('.');
           zodErrors[path] = err.message;
         });
         setErrors(zodErrors);
       } else {
-        setGeneralError(error.message || 'אירעה שגיאה בעת הוספת הילד');
+        const errorMessage =
+          error instanceof Error ? error.message : 'אירעה שגיאה בעת הוספת הילד';
+        setGeneralError(errorMessage);
       }
     } finally {
       setIsLoading(false);
@@ -137,7 +141,7 @@ export default function ChildrenManagement({
       setEditingChild(null);
       resetEditForm();
       onUpdate?.();
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error instanceof ZodError) {
         const zodErrors: Record<string, string> = {};
         error.issues.forEach((err) => {
@@ -146,7 +150,9 @@ export default function ChildrenManagement({
         });
         setErrors(zodErrors);
       } else {
-        setGeneralError(error.message || 'אירעה שגיאה בעת עדכון הילד');
+        const errorMessage =
+          error instanceof Error ? error.message : 'אירעה שגיאה בעת עדכון הילד';
+        setGeneralError(errorMessage);
       }
     } finally {
       setIsLoading(false);
@@ -163,8 +169,10 @@ export default function ChildrenManagement({
       await removeFamilyMember(familyId, deletingChild.id);
       setDeletingChild(null);
       onUpdate?.();
-    } catch (error: any) {
-      setGeneralError(error.message || 'אירעה שגיאה בעת מחיקת הילד');
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'אירעה שגיאה בעת מחיקת הילד';
+      setGeneralError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -264,7 +272,7 @@ export default function ChildrenManagement({
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {children.map((child) => (
+          {childrenList.map((child) => (
             <div
               key={child.id}
               className="flex items-center gap-4 p-4 border rounded-lg"
@@ -305,7 +313,7 @@ export default function ChildrenManagement({
             </div>
           ))}
 
-          {children.length === 0 && (
+          {childrenList.length === 0 && (
             <div className="col-span-full text-sm text-muted-foreground text-center py-8">
               לא נמצאו ילדים. לחץ על &quot;הוסף ילד&quot; כדי להוסיף.
             </div>

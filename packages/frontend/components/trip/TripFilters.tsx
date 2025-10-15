@@ -94,7 +94,9 @@ export function TripFilters({
                 <Label>סטטוס</Label>
                 <Select
                   value={status}
-                  onValueChange={(value: any) => setStatus(value)}
+                  onValueChange={(value) =>
+                    setStatus(value as TripFilterValues['status'])
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="כל הטיולים" />

@@ -96,7 +96,10 @@ router.get('/:id/attendees', tripController.getTripAttendees);
 // FAMILY: can update their own dietary requirements
 // TRIP_ADMIN: can update for any family in trips they manage
 // SUPER_ADMIN: can update for any family
-router.put('/:id/dietary-requirements', tripController.updateDietaryRequirements);
+router.put(
+  '/:id/dietary-requirements',
+  tripController.updateDietaryRequirements,
+);
 
 // Trip schedule management
 

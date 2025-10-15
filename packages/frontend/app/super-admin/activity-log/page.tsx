@@ -39,7 +39,7 @@ interface ActivityLogEntry {
   action: 'create' | 'update' | 'delete' | 'login';
   entityType: 'Trip' | 'Family' | 'Gear' | 'User';
   entityName: string;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
 }
 
 export default function ActivityLogPage() {
@@ -181,7 +181,7 @@ export default function ActivityLogPage() {
     });
   };
 
-  const formatDetails = (details: Record<string, any>) => {
+  const formatDetails = (details: Record<string, unknown>) => {
     return JSON.stringify(details, null, 0).slice(0, 100) + '...';
   };
 

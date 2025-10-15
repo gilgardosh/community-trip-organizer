@@ -9,6 +9,7 @@ import {
 } from 'vitest';
 import request from 'supertest';
 import { UserType, Role } from '@prisma/client';
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
 import { Request, Response, NextFunction } from 'express';
 import { clearDatabase } from './utils/db.js';
 import { prisma } from '../src/utils/db.js';

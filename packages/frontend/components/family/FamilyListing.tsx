@@ -4,9 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Avatar } from '@/components/ui/avatar';
 import {
   Table,
   TableBody,
@@ -17,16 +15,8 @@ import {
 } from '@/components/ui/table';
 import { Alert } from '@/components/ui/alert';
 import { getFamilies } from '@/lib/api';
-import type { Family, FamilyFilters } from '@/types/family';
-import {
-  Users,
-  Search,
-  Filter,
-  Eye,
-  UserCheck,
-  Baby,
-  Calendar,
-} from 'lucide-react';
+import type { Family } from '@/types/family';
+import { Users, Search, UserCheck, Baby, Calendar, Eye } from 'lucide-react';
 import { format } from 'date-fns';
 import { he } from 'date-fns/locale';
 import { useRouter } from 'next/navigation';
@@ -62,8 +52,12 @@ export default function FamilyListing() {
     try {
       const data = await getFamilies();
       setFamilies(data);
-    } catch (err: any) {
-      setError(err.message || 'אירעה שגיאה בטעינת רשימת המשפחות');
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'אירעה שגיאה בטעינת רשימת המשפחות';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -167,7 +161,11 @@ export default function FamilyListing() {
               <label className="text-sm font-medium">סטטוס</label>
               <select
                 value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value as any)}
+                onChange={(e) =>
+                  setStatusFilter(
+                    e.target.value as 'all' | 'PENDING' | 'APPROVED',
+                  )
+                }
                 className="w-full h-10 px-3 rounded-md border border-input bg-background"
               >
                 <option value="all">הכל</option>
@@ -180,7 +178,11 @@ export default function FamilyListing() {
               <label className="text-sm font-medium">פעילות</label>
               <select
                 value={activeFilter}
-                onChange={(e) => setActiveFilter(e.target.value as any)}
+                onChange={(e) =>
+                  setActiveFilter(
+                    e.target.value as 'all' | 'active' | 'inactive',
+                  )
+                }
                 className="w-full h-10 px-3 rounded-md border border-input bg-background"
               >
                 <option value="all">הכל</option>

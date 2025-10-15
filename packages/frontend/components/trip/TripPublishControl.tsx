@@ -33,14 +33,16 @@ interface TripPublishControlProps {
   onUpdate?: () => void;
 }
 
-export function TripPublishControl({ trip, onUpdate }: TripPublishControlProps) {
+export function TripPublishControl({
+  trip,
+  onUpdate,
+}: TripPublishControlProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const canPublish = trip.draft && trip.admins.length > 0;
-  const canUnpublish = !trip.draft;
 
   const handlePublish = async () => {
     try {
@@ -130,13 +132,9 @@ export function TripPublishControl({ trip, onUpdate }: TripPublishControlProps) 
               <Upload className="w-5 h-5 text-green-600" />
             )}
             <div className="text-right">
-              <p className="font-medium">
-                {trip.draft ? 'טיוטה' : 'פורסם'}
-              </p>
+              <p className="font-medium">{trip.draft ? 'טיוטה' : 'פורסם'}</p>
               <p className="text-sm text-muted-foreground">
-                {trip.draft
-                  ? 'נראה רק למנהלים'
-                  : 'נראה לכל המשפחות'}
+                {trip.draft ? 'נראה רק למנהלים' : 'נראה לכל המשפחות'}
               </p>
             </div>
           </div>
@@ -208,12 +206,10 @@ export function TripPublishControl({ trip, onUpdate }: TripPublishControlProps) 
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle className="text-right">
-                    החזרה לטיוטה
-                  </DialogTitle>
+                  <DialogTitle className="text-right">החזרה לטיוטה</DialogTitle>
                   <DialogDescription className="text-right">
-                    האם אתה בטוח שברצונך להחזיר את הטיול לטיוטה? המשפחות לא יוכלו
-                    יותר לראות את הטיול או להירשם אליו.
+                    האם אתה בטוח שברצונך להחזיר את הטיול לטיוטה? המשפחות לא
+                    יוכלו יותר לראות את הטיול או להירשם אליו.
                   </DialogDescription>
                 </DialogHeader>
                 <Alert variant="destructive">

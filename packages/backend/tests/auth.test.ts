@@ -30,9 +30,8 @@ vi.mock('../src/services/log.service.js', () => ({
 // Mock OAuth middleware
 vi.mock('../src/middleware/oauth.middleware.js', () => ({
   default: {
-    authenticate:
-      () => (req: Request, res: Response, next: () => void) =>
-        next(),
+    authenticate: () => (req: Request, res: Response, next: () => void) =>
+      next(),
   },
   __esModule: true,
 }));

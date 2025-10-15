@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { he } from 'date-fns/locale';
+import Image from 'next/image';
 
 interface FamilyProfileViewProps {
   family: Family;
@@ -99,7 +100,7 @@ export default function FamilyProfileView({ family }: FamilyProfileViewProps) {
                 >
                   <Avatar className="h-12 w-12">
                     {adult.profilePhotoUrl ? (
-                      <img src={adult.profilePhotoUrl} alt={adult.name} />
+                      <Image src={adult.profilePhotoUrl} alt={adult.name} />
                     ) : (
                       <div className="flex items-center justify-center h-full w-full bg-primary/10 text-primary font-semibold">
                         {adult.name.charAt(0)}

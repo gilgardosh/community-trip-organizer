@@ -24,7 +24,6 @@ import type { Family } from '@/types/family';
 import {
   CheckCircle,
   XCircle,
-  Eye,
   Trash2,
   RotateCcw,
   Users,
@@ -35,6 +34,7 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { he } from 'date-fns/locale';
+import Image from 'next/image';
 
 interface FamilyApprovalInterfaceProps {
   families: Family[];
@@ -77,8 +77,10 @@ export default function FamilyApprovalInterface({
       setSelectedFamily(null);
       setActionType(null);
       onUpdate?.();
-    } catch (err: any) {
-      setError(err.message || 'אירעה שגיאה בעת ביצוע הפעולה');
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'אירעה שגיאה בעת ביצוע הפעולה';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -94,17 +96,6 @@ export default function FamilyApprovalInterface({
     setSelectedFamily(null);
     setActionType(null);
     setError('');
-  };
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'APPROVED':
-        return <Badge variant="default">מאושר</Badge>;
-      case 'PENDING':
-        return <Badge variant="secondary">ממתין</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
-    }
   };
 
   const getActionTitle = () => {
@@ -415,7 +406,7 @@ function FamilyCard({
               <div key={adult.id} className="flex items-center gap-2 text-sm">
                 <Avatar className="h-8 w-8">
                   {adult.profilePhotoUrl ? (
-                    <img src={adult.profilePhotoUrl} alt={adult.name} />
+                    <Image src={adult.profilePhotoUrl} alt={adult.name} />
                   ) : (
                     <div className="flex items-center justify-center h-full w-full bg-primary/10 text-primary text-xs font-semibold">
                       {adult.name.charAt(0)}

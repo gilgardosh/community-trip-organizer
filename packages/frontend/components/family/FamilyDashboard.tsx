@@ -11,7 +11,7 @@ import FamilyProfileView from './FamilyProfileView';
 import FamilyProfileEdit from './FamilyProfileEdit';
 import AdultsManagement from './AdultsManagement';
 import ChildrenManagement from './ChildrenManagement';
-import { Users, Edit, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { Edit, AlertCircle, Clock, CheckCircle } from 'lucide-react';
 
 interface FamilyDashboardProps {
   familyId: string;
@@ -26,6 +26,7 @@ export default function FamilyDashboard({ familyId }: FamilyDashboardProps) {
 
   useEffect(() => {
     loadFamily();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [familyId]);
 
   const loadFamily = async () => {
@@ -35,8 +36,9 @@ export default function FamilyDashboard({ familyId }: FamilyDashboardProps) {
     try {
       const data = await getFamilyById(familyId);
       setFamily(data);
-    } catch (err: any) {
-      setError(err.message || 'אירעה שגיאה בטעינת נתוני המשפחה');
+    } catch (error: unknown) {
+      console.error('Error loading family:', error);
+      alert('שגיאה בטעינת פרטי המשפחה');
     } finally {
       setIsLoading(false);
     }
@@ -154,7 +156,7 @@ export default function FamilyDashboard({ familyId }: FamilyDashboardProps) {
         <TabsContent value="children">
           <ChildrenManagement
             familyId={familyId}
-            children={children}
+            childMembers={children}
             onUpdate={loadFamily}
           />
         </TabsContent>

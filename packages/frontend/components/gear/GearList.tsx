@@ -8,8 +8,6 @@ import { getGearItemsByTrip } from '@/lib/api';
 import { GearItem as GearItemType } from '@/types/gear';
 import GearItem from './GearItem';
 import GearCreateDialog from './GearCreateDialog';
-import GearStatusIndicator from './GearStatusIndicator';
-import { useAuth } from '@/contexts/AuthContext';
 
 interface GearListProps {
   tripId: string;
@@ -17,7 +15,6 @@ interface GearListProps {
 }
 
 export default function GearList({ tripId, canManage = false }: GearListProps) {
-  const { user } = useAuth();
   const [gearItems, setGearItems] = useState<GearItemType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -104,7 +101,9 @@ export default function GearList({ tripId, canManage = false }: GearListProps) {
               <PackageSearch className="h-12 w-12 mx-auto mb-3 opacity-50" />
               <p>אין פריטי ציוד עדיין</p>
               {canManage && (
-                <p className="text-sm mt-2">לחץ על &quot;הוסף פריט&quot; כדי להתחיל</p>
+                <p className="text-sm mt-2">
+                  לחץ על &quot;הוסף פריט&quot; כדי להתחיל
+                </p>
               )}
             </div>
           ) : (

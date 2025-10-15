@@ -17,9 +17,9 @@ describe('GearSummary', () => {
 
   it('should render loading state', () => {
     vi.mocked(getGearSummary).mockImplementation(() => new Promise(() => {}));
-    
+
     render(<GearSummary tripId="trip-1" />);
-    
+
     expect(screen.getByText('טוען סיכום...')).toBeInTheDocument();
   });
 
@@ -33,11 +33,11 @@ describe('GearSummary', () => {
       unassignedItems: 2,
       items: [],
     };
-    
+
     vi.mocked(getGearSummary).mockResolvedValue(mockSummary);
-    
+
     render(<GearSummary tripId="trip-1" />);
-    
+
     await waitFor(() => {
       expect(screen.getByText('10')).toBeInTheDocument(); // total items
       expect(screen.getByText('הוקצה במלואו')).toBeInTheDocument();
@@ -56,11 +56,11 @@ describe('GearSummary', () => {
       unassignedItems: 2,
       items: [],
     };
-    
+
     vi.mocked(getGearSummary).mockResolvedValue(mockSummary);
-    
+
     render(<GearSummary tripId="trip-1" />);
-    
+
     await waitFor(() => {
       expect(screen.getByText('75%')).toBeInTheDocument();
     });
@@ -76,11 +76,11 @@ describe('GearSummary', () => {
       unassignedItems: 0,
       items: [],
     };
-    
+
     vi.mocked(getGearSummary).mockResolvedValue(mockSummary);
-    
+
     render(<GearSummary tripId="trip-1" />);
-    
+
     await waitFor(() => {
       expect(screen.getByText('0%')).toBeInTheDocument();
     });
@@ -96,11 +96,11 @@ describe('GearSummary', () => {
       unassignedItems: 1,
       items: [],
     };
-    
+
     vi.mocked(getGearSummary).mockResolvedValue(mockSummary);
-    
+
     render(<GearSummary tripId="trip-1" />);
-    
+
     await waitFor(() => {
       expect(screen.getByText('15 מתוך 20 יחידות')).toBeInTheDocument();
     });
@@ -108,9 +108,9 @@ describe('GearSummary', () => {
 
   it('should not render on error', async () => {
     vi.mocked(getGearSummary).mockRejectedValue(new Error('API Error'));
-    
+
     const { container } = render(<GearSummary tripId="trip-1" />);
-    
+
     await waitFor(() => {
       expect(container.firstChild).toBeNull();
     });
