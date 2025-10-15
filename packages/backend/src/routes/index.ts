@@ -7,6 +7,7 @@ import familyRouter from './family.js';
 import tripRouter from './trip.js';
 import gearRouter from './gear.js';
 import whatsappRouter from './whatsapp.js';
+import adminRouter from './admin.js';
 
 const router = Router();
 
@@ -18,5 +19,6 @@ router.use('/families', familyRouter);
 router.use('/trips', tripRouter);
 router.use('/gear', gearRouter);
 router.use('/whatsapp', whatsappRouter);
+router.use('/admin', adminRouter);
 
 export default router;
