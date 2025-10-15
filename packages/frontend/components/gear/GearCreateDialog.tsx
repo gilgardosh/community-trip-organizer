@@ -76,7 +76,8 @@ export default function GearCreateDialog({
       console.error('Error creating gear item:', error);
       toast({
         title: 'שגיאה',
-        description: error instanceof Error ? error.message : 'שגיאה ביצירת פריט הציוד',
+        description:
+          error instanceof Error ? error.message : 'שגיאה ביצירת פריט הציוד',
         variant: 'destructive',
       });
     } finally {
@@ -90,7 +91,8 @@ export default function GearCreateDialog({
         <DialogHeader>
           <DialogTitle>הוסף פריט ציוד</DialogTitle>
           <DialogDescription>
-            הוסף פריט ציוד חדש לרשימת הטיול. משפחות יוכלו להתנדב לספק את הפריטים.
+            הוסף פריט ציוד חדש לרשימת הטיול. משפחות יוכלו להתנדב לספק את
+            הפריטים.
           </DialogDescription>
         </DialogHeader>
 

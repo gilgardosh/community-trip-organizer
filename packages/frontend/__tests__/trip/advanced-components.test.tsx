@@ -53,7 +53,7 @@ describe('TripSchedule Component', () => {
       <TripSchedule
         scheduleItems={mockScheduleItems}
         tripStartDate={tripStartDate}
-      />
+      />,
     );
 
     expect(screen.getByText('לוח זמנים')).toBeInTheDocument();
@@ -66,7 +66,7 @@ describe('TripSchedule Component', () => {
       <TripSchedule
         scheduleItems={mockScheduleItems}
         tripStartDate={tripStartDate}
-      />
+      />,
     );
 
     expect(screen.getByText('ארוחת בוקר')).toBeInTheDocument();
@@ -76,13 +76,9 @@ describe('TripSchedule Component', () => {
   });
 
   it('shows empty state when no schedule items', () => {
-    render(
-      <TripSchedule scheduleItems={[]} tripStartDate={tripStartDate} />
-    );
+    render(<TripSchedule scheduleItems={[]} tripStartDate={tripStartDate} />);
 
-    expect(
-      screen.getByText('טרם נוסף לוח זמנים לטיול זה')
-    ).toBeInTheDocument();
+    expect(screen.getByText('טרם נוסף לוח זמנים לטיול זה')).toBeInTheDocument();
   });
 
   it('orders items by start time within each day', () => {
@@ -90,13 +86,13 @@ describe('TripSchedule Component', () => {
       <TripSchedule
         scheduleItems={mockScheduleItems}
         tripStartDate={tripStartDate}
-      />
+      />,
     );
 
     // Get all the activity titles (not descriptions)
     const breakfastTitle = screen.getByText('ארוחת בוקר');
     const hikingTitle = screen.getByText('טיול בשטח');
-    
+
     expect(breakfastTitle).toBeInTheDocument();
     expect(hikingTitle).toBeInTheDocument();
   });
@@ -171,7 +167,7 @@ describe('AttendanceSummary Component', () => {
     render(<AttendanceSummary attendees={[]} />);
 
     expect(
-      screen.getByText('אין עדיין משפחות רשומות לטיול')
+      screen.getByText('אין עדיין משפחות רשומות לטיול'),
     ).toBeInTheDocument();
   });
 });
@@ -188,12 +184,10 @@ describe('TripFilters Component', () => {
       <TripFilters
         onFilterChange={mockOnFilterChange}
         showDraftFilter={false}
-      />
+      />,
     );
 
-    expect(
-      screen.getByPlaceholderText('חיפוש טיולים...')
-    ).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('חיפוש טיולים...')).toBeInTheDocument();
     expect(screen.getByText('סינון')).toBeInTheDocument();
   });
 
@@ -202,7 +196,7 @@ describe('TripFilters Component', () => {
       <TripFilters
         onFilterChange={mockOnFilterChange}
         showDraftFilter={false}
-      />
+      />,
     );
 
     const searchInput = screen.getByPlaceholderText('חיפוש טיולים...');
@@ -224,7 +218,7 @@ describe('TripFilters Component', () => {
       <TripFilters
         onFilterChange={mockOnFilterChange}
         showDraftFilter={false}
-      />
+      />,
     );
 
     const filterButton = screen.getByText('סינון');
@@ -242,7 +236,7 @@ describe('TripFilters Component', () => {
       <TripFilters
         onFilterChange={mockOnFilterChange}
         showDraftFilter={true}
-      />
+      />,
     );
 
     const filterButton = screen.getByText('סינון');
@@ -261,7 +255,7 @@ describe('TripFilters Component', () => {
       <TripFilters
         onFilterChange={mockOnFilterChange}
         showDraftFilter={false}
-      />
+      />,
     );
 
     // First set some filters

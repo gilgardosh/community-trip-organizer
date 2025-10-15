@@ -68,9 +68,7 @@ export function AttendanceMarker({
           <Users className="w-5 h-5" />
           השתתפות בטיול
         </CardTitle>
-        <CardDescription>
-          סמן את השתתפות המשפחה בטיול זה
-        </CardDescription>
+        <CardDescription>סמן את השתתפות המשפחה בטיול זה</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {!canEdit && trip.attendanceCutoffDate && (

@@ -180,9 +180,10 @@ export const whatsappService = {
     // Replace all {variable} placeholders
     Object.entries(variables).forEach(([key, value]) => {
       const regex = new RegExp(`\\{${key}\\}`, 'g');
-      const stringValue = typeof value === 'object' && value !== null 
-        ? JSON.stringify(value) 
-        : String(value ?? '');
+      const stringValue =
+        typeof value === 'object' && value !== null
+          ? JSON.stringify(value)
+          : String(value ?? '');
       content = content.replace(regex, stringValue);
     });
 

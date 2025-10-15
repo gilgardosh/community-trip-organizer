@@ -19,11 +19,14 @@ vi.mock('@/contexts/AuthContext', () => ({
 
 // Mock child components
 vi.mock('@/components/gear/GearItem', () => ({
-  default: ({ gearItem }: any) => <div data-testid="gear-item">{gearItem.name}</div>,
+  default: ({ gearItem }: any) => (
+    <div data-testid="gear-item">{gearItem.name}</div>
+  ),
 }));
 
 vi.mock('@/components/gear/GearCreateDialog', () => ({
-  default: ({ open }: any) => open ? <div data-testid="create-dialog">Create Dialog</div> : null,
+  default: ({ open }: any) =>
+    open ? <div data-testid="create-dialog">Create Dialog</div> : null,
 }));
 
 describe('GearList', () => {
@@ -67,30 +70,32 @@ describe('GearList', () => {
   });
 
   it('should render loading state initially', () => {
-    vi.mocked(getGearItemsByTrip).mockImplementation(() => new Promise(() => {}));
-    
+    vi.mocked(getGearItemsByTrip).mockImplementation(
+      () => new Promise(() => {}),
+    );
+
     render(<GearList tripId="trip-1" />);
-    
+
     expect(screen.getByText('טוען ציוד...')).toBeInTheDocument();
   });
 
   it('should render gear items after loading', async () => {
     vi.mocked(getGearItemsByTrip).mockResolvedValue(mockGearItems);
-    
+
     render(<GearList tripId="trip-1" />);
-    
+
     await waitFor(() => {
       expect(screen.getByText('רשימת ציוד')).toBeInTheDocument();
     });
-    
+
     expect(screen.getAllByTestId('gear-item')).toHaveLength(2);
   });
 
   it('should render empty state when no gear items', async () => {
     vi.mocked(getGearItemsByTrip).mockResolvedValue([]);
-    
+
     render(<GearList tripId="trip-1" />);
-    
+
     await waitFor(() => {
       expect(screen.getByText('אין פריטי ציוד עדיין')).toBeInTheDocument();
     });
@@ -98,9 +103,9 @@ describe('GearList', () => {
 
   it('should render error state on API failure', async () => {
     vi.mocked(getGearItemsByTrip).mockRejectedValue(new Error('API Error'));
-    
+
     render(<GearList tripId="trip-1" />);
-    
+
     await waitFor(() => {
       expect(screen.getByText('שגיאה בטעינת פריטי הציוד')).toBeInTheDocument();
     });
@@ -108,9 +113,9 @@ describe('GearList', () => {
 
   it('should show add button when canManage is true', async () => {
     vi.mocked(getGearItemsByTrip).mockResolvedValue(mockGearItems);
-    
+
     render(<GearList tripId="trip-1" canManage={true} />);
-    
+
     await waitFor(() => {
       expect(screen.getByText('הוסף פריט')).toBeInTheDocument();
     });
@@ -118,9 +123,9 @@ describe('GearList', () => {
 
   it('should not show add button when canManage is false', async () => {
     vi.mocked(getGearItemsByTrip).mockResolvedValue(mockGearItems);
-    
+
     render(<GearList tripId="trip-1" canManage={false} />);
-    
+
     await waitFor(() => {
       expect(screen.queryByText('הוסף פריט')).not.toBeInTheDocument();
     });
@@ -129,15 +134,15 @@ describe('GearList', () => {
   it('should open create dialog when add button is clicked', async () => {
     vi.mocked(getGearItemsByTrip).mockResolvedValue(mockGearItems);
     const user = userEvent.setup();
-    
+
     render(<GearList tripId="trip-1" canManage={true} />);
-    
+
     await waitFor(() => {
       expect(screen.getByText('הוסף פריט')).toBeInTheDocument();
     });
-    
+
     await user.click(screen.getByText('הוסף פריט'));
-    
+
     await waitFor(() => {
       expect(screen.getByTestId('create-dialog')).toBeInTheDocument();
     });

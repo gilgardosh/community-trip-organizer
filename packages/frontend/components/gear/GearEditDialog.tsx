@@ -13,7 +13,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { updateGearItem } from '@/lib/api';
-import { GearItem as GearItemType, getTotalQuantityAssigned } from '@/types/gear';
+import {
+  GearItem as GearItemType,
+  getTotalQuantityAssigned,
+} from '@/types/gear';
 import { useToast } from '@/hooks/use-toast';
 
 interface GearEditDialogProps {
@@ -85,7 +88,8 @@ export default function GearEditDialog({
       console.error('Error updating gear item:', error);
       toast({
         title: 'שגיאה',
-        description: error instanceof Error ? error.message : 'שגיאה בעדכון פריט הציוד',
+        description:
+          error instanceof Error ? error.message : 'שגיאה בעדכון פריט הציוד',
         variant: 'destructive',
       });
     } finally {
@@ -98,9 +102,7 @@ export default function GearEditDialog({
       <DialogContent dir="rtl">
         <DialogHeader>
           <DialogTitle>ערוך פריט ציוד</DialogTitle>
-          <DialogDescription>
-            עדכן את פרטי פריט הציוד
-          </DialogDescription>
+          <DialogDescription>עדכן את פרטי פריט הציוד</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">

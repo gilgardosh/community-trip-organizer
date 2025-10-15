@@ -211,7 +211,10 @@ export function TripAdminManager({ trip, onUpdate }: TripAdminManagerProps) {
                 )}
                 הוסף
               </Button>
-              <Select value={selectedAdminId} onValueChange={setSelectedAdminId}>
+              <Select
+                value={selectedAdminId}
+                onValueChange={setSelectedAdminId}
+              >
                 <SelectTrigger className="flex-1">
                   <SelectValue placeholder="בחר מנהל" />
                 </SelectTrigger>

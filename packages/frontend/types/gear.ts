@@ -63,24 +63,29 @@ export function getTotalQuantityAssigned(gearItem: GearItem): number {
 }
 
 export function getRemainingQuantity(gearItem: GearItem): number {
-  return Math.max(0, gearItem.quantityNeeded - getTotalQuantityAssigned(gearItem));
+  return Math.max(
+    0,
+    gearItem.quantityNeeded - getTotalQuantityAssigned(gearItem),
+  );
 }
 
 export function isGearItemFullyAssigned(gearItem: GearItem): boolean {
   return getTotalQuantityAssigned(gearItem) >= gearItem.quantityNeeded;
 }
 
-export function getGearItemStatus(gearItem: GearItem): 'complete' | 'partial' | 'unassigned' {
+export function getGearItemStatus(
+  gearItem: GearItem,
+): 'complete' | 'partial' | 'unassigned' {
   const totalAssigned = getTotalQuantityAssigned(gearItem);
-  
+
   if (totalAssigned === 0) {
     return 'unassigned';
   }
-  
+
   if (totalAssigned >= gearItem.quantityNeeded) {
     return 'complete';
   }
-  
+
   return 'partial';
 }
 

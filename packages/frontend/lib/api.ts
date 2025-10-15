@@ -254,7 +254,10 @@ export async function getTrips(filters?: TripFiltersType): Promise<TripType[]> {
   }
 
   if (filters?.startDateFrom) {
-    params.append('startDateFrom', new Date(filters.startDateFrom).toISOString());
+    params.append(
+      'startDateFrom',
+      new Date(filters.startDateFrom).toISOString(),
+    );
   }
 
   if (filters?.startDateTo) {
@@ -405,10 +408,13 @@ export async function updateDietaryRequirements(
   familyId: string,
   dietaryRequirements?: string,
 ): Promise<any> {
-  const response = await fetchWithAuth(`/api/trips/${tripId}/dietary-requirements`, {
-    method: 'PUT',
-    body: JSON.stringify({ familyId, dietaryRequirements }),
-  });
+  const response = await fetchWithAuth(
+    `/api/trips/${tripId}/dietary-requirements`,
+    {
+      method: 'PUT',
+      body: JSON.stringify({ familyId, dietaryRequirements }),
+    },
+  );
   return response.json();
 }
 
@@ -456,10 +462,13 @@ export async function updateScheduleItem(
     location?: string;
   }>,
 ): Promise<any> {
-  const response = await fetchWithAuth(`/api/trips/${tripId}/schedule/${scheduleId}`, {
-    method: 'PUT',
-    body: JSON.stringify(data),
-  });
+  const response = await fetchWithAuth(
+    `/api/trips/${tripId}/schedule/${scheduleId}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    },
+  );
   return response.json();
 }
 
@@ -470,9 +479,12 @@ export async function deleteScheduleItem(
   tripId: string,
   scheduleId: string,
 ): Promise<{ message: string }> {
-  const response = await fetchWithAuth(`/api/trips/${tripId}/schedule/${scheduleId}`, {
-    method: 'DELETE',
-  });
+  const response = await fetchWithAuth(
+    `/api/trips/${tripId}/schedule/${scheduleId}`,
+    {
+      method: 'DELETE',
+    },
+  );
   return response.json();
 }
 
@@ -489,7 +501,9 @@ import type {
 /**
  * Create a new gear item
  */
-export async function createGearItem(data: CreateGearItemData): Promise<GearItemType> {
+export async function createGearItem(
+  data: CreateGearItemData,
+): Promise<GearItemType> {
   const response = await fetchWithAuth(`/api/gear`, {
     method: 'POST',
     body: JSON.stringify(data),
@@ -500,7 +514,9 @@ export async function createGearItem(data: CreateGearItemData): Promise<GearItem
 /**
  * Get all gear items for a trip
  */
-export async function getGearItemsByTrip(tripId: string): Promise<GearItemType[]> {
+export async function getGearItemsByTrip(
+  tripId: string,
+): Promise<GearItemType[]> {
   const response = await fetchWithAuth(`/api/gear/trip/${tripId}`);
   return response.json();
 }
@@ -558,9 +574,12 @@ export async function removeGearAssignment(
   gearItemId: string,
   familyId: string,
 ): Promise<{ message: string }> {
-  const response = await fetchWithAuth(`/api/gear/${gearItemId}/assign/${familyId}`, {
-    method: 'DELETE',
-  });
+  const response = await fetchWithAuth(
+    `/api/gear/${gearItemId}/assign/${familyId}`,
+    {
+      method: 'DELETE',
+    },
+  );
   return response.json();
 }
 
@@ -579,7 +598,9 @@ export async function getFamilyGearAssignments(
   tripId: string,
   familyId: string,
 ): Promise<GearItemType[]> {
-  const response = await fetchWithAuth(`/api/gear/trip/${tripId}/family/${familyId}`);
+  const response = await fetchWithAuth(
+    `/api/gear/trip/${tripId}/family/${familyId}`,
+  );
   return response.json();
 }
 

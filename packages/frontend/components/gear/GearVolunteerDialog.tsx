@@ -13,7 +13,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { assignGear, removeGearAssignment } from '@/lib/api';
-import { GearItem as GearItemType, getFamilyAssignment, getRemainingQuantity } from '@/types/gear';
+import {
+  GearItem as GearItemType,
+  getFamilyAssignment,
+  getRemainingQuantity,
+} from '@/types/gear';
 import { useToast } from '@/hooks/use-toast';
 
 interface GearVolunteerDialogProps {
@@ -33,15 +37,15 @@ export default function GearVolunteerDialog({
 }: GearVolunteerDialogProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  
+
   const existingAssignment = getFamilyAssignment(gearItem, familyId);
   const remaining = getRemainingQuantity(gearItem);
-  const maxQuantity = existingAssignment 
+  const maxQuantity = existingAssignment
     ? existingAssignment.quantityAssigned + remaining
     : remaining;
 
   const [quantity, setQuantity] = useState(
-    existingAssignment?.quantityAssigned || 1
+    existingAssignment?.quantityAssigned || 1,
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -67,13 +71,13 @@ export default function GearVolunteerDialog({
 
     try {
       setLoading(true);
-      
+
       // If already assigned, we need to remove and re-add with new quantity
       // In a real implementation, you might want a dedicated update endpoint
       if (existingAssignment) {
         await removeGearAssignment(gearItem.id, familyId);
       }
-      
+
       const result = await assignGear(gearItem.id, {
         familyId,
         quantityAssigned: quantity,
@@ -91,7 +95,8 @@ export default function GearVolunteerDialog({
       console.error('Error volunteering for gear:', error);
       toast({
         title: 'שגיאה',
-        description: error instanceof Error ? error.message : 'שגיאה בשמירת ההתנדבות',
+        description:
+          error instanceof Error ? error.message : 'שגיאה בשמירת ההתנדבות',
         variant: 'destructive',
       });
     } finally {
@@ -115,14 +120,17 @@ export default function GearVolunteerDialog({
       // Trigger a reload by passing a modified version
       const updated = {
         ...gearItem,
-        assignments: gearItem.assignments.filter(a => a.familyId !== familyId),
+        assignments: gearItem.assignments.filter(
+          (a) => a.familyId !== familyId,
+        ),
       };
       onUpdated(updated);
     } catch (error) {
       console.error('Error removing gear assignment:', error);
       toast({
         title: 'שגיאה',
-        description: error instanceof Error ? error.message : 'שגיאה בביטול ההתנדבות',
+        description:
+          error instanceof Error ? error.message : 'שגיאה בביטול ההתנדבות',
         variant: 'destructive',
       });
     } finally {
@@ -160,10 +168,9 @@ export default function GearVolunteerDialog({
               required
             />
             <p className="text-xs text-muted-foreground">
-              {existingAssignment 
+              {existingAssignment
                 ? `כרגע התנדבת ל-${existingAssignment.quantityAssigned} יחידות`
-                : `ניתן להתנדב עד ${maxQuantity} יחידות`
-              }
+                : `ניתן להתנדב עד ${maxQuantity} יחידות`}
             </p>
           </div>
 

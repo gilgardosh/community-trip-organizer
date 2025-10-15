@@ -7,10 +7,8 @@ import { Request, Response } from 'express';
 // Mock OAuth middleware
 vi.mock('../src/middleware/oauth.middleware.js', () => ({
   default: {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    authenticate:
-      (_strategy: string) => (req: Request, res: Response, next: () => void) =>
-        next(),
+    authenticate: () => (_req: Request, _res: Response, next: () => void) =>
+      next(),
   },
   __esModule: true,
 }));

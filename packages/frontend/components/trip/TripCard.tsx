@@ -18,7 +18,11 @@ interface TripCardProps {
   showAdmins?: boolean;
 }
 
-export function TripCard({ trip, linkHref, showAdmins = false }: TripCardProps) {
+export function TripCard({
+  trip,
+  linkHref,
+  showAdmins = false,
+}: TripCardProps) {
   const status = getTripStatus(trip);
 
   return (

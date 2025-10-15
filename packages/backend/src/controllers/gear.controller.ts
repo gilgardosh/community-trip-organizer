@@ -9,10 +9,7 @@ import { ActionType, User } from '@prisma/client';
 const createGearItemSchema = z.object({
   tripId: z.string().min(1, 'Trip ID is required'),
   name: z.string().min(1, 'Gear item name is required'),
-  quantityNeeded: z
-    .number()
-    .int()
-    .min(1, 'Quantity needed must be at least 1'),
+  quantityNeeded: z.number().int().min(1, 'Quantity needed must be at least 1'),
 });
 
 const updateGearItemSchema = z.object({

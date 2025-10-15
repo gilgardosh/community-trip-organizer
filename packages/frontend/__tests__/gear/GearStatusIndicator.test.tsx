@@ -17,7 +17,7 @@ describe('GearStatusIndicator', () => {
 
   it('should show "לא הוקצה" for unassigned gear', () => {
     render(<GearStatusIndicator gearItem={baseGearItem} />);
-    
+
     expect(screen.getByText('לא הוקצה')).toBeInTheDocument();
   });
 
@@ -39,9 +39,9 @@ describe('GearStatusIndicator', () => {
         },
       ],
     };
-    
+
     render(<GearStatusIndicator gearItem={gearItem} />);
-    
+
     expect(screen.getByText('הוקצה חלקית')).toBeInTheDocument();
   });
 
@@ -63,9 +63,9 @@ describe('GearStatusIndicator', () => {
         },
       ],
     };
-    
+
     render(<GearStatusIndicator gearItem={gearItem} />);
-    
+
     expect(screen.getByText('הוקצה במלואו')).toBeInTheDocument();
   });
 
@@ -87,26 +87,26 @@ describe('GearStatusIndicator', () => {
         },
       ],
     };
-    
+
     render(<GearStatusIndicator gearItem={gearItem} />);
-    
+
     expect(screen.getByText('הוקצה במלואו')).toBeInTheDocument();
   });
 
   it('should not show icon when showIcon is false', () => {
     const { container } = render(
-      <GearStatusIndicator gearItem={baseGearItem} showIcon={false} />
+      <GearStatusIndicator gearItem={baseGearItem} showIcon={false} />,
     );
-    
+
     const icons = container.querySelectorAll('svg');
     expect(icons).toHaveLength(0);
   });
 
   it('should show icon by default', () => {
     const { container } = render(
-      <GearStatusIndicator gearItem={baseGearItem} />
+      <GearStatusIndicator gearItem={baseGearItem} />,
     );
-    
+
     const icons = container.querySelectorAll('svg');
     expect(icons.length).toBeGreaterThan(0);
   });

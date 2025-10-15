@@ -61,7 +61,9 @@ describe('FamilyGearList', () => {
   });
 
   it('should render loading state', () => {
-    vi.mocked(getGearItemsByTrip).mockImplementation(() => new Promise(() => {}));
+    vi.mocked(getGearItemsByTrip).mockImplementation(
+      () => new Promise(() => {}),
+    );
 
     render(<FamilyGearList tripId="trip-1" familyId="family-1" />);
 

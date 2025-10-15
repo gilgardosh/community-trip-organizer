@@ -46,7 +46,8 @@ export default function GearDeleteDialog({
       console.error('Error deleting gear item:', error);
       toast({
         title: 'שגיאה',
-        description: error instanceof Error ? error.message : 'שגיאה במחיקת פריט הציוד',
+        description:
+          error instanceof Error ? error.message : 'שגיאה במחיקת פריט הציוד',
         variant: 'destructive',
       });
     } finally {

@@ -222,7 +222,9 @@ export function TripList({
           <TabsTrigger value="upcoming">
             קרובים ({upcomingTrips.length})
           </TabsTrigger>
-          <TabsTrigger value="active">פעילים ({activeTrips.length})</TabsTrigger>
+          <TabsTrigger value="active">
+            פעילים ({activeTrips.length})
+          </TabsTrigger>
           <TabsTrigger value="past">הסתיימו ({pastTrips.length})</TabsTrigger>
         </TabsList>
 

@@ -5,7 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Package, Hand } from 'lucide-react';
 import { getGearItemsByTrip } from '@/lib/api';
-import { GearItem as GearItemType, getFamilyAssignment, canAssignMore } from '@/types/gear';
+import {
+  GearItem as GearItemType,
+  getFamilyAssignment,
+  canAssignMore,
+} from '@/types/gear';
 import GearVolunteerDialog from './GearVolunteerDialog';
 import GearStatusIndicator from './GearStatusIndicator';
 
@@ -14,7 +18,10 @@ interface FamilyGearListProps {
   familyId: string;
 }
 
-export default function FamilyGearList({ tripId, familyId }: FamilyGearListProps) {
+export default function FamilyGearList({
+  tripId,
+  familyId,
+}: FamilyGearListProps) {
   const [gearItems, setGearItems] = useState<GearItemType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

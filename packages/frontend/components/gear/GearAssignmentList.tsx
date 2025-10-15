@@ -24,8 +24,9 @@ export default function GearAssignmentList({
   return (
     <div className={compact ? 'space-y-1' : 'space-y-2'}>
       {assignments.map((assignment) => {
-        const familyName = assignment.family.name || 
-          assignment.family.members.find(m => m.type === 'adult')?.name || 
+        const familyName =
+          assignment.family.name ||
+          assignment.family.members.find((m) => m.type === 'adult')?.name ||
           'משפחה ללא שם';
 
         return (
@@ -36,7 +37,9 @@ export default function GearAssignmentList({
             } p-2 bg-muted/50 rounded`}
           >
             <div className="flex items-center gap-2">
-              <Users className={`${compact ? 'h-3 w-3' : 'h-4 w-4'} text-muted-foreground`} />
+              <Users
+                className={`${compact ? 'h-3 w-3' : 'h-4 w-4'} text-muted-foreground`}
+              />
               <span className="font-medium">{familyName}</span>
             </div>
             <span className="text-muted-foreground">

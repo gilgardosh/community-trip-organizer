@@ -371,10 +371,7 @@ export const gearService = {
       user.familyId !== familyId &&
       !isTripAdmin
     ) {
-      throw new ApiError(
-        403,
-        'Families can only volunteer for their own gear',
-      );
+      throw new ApiError(403, 'Families can only volunteer for their own gear');
     }
 
     // Check if family is attending the trip

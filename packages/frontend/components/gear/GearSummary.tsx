@@ -47,9 +47,12 @@ export default function GearSummary({ tripId }: GearSummaryProps) {
     return null;
   }
 
-  const completionRate = summary.totalQuantityNeeded > 0
-    ? Math.round((summary.totalQuantityAssigned / summary.totalQuantityNeeded) * 100)
-    : 0;
+  const completionRate =
+    summary.totalQuantityNeeded > 0
+      ? Math.round(
+          (summary.totalQuantityAssigned / summary.totalQuantityNeeded) * 100,
+        )
+      : 0;
 
   return (
     <Card dir="rtl">
@@ -63,7 +66,9 @@ export default function GearSummary({ tripId }: GearSummaryProps) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center p-3 bg-muted/50 rounded-lg">
             <div className="text-2xl font-bold">{summary.totalItems}</div>
-            <div className="text-xs text-muted-foreground mt-1">סה&quot;כ פריטים</div>
+            <div className="text-xs text-muted-foreground mt-1">
+              סה&quot;כ פריטים
+            </div>
           </div>
 
           <div className="text-center p-3 bg-green-50 rounded-lg">
@@ -108,15 +113,16 @@ export default function GearSummary({ tripId }: GearSummaryProps) {
                 completionRate === 100
                   ? 'bg-green-600'
                   : completionRate > 50
-                  ? 'bg-orange-500'
-                  : 'bg-gray-400'
+                    ? 'bg-orange-500'
+                    : 'bg-gray-400'
               }`}
               style={{ width: `${completionRate}%` }}
             />
           </div>
           <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
             <span>
-              {summary.totalQuantityAssigned} מתוך {summary.totalQuantityNeeded} יחידות
+              {summary.totalQuantityAssigned} מתוך {summary.totalQuantityNeeded}{' '}
+              יחידות
             </span>
           </div>
         </div>

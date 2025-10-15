@@ -7,6 +7,7 @@ import {
   afterEach,
   vi,
 } from 'vitest';
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 import request from 'supertest';
 import app from '../src/app.js';
 import { prisma } from '../src/utils/db.js';

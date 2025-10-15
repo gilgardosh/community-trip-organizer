@@ -87,9 +87,7 @@ describe('AttendanceMarker', () => {
     const checkbox = screen.getByRole('checkbox');
     expect(checkbox).toBeDisabled();
 
-    expect(
-      screen.getByText(/תאריך הרשמה אחרון עבר/),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/תאריך הרשמה אחרון עבר/)).toBeInTheDocument();
   });
 
   it('submits attendance update successfully', async () => {
@@ -128,7 +126,9 @@ describe('AttendanceMarker', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText(/סטטוס ההשתתפות נשמר בהצלחה!/)).toBeInTheDocument();
+      expect(
+        screen.getByText(/סטטוס ההשתתפות נשמר בהצלחה!/),
+      ).toBeInTheDocument();
       expect(mockOnUpdate).toHaveBeenCalled();
     });
   });

@@ -12,13 +12,15 @@ interface AttendanceSummaryProps {
 export function AttendanceSummary({ attendees }: AttendanceSummaryProps) {
   // Calculate statistics
   const totalFamilies = attendees.length;
-  
+
   const allMembers = attendees.flatMap((attendee) => attendee.family.members);
   const adults = allMembers.filter((member) => member.type === 'ADULT');
   const children = allMembers.filter((member) => member.type === 'CHILD');
-  
+
   const familiesWithDietaryRequirements = attendees.filter(
-    (attendee) => attendee.dietaryRequirements && attendee.dietaryRequirements.trim() !== ''
+    (attendee) =>
+      attendee.dietaryRequirements &&
+      attendee.dietaryRequirements.trim() !== '',
   );
 
   return (
@@ -34,19 +36,25 @@ export function AttendanceSummary({ attendees }: AttendanceSummaryProps) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="border border-border rounded-lg p-4 text-center">
             <Users className="w-6 h-6 mx-auto mb-2 text-primary" />
-            <div className="text-2xl font-bold text-foreground">{totalFamilies}</div>
+            <div className="text-2xl font-bold text-foreground">
+              {totalFamilies}
+            </div>
             <div className="text-xs text-muted-foreground">משפחות</div>
           </div>
 
           <div className="border border-border rounded-lg p-4 text-center">
             <User className="w-6 h-6 mx-auto mb-2 text-blue-500" />
-            <div className="text-2xl font-bold text-foreground">{adults.length}</div>
+            <div className="text-2xl font-bold text-foreground">
+              {adults.length}
+            </div>
             <div className="text-xs text-muted-foreground">מבוגרים</div>
           </div>
 
           <div className="border border-border rounded-lg p-4 text-center">
             <Baby className="w-6 h-6 mx-auto mb-2 text-pink-500" />
-            <div className="text-2xl font-bold text-foreground">{children.length}</div>
+            <div className="text-2xl font-bold text-foreground">
+              {children.length}
+            </div>
             <div className="text-xs text-muted-foreground">ילדים</div>
           </div>
 
@@ -61,14 +69,16 @@ export function AttendanceSummary({ attendees }: AttendanceSummaryProps) {
 
         {/* Families List */}
         <div className="space-y-3">
-          <h4 className="font-semibold text-sm text-foreground">משפחות משתתפות</h4>
+          <h4 className="font-semibold text-sm text-foreground">
+            משפחות משתתפות
+          </h4>
           <div className="space-y-2">
             {attendees.map((attendee, index) => {
               const familyAdults = attendee.family.members.filter(
-                (m) => m.type === 'ADULT'
+                (m) => m.type === 'ADULT',
               );
               const familyChildren = attendee.family.members.filter(
-                (m) => m.type === 'CHILD'
+                (m) => m.type === 'CHILD',
               );
 
               return (
