@@ -6,6 +6,7 @@ import roleProtectedRouter from './role-protected.js';
 import familyRouter from './family.js';
 import tripRouter from './trip.js';
 import gearRouter from './gear.js';
+import whatsappRouter from './whatsapp.js';
 
 const router = Router();
 
@@ -16,5 +17,6 @@ router.use('/role-protected', roleProtectedRouter);
 router.use('/families', familyRouter);
 router.use('/trips', tripRouter);
 router.use('/gear', gearRouter);
+router.use('/whatsapp', whatsappRouter);
 
 export default router;

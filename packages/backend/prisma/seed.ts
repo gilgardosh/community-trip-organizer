@@ -1,4 +1,10 @@
-import { PrismaClient, Role, FamilyStatus, UserType } from '@prisma/client';
+import {
+  PrismaClient,
+  Role,
+  FamilyStatus,
+  UserType,
+  MessageEventType,
+} from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -8,6 +14,8 @@ async function main() {
 
   // Clear existing data
   console.log('🧹 Cleaning existing data...');
+  await prisma.whatsAppMessage.deleteMany({});
+  await prisma.whatsAppMessageTemplate.deleteMany({});
   await prisma.log.deleteMany({});
   await prisma.tripScheduleItem.deleteMany({});
   await prisma.gearAssignment.deleteMany({});
@@ -206,7 +214,8 @@ async function main() {
     include: { members: true },
   });
 
-  const friedmanFam = await prisma.family.create({
+  // Friedman family (2 parents, no children - pending status)
+  await prisma.family.create({
     data: {
       name: 'משפחת פרידמן',
       status: FamilyStatus.PENDING,
@@ -235,7 +244,9 @@ async function main() {
     include: { members: true },
   });
 
-  const barnFam = await prisma.family.create({
+  // Create the Barn family (2 parents, 2 children)
+  // Inactive family
+  await prisma.family.create({
     data: {
       name: 'משפחת ברון',
       status: FamilyStatus.APPROVED,
@@ -1376,6 +1387,152 @@ async function main() {
 
   console.log('✅ Created detailed trip schedules');
 
+  // Create WhatsApp Message Templates
+  console.log('💬 Creating WhatsApp message templates...');
+
+  const templates = [
+    {
+      name: 'Trip Created - Hebrew',
+      eventType: MessageEventType.TRIP_CREATED,
+      content: `🎉 *טיול חדש נוצר!*
+
+📍 *{tripName}* ב{location}
+
+📅 *תאריכים:*
+מתאריך: {startDate}
+עד תאריך: {endDate}
+
+📝 *תיאור:*
+{description}
+
+👥 *מנהלי הטיול:*
+{admins}
+
+להרשמה ופרטים נוספים, אנא היכנסו למערכת.`,
+      description: 'Template for new trip creation notifications',
+      isActive: true,
+    },
+    {
+      name: 'Trip Published - Hebrew',
+      eventType: MessageEventType.TRIP_PUBLISHED,
+      content: `📢 *הטיול פורסם!*
+
+🎯 *{tripName}* ב{location}
+
+📅 *תאריכים:*
+מתאריך: {startDate}
+עד תאריך: {endDate}
+
+⏰ *מועד אחרון להרשמה:*
+{cutoffDate}
+
+👥 *מנהלי הטיול:*
+{admins}
+
+להרשמה, היכנסו למערכת ועדכנו את ההשתתפות שלכם!`,
+      description: 'Template for trip publishing notifications',
+      isActive: true,
+    },
+    {
+      name: 'Attendance Update - Hebrew',
+      eventType: MessageEventType.ATTENDANCE_UPDATE,
+      content: `📊 *עדכון משתתפים* - {tripName}
+
+👨‍👩‍👧‍👦 *מספר משפחות רשומות:* {attendeeCount}
+
+📋 *רשימת משתתפים:*
+{attendeeList}
+
+תודה לכולם שנרשמו! מחכים לראותכם 🎉`,
+      description: 'Template for attendance update notifications',
+      isActive: true,
+    },
+    {
+      name: 'Gear Assignment - Hebrew',
+      eventType: MessageEventType.GEAR_ASSIGNMENT,
+      content: `🎒 *חלוקת ציוד* - {tripName}
+
+להלן רשימת הציוד וההתנדבויות:
+
+{gearList}
+
+תודה רבה לכל המשפחות שהתנדבו! 🙏
+
+אם יש שינויים, אנא עדכנו במערכת.`,
+      description: 'Template for gear assignment notifications',
+      isActive: true,
+    },
+    {
+      name: 'Trip Reminder - Hebrew',
+      eventType: MessageEventType.TRIP_REMINDER,
+      content: `⏰ *תזכורת טיול!*
+
+🎯 *{tripName}* ב{location}
+
+📅 *תאריך יציאה:*
+{startDate}
+
+⌛ *נותרו {daysUntilTrip} ימים!*
+
+אנא וודאו שהכנתם את כל הציוד הנדרש.
+נתראה בקרוב! 🚗✨`,
+      description: 'Template for trip reminder notifications',
+      isActive: true,
+    },
+    {
+      name: 'Trip Start - Hebrew',
+      eventType: MessageEventType.TRIP_START,
+      content: `🎊 *הטיול מתחיל היום!*
+
+🎯 *{tripName}*
+📍 *{location}*
+
+📋 *תוכנית היום:*
+{schedule}
+
+בהצלחה וטיול מהנה לכולם! 🌟`,
+      description: 'Template for trip start day notifications',
+      isActive: true,
+    },
+    {
+      name: 'Attendance Cutoff Reminder - Hebrew',
+      eventType: MessageEventType.ATTENDANCE_CUTOFF_REMINDER,
+      content: `⚠️ *תזכורת אחרונה!*
+
+🎯 *{tripName}*
+
+⏰ *המועד האחרון להרשמה:*
+{cutoffDate}
+
+⌛ *נותרו {daysUntilCutoff} ימים!*
+
+אם עדיין לא נרשמתם ואתם מעוניינים להשתתף, זה הזמן!
+היכנסו למערכת ועדכנו את ההשתתפות שלכם.`,
+      description: 'Template for attendance cutoff reminders',
+      isActive: true,
+    },
+    {
+      name: 'Custom Message - Hebrew',
+      eventType: MessageEventType.CUSTOM,
+      content: `שלום,
+
+{message}
+
+תודה,
+מנהלי הטיול`,
+      description: 'Customizable template for manual messages',
+      isActive: true,
+    },
+  ];
+
+  for (const template of templates) {
+    await prisma.whatsAppMessageTemplate.create({
+      data: template,
+    });
+  }
+
+  console.log(`✅ Created ${templates.length} WhatsApp message templates`);
+
   // Summary
   console.log('\n📊 Enhanced Seeding Summary:');
   console.log('='.repeat(60));
@@ -1386,6 +1543,7 @@ async function main() {
   console.log(`✅ 40+ Trip Attendances with Dietary Requirements`);
   console.log(`✅ 31 Gear Items across 3 Trips`);
   console.log(`✅ 48 Detailed Schedule Items across 4 Trips`);
+  console.log(`✅ ${templates.length} WhatsApp Message Templates`);
   console.log(`\n🎯 Key Features Demonstrated:`);
   console.log('   ✓ Dietary Requirements Tracking');
   console.log('   ✓ Detailed Trip Schedules');
@@ -1393,6 +1551,7 @@ async function main() {
   console.log('   ✓ Comprehensive Gear Management');
   console.log('   ✓ Draft and Published Trips');
   console.log('   ✓ Past Trips with Historical Data');
+  console.log('   ✓ WhatsApp Message Generation System');
   console.log('\n🔑 Login credentials (all users):');
   console.log('   Password: password123');
   console.log('\n🎉 Seeding completed successfully!');

@@ -119,6 +119,31 @@ model Log {
   changes    Json?
 }
 
+model WhatsAppMessageTemplate {
+  id          String              @id @default(cuid())
+  name        String              @unique
+  eventType   MessageEventType
+  content     String              // Template text with {variable} placeholders
+  description String?
+  isActive    Boolean             @default(true)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  messages    WhatsAppMessage[]
+}
+
+model WhatsAppMessage {
+  id           String                   @id @default(cuid())
+  templateId   String
+  template     WhatsAppMessageTemplate  @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  tripId       String?
+  generatedBy  String                   // User ID who generated the message
+  eventType    MessageEventType
+  content      String                   // Final generated message
+  variables    Json?                    // Variables used for generation
+  triggerType  MessageTriggerType
+  createdAt    DateTime                 @default(now())
+}
+
 enum UserType {
   ADULT
   CHILD
@@ -129,6 +154,7 @@ enum ActionType {
   UPDATE
   DELETE
   LOGIN
+  MESSAGE_GENERATED
 }
 
 enum Role {
@@ -140,4 +166,20 @@ enum Role {
 enum FamilyStatus {
   PENDING
   APPROVED
+}
+
+enum MessageEventType {
+  TRIP_CREATED
+  TRIP_PUBLISHED
+  ATTENDANCE_UPDATE
+  GEAR_ASSIGNMENT
+  TRIP_REMINDER
+  TRIP_START
+  ATTENDANCE_CUTOFF_REMINDER
+  CUSTOM
+}
+
+enum MessageTriggerType {
+  AUTOMATIC
+  MANUAL
 }

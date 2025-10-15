@@ -370,18 +370,23 @@
 
 ### 6.1 WhatsApp Message Generation
 
-- [ ] Message Templates
-  - [ ] Create message template models
-  - [ ] Implement template CRUD endpoints
-  - [ ] Set up template validation
-- [ ] Message Generation
-  - [ ] Create message generation logic for events
-  - [ ] Implement dynamic content insertion
-  - [ ] Add manual message trigger endpoints
-- [ ] Testing & Logging
-  - [ ] Test message generation
-  - [ ] Implement message generation logging
-  - [ ] Create sample templates
+- [x] Message Templates
+  - [x] Create message template models (WhatsAppMessageTemplate, WhatsAppMessage)
+  - [x] Implement template CRUD endpoints (5 endpoints)
+  - [x] Set up template validation with Zod schemas
+  - [x] Add MessageEventType enum with 8 event types
+  - [x] Add MessageTriggerType enum (AUTOMATIC/MANUAL)
+- [x] Message Generation
+  - [x] Create message generation logic for 8 event types
+  - [x] Implement dynamic content insertion with variable replacement
+  - [x] Add manual message trigger endpoints (8 trip-specific + 1 manual)
+  - [x] Implement message history tracking
+  - [x] Add authorization checks (TRIP_ADMIN and SUPER_ADMIN only)
+- [x] Testing & Logging
+  - [x] Write comprehensive tests for all endpoints (21 tests passing)
+  - [x] Implement message generation logging for all operations
+  - [x] Create 8 sample Hebrew templates with RTL formatting
+  - [x] Test role-based access control
 
 ### 6.2 WhatsApp Frontend Integration
 
