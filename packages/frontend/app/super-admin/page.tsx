@@ -45,26 +45,19 @@ import {
   Loader2,
 } from 'lucide-react';
 
-import {
-  getFamilies,
-  getTrips,
-  getAdmins,
-  type Family,
-  type Trip,
-  type Admin,
-} from '@/lib/api';
+import { getFamilies, getTrips, getAdmins } from '@/lib/api';
+import { Family } from '@/types/family';
+import { Trip } from '@/types/trip';
+import { AdminUser } from '@/types/admin';
 
 export default function SuperAdminPanel() {
   const [searchTerm, setSearchTerm] = useState('');
   const [familyFilter, setFamilyFilter] = useState('all');
   const [tripFilter, setTripFilter] = useState('all');
-  const [selectedFamily, setSelectedFamily] = useState<Family | null>(null);
-  const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
-  const [selectedAdmin, setSelectedAdmin] = useState<Admin | null>(null);
 
   const [families, setFamilies] = useState<Family[]>([]);
   const [trips, setTrips] = useState<Trip[]>([]);
-  const [admins, setAdmins] = useState<Admin[]>([]);
+  const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -102,10 +95,7 @@ export default function SuperAdminPanel() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'active':
-        return (
-          <Badge className="bg-secondary text-secondary-foreground">פעיל</Badge>
-        );
+      case 'PENDING':
       case 'pending':
         return (
           <Badge
@@ -115,16 +105,25 @@ export default function SuperAdminPanel() {
             ממתין
           </Badge>
         );
+      case 'APPROVED':
+      case 'active':
+        return (
+          <Badge className="bg-secondary text-secondary-foreground">פעיל</Badge>
+        );
+      case 'INACTIVE':
       case 'deactivated':
         return <Badge variant="destructive">מושבת</Badge>;
+      case 'PUBLISHED':
       case 'published':
         return (
           <Badge className="bg-secondary text-secondary-foreground">
             פורסם
           </Badge>
         );
+      case 'DRAFT':
       case 'draft':
         return <Badge variant="outline">טיוטה</Badge>;
+      case 'COMPLETED':
       case 'completed':
         return <Badge variant="secondary">הושלם</Badge>;
       default:
@@ -134,25 +133,25 @@ export default function SuperAdminPanel() {
 
   const getRoleBadge = (role: string) => {
     switch (role) {
-      case 'סופר אדמין':
+      case 'SUPER_ADMIN':
         return (
           <Badge className="bg-primary text-primary-foreground">
             <Crown className="w-3 h-3 ml-1" />
-            {role}
+            סופר אדמין
           </Badge>
         );
-      case 'מנהל טיול':
+      case 'TRIP_ADMIN':
         return (
           <Badge className="bg-secondary text-secondary-foreground">
             <Shield className="w-3 h-3 ml-1" />
-            {role}
+            מנהל טיול
           </Badge>
         );
-      case 'משתתף':
+      case 'FAMILY':
         return (
           <Badge variant="outline">
             <UserCheck className="w-3 h-3 ml-1" />
-            {role}
+            משתתף
           </Badge>
         );
       default:
@@ -161,11 +160,13 @@ export default function SuperAdminPanel() {
   };
 
   const filteredFamilies = families.filter((family) => {
-    const matchesSearch = family.name
+    const matchesSearch = (family.name || '')
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
     const matchesFilter =
-      familyFilter === 'all' || family.status === familyFilter;
+      familyFilter === 'all' ||
+      (familyFilter === 'active' && family.status === 'APPROVED') ||
+      (familyFilter === 'pending' && family.status === 'PENDING');
     return matchesSearch && matchesFilter;
   });
 
@@ -173,7 +174,10 @@ export default function SuperAdminPanel() {
     const matchesSearch =
       trip.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       trip.location.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = tripFilter === 'all' || trip.status === tripFilter;
+    const matchesFilter =
+      tripFilter === 'all' ||
+      (tripFilter === 'draft' && trip.draft) ||
+      (tripFilter === 'published' && !trip.draft);
     return matchesSearch && matchesFilter;
   });
 
@@ -280,13 +284,13 @@ export default function SuperAdminPanel() {
                       <TableRow key={family.id}>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            {family.status === 'pending' && (
+                            {family.status === 'PENDING' && (
                               <Button size="sm" className="h-8">
                                 <CheckCircle className="h-3 w-3 ml-1" />
                                 אשר
                               </Button>
                             )}
-                            {family.status === 'active' && (
+                            {family.status === 'APPROVED' && (
                               <Button
                                 size="sm"
                                 variant="outline"
@@ -324,16 +328,22 @@ export default function SuperAdminPanel() {
                         </TableCell>
                         <TableCell>{getStatusBadge(family.status)}</TableCell>
                         <TableCell className="text-right">
-                          {family.joinDate}
+                          {new Date(family.createdAt).toLocaleDateString(
+                            'he-IL',
+                          )}
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="space-y-1">
                             <div className="text-sm font-medium">
-                              {family.members} חברים
+                              {family.members?.length || 0} חברים
                             </div>
                             <div className="text-xs text-muted-foreground">
-                              {family.adults.length} מבוגרים,{' '}
-                              {family.children.length} ילדים
+                              {family.members?.filter((m) => m.type === 'ADULT')
+                                .length || 0}{' '}
+                              מבוגרים,{' '}
+                              {family.members?.filter((m) => m.type === 'CHILD')
+                                .length || 0}{' '}
+                              ילדים
                             </div>
                           </div>
                         </TableCell>
@@ -386,7 +396,7 @@ export default function SuperAdminPanel() {
                       <TableRow key={trip.id}>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            {trip.status === 'draft' && (
+                            {trip.draft && (
                               <Button size="sm" className="h-8">
                                 <CheckCircle className="h-3 w-3 ml-1" />
                                 אשר
@@ -418,7 +428,8 @@ export default function SuperAdminPanel() {
                                     <SelectContent>
                                       {admins
                                         .filter(
-                                          (admin) => admin.role === 'מנהל טיול',
+                                          (admin) =>
+                                            admin.role === 'TRIP_ADMIN',
                                         )
                                         .map((admin) => (
                                           <SelectItem
@@ -440,14 +451,16 @@ export default function SuperAdminPanel() {
                           </div>
                         </TableCell>
                         <TableCell className="text-right">
-                          {trip.adminName ? (
+                          {trip.admins && trip.admins.length > 0 ? (
                             <div className="flex items-center gap-2">
                               <Avatar className="h-6 w-6">
                                 <AvatarFallback className="text-xs">
-                                  {trip.adminName.charAt(0)}
+                                  {trip.admins[0].name.charAt(0)}
                                 </AvatarFallback>
                               </Avatar>
-                              <span className="text-sm">{trip.adminName}</span>
+                              <span className="text-sm">
+                                {trip.admins[0].name}
+                              </span>
                             </div>
                           ) : (
                             <span className="text-muted-foreground text-sm">
@@ -455,13 +468,22 @@ export default function SuperAdminPanel() {
                             </span>
                           )}
                         </TableCell>
-                        <TableCell>{getStatusBadge(trip.status)}</TableCell>
+                        <TableCell>
+                          {getStatusBadge(trip.draft ? 'draft' : 'published')}
+                        </TableCell>
                         <TableCell className="text-right">
                           <div className="space-y-1">
-                            <div className="text-sm">{trip.startDate}</div>
+                            <div className="text-sm">
+                              {new Date(trip.startDate).toLocaleDateString(
+                                'he-IL',
+                              )}
+                            </div>
                             {trip.startDate !== trip.endDate && (
                               <div className="text-xs text-muted-foreground">
-                                עד {trip.endDate}
+                                עד{' '}
+                                {new Date(trip.endDate).toLocaleDateString(
+                                  'he-IL',
+                                )}
                               </div>
                             )}
                           </div>
@@ -505,7 +527,7 @@ export default function SuperAdminPanel() {
                       <TableRow key={admin.id}>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            {admin.role === 'משתתף' && (
+                            {admin.role === 'FAMILY' && (
                               <Button
                                 size="sm"
                                 variant="outline"
@@ -515,7 +537,7 @@ export default function SuperAdminPanel() {
                                 הפוך למנהל
                               </Button>
                             )}
-                            {admin.role === 'מנהל טיול' && (
+                            {admin.role === 'TRIP_ADMIN' && (
                               <>
                                 <Button size="sm" className="h-8">
                                   <Crown className="h-3 w-3 ml-1" />
@@ -531,7 +553,7 @@ export default function SuperAdminPanel() {
                                 </Button>
                               </>
                             )}
-                            {admin.role === 'סופר אדמין' &&
+                            {admin.role === 'SUPER_ADMIN' &&
                               admin.id !== 'superadmin' && (
                                 <Button
                                   size="sm"
@@ -554,9 +576,7 @@ export default function SuperAdminPanel() {
                               <div className="font-medium">{admin.name}</div>
                             </div>
                             <Avatar className="h-8 w-8">
-                              <AvatarImage
-                                src={admin.avatar || '/placeholder.svg'}
-                              />
+                              <AvatarImage src={'/placeholder.svg'} />
                               <AvatarFallback className="text-xs">
                                 {admin.name.charAt(0)}
                               </AvatarFallback>

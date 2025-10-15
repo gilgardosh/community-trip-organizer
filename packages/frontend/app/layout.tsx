@@ -4,6 +4,10 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { Suspense } from 'react';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { NotificationProvider } from '@/contexts/NotificationContext';
+import { AppProvider } from '@/contexts/AppContext';
+import { ErrorBoundary } from '@/components/layout/ErrorBoundary';
+import { MainNav } from '@/components/layout/MainNav';
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 
@@ -38,10 +42,17 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
       <body className="font-sans">
-        <AuthProvider>
-          <Suspense fallback={null}>{children}</Suspense>
-          <Toaster />
-        </AuthProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            <NotificationProvider>
+              <AppProvider>
+                <MainNav />
+                <Suspense fallback={null}>{children}</Suspense>
+                <Toaster />
+              </AppProvider>
+            </NotificationProvider>
+          </AuthProvider>
+        </ErrorBoundary>
         <Analytics />
       </body>
     </html>

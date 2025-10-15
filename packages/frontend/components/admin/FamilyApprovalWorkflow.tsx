@@ -27,13 +27,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  CheckCircle,
-  XCircle,
-  Loader2,
-  Users,
-  Calendar,
-} from 'lucide-react';
+import { CheckCircle, XCircle, Loader2, Users, Calendar } from 'lucide-react';
 import {
   getPendingFamilies,
   adminApproveFamily,

@@ -25,13 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Loader2,
-  Search,
-  Calendar,
-  User,
-  FileText,
-} from 'lucide-react';
+import { Loader2, Search, Calendar, User, FileText } from 'lucide-react';
 import { getActivityLogs } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 import type { ActivityLog, ActivityLogsFilters } from '@/types/admin';

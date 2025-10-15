@@ -627,6 +627,13 @@ export async function getAllUsers(): Promise<AdminUser[]> {
 }
 
 /**
+ * Get all admins - alias for getAllUsers for backward compatibility
+ */
+export async function getAdmins(): Promise<AdminUser[]> {
+  return getAllUsers();
+}
+
+/**
  * Update user role (Super Admin only)
  */
 export async function updateUserRole(

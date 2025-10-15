@@ -33,7 +33,7 @@ import type {
 } from '@/types/admin';
 
 export function SystemReporting() {
-  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
+  const [_, setMetrics] = useState<DashboardMetrics | null>(null);
   const [summary, setSummary] = useState<SystemSummary | null>(null);
   const [tripStats, setTripStats] = useState<TripStats | null>(null);
   const [familyStats, setFamilyStats] = useState<FamilyStats | null>(null);

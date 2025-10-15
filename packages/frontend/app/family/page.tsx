@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import { FamilyDashboard } from '@/components/family';
+import { FamilyDashboard } from '@/components/dashboard';
 
 export default function FamilyPage() {
   const { user } = useAuth();

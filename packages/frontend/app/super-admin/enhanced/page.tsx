@@ -13,7 +13,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Users,
   MapPin,
-  Shield,
   Activity,
   Download,
   BarChart3,
@@ -218,8 +217,8 @@ export default function EnhancedSuperAdminDashboard() {
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
                     ניהול טיולים, שיוך מנהלים ופרסום טיולים מתבצע בדף הטיולים
-                    המתקדם. השתמש בטאב "טיולים" בתפריט הראשי לגישה לפונקציונליות
-                    מלאה.
+                    המתקדם. השתמש בטאב &quot;טיולים&quot; בתפריט הראשי לגישה
+                    לפונקציונליות מלאה.
                   </p>
                 </CardContent>
               </Card>

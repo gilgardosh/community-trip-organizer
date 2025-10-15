@@ -24,7 +24,6 @@ import { Loader2, UserPlus, X, Shield, MapPin, Calendar } from 'lucide-react';
 import {
   getAllUsers,
   adminAssignTripAdmins,
-  adminAddTripAdmin,
   adminRemoveTripAdmin,
 } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
@@ -182,7 +181,9 @@ export function TripAdminAssignment({
             <div className="text-center py-8 text-muted-foreground">
               <Shield className="h-12 w-12 mx-auto mb-2 opacity-50" />
               <p>לא משויכים מנהלי טיול</p>
-              <p className="text-sm mt-1">לחץ על "שייך מנהלים" כדי להוסיף</p>
+              <p className="text-sm mt-1">
+                לחץ על &quot;שייך מנהלים&quot; כדי להוסיף
+              </p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -241,8 +242,8 @@ export function TripAdminAssignment({
               <div className="text-center py-8 text-muted-foreground">
                 <p>לא נמצאו משתמשים זכאים</p>
                 <p className="text-sm mt-1">
-                  רק משתמשים בתפקיד "מנהל טיול" או "סופר אדמין" יכולים להיות
-                  מנהלי טיול
+                  רק משתמשים בתפקיד &quot;מנהל טיול&quot; או &quot;סופר
+                  אדמין&quot; יכולים להיות מנהלי טיול
                 </p>
               </div>
             ) : (
