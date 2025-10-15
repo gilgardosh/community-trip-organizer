@@ -632,3 +632,241 @@ export async function getAdmins(): Promise<unknown[]> {
     },
   ];
 }
+
+// ==================== WHATSAPP API ====================
+
+import type {
+  WhatsAppTemplate,
+  WhatsAppMessage,
+  CreateTemplateData,
+  UpdateTemplateData,
+  GenerateMessageData,
+  GenerateMessageResponse,
+  MessageEventType,
+} from '@/types/whatsapp';
+
+/**
+ * Create a new WhatsApp template (Super Admin only)
+ */
+export async function createWhatsAppTemplate(
+  data: CreateTemplateData,
+): Promise<WhatsAppTemplate> {
+  const response = await fetchWithAuth(`/api/whatsapp/templates`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
+
+/**
+ * Get all WhatsApp templates
+ */
+export async function getWhatsAppTemplates(
+  eventType?: MessageEventType,
+  activeOnly?: boolean,
+): Promise<WhatsAppTemplate[]> {
+  const params = new URLSearchParams();
+
+  if (eventType) {
+    params.append('eventType', eventType);
+  }
+
+  if (activeOnly !== undefined) {
+    params.append('activeOnly', String(activeOnly));
+  }
+
+  const queryString = params.toString();
+  const endpoint = `/api/whatsapp/templates${queryString ? `?${queryString}` : ''}`;
+
+  const response = await fetchWithAuth(endpoint);
+  return response.json();
+}
+
+/**
+ * Get WhatsApp template by ID
+ */
+export async function getWhatsAppTemplateById(
+  id: string,
+): Promise<WhatsAppTemplate> {
+  const response = await fetchWithAuth(`/api/whatsapp/templates/${id}`);
+  return response.json();
+}
+
+/**
+ * Update WhatsApp template (Super Admin only)
+ */
+export async function updateWhatsAppTemplate(
+  id: string,
+  data: UpdateTemplateData,
+): Promise<WhatsAppTemplate> {
+  const response = await fetchWithAuth(`/api/whatsapp/templates/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
+
+/**
+ * Delete WhatsApp template (Super Admin only)
+ */
+export async function deleteWhatsAppTemplate(
+  id: string,
+): Promise<{ message: string }> {
+  const response = await fetchWithAuth(`/api/whatsapp/templates/${id}`, {
+    method: 'DELETE',
+  });
+  return response.json();
+}
+
+/**
+ * Generate message from template
+ */
+export async function generateWhatsAppMessage(
+  data: GenerateMessageData,
+): Promise<GenerateMessageResponse> {
+  const response = await fetchWithAuth(`/api/whatsapp/generate`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
+
+/**
+ * Generate trip created message
+ */
+export async function generateTripCreatedMessage(
+  tripId: string,
+  triggerType: 'MANUAL' | 'AUTOMATIC' = 'MANUAL',
+): Promise<GenerateMessageResponse> {
+  const response = await fetchWithAuth(`/api/whatsapp/trip/${tripId}/created`, {
+    method: 'POST',
+    body: JSON.stringify({ triggerType }),
+  });
+  return response.json();
+}
+
+/**
+ * Generate trip published message
+ */
+export async function generateTripPublishedMessage(
+  tripId: string,
+  triggerType: 'MANUAL' | 'AUTOMATIC' = 'MANUAL',
+): Promise<GenerateMessageResponse> {
+  const response = await fetchWithAuth(
+    `/api/whatsapp/trip/${tripId}/published`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ triggerType }),
+    },
+  );
+  return response.json();
+}
+
+/**
+ * Generate attendance update message
+ */
+export async function generateAttendanceUpdateMessage(
+  tripId: string,
+  triggerType: 'MANUAL' | 'AUTOMATIC' = 'MANUAL',
+): Promise<GenerateMessageResponse> {
+  const response = await fetchWithAuth(
+    `/api/whatsapp/trip/${tripId}/attendance`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ triggerType }),
+    },
+  );
+  return response.json();
+}
+
+/**
+ * Generate gear assignment message
+ */
+export async function generateGearAssignmentMessage(
+  tripId: string,
+  triggerType: 'MANUAL' | 'AUTOMATIC' = 'MANUAL',
+): Promise<GenerateMessageResponse> {
+  const response = await fetchWithAuth(`/api/whatsapp/trip/${tripId}/gear`, {
+    method: 'POST',
+    body: JSON.stringify({ triggerType }),
+  });
+  return response.json();
+}
+
+/**
+ * Generate trip reminder message
+ */
+export async function generateTripReminderMessage(
+  tripId: string,
+  daysUntilTrip: number,
+  triggerType: 'MANUAL' | 'AUTOMATIC' = 'MANUAL',
+): Promise<GenerateMessageResponse> {
+  const response = await fetchWithAuth(
+    `/api/whatsapp/trip/${tripId}/reminder`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ daysUntilTrip, triggerType }),
+    },
+  );
+  return response.json();
+}
+
+/**
+ * Generate trip start message
+ */
+export async function generateTripStartMessage(
+  tripId: string,
+  triggerType: 'MANUAL' | 'AUTOMATIC' = 'MANUAL',
+): Promise<GenerateMessageResponse> {
+  const response = await fetchWithAuth(`/api/whatsapp/trip/${tripId}/start`, {
+    method: 'POST',
+    body: JSON.stringify({ triggerType }),
+  });
+  return response.json();
+}
+
+/**
+ * Generate attendance cutoff reminder message
+ */
+export async function generateAttendanceCutoffReminderMessage(
+  tripId: string,
+  triggerType: 'MANUAL' | 'AUTOMATIC' = 'MANUAL',
+): Promise<GenerateMessageResponse> {
+  const response = await fetchWithAuth(
+    `/api/whatsapp/trip/${tripId}/cutoff-reminder`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ triggerType }),
+    },
+  );
+  return response.json();
+}
+
+/**
+ * Get WhatsApp message history for a trip
+ */
+export async function getTripWhatsAppMessages(
+  tripId: string,
+): Promise<WhatsAppMessage[]> {
+  const response = await fetchWithAuth(`/api/whatsapp/trip/${tripId}/messages`);
+  return response.json();
+}
+
+/**
+ * Get all WhatsApp messages (Super Admin only)
+ */
+export async function getAllWhatsAppMessages(
+  eventType?: MessageEventType,
+): Promise<WhatsAppMessage[]> {
+  const params = new URLSearchParams();
+
+  if (eventType) {
+    params.append('eventType', eventType);
+  }
+
+  const queryString = params.toString();
+  const endpoint = `/api/whatsapp/messages${queryString ? `?${queryString}` : ''}`;
+
+  const response = await fetchWithAuth(endpoint);
+  return response.json();
+}
