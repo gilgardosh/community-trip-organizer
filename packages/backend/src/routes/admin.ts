@@ -172,7 +172,11 @@ router.get(
  */
 
 // Get all activity logs
-router.get('/logs', authorize(Role.SUPER_ADMIN), adminController.getActivityLogs);
+router.get(
+  '/logs',
+  authorize(Role.SUPER_ADMIN),
+  adminController.getActivityLogs,
+);
 
 // Get activity logs for a specific entity
 router.get(

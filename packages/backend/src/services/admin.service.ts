@@ -232,19 +232,14 @@ export const adminService = {
     ]);
 
     // User metrics
-    const [
-      totalUsers,
-      adults,
-      children,
-      superAdmins,
-      tripAdmins,
-    ] = await Promise.all([
-      prisma.user.count(),
-      prisma.user.count({ where: { type: UserType.ADULT } }),
-      prisma.user.count({ where: { type: UserType.CHILD } }),
-      prisma.user.count({ where: { role: Role.SUPER_ADMIN } }),
-      prisma.user.count({ where: { role: Role.TRIP_ADMIN } }),
-    ]);
+    const [totalUsers, adults, children, superAdmins, tripAdmins] =
+      await Promise.all([
+        prisma.user.count(),
+        prisma.user.count({ where: { type: UserType.ADULT } }),
+        prisma.user.count({ where: { type: UserType.CHILD } }),
+        prisma.user.count({ where: { role: Role.SUPER_ADMIN } }),
+        prisma.user.count({ where: { role: Role.TRIP_ADMIN } }),
+      ]);
 
     // Attendance metrics
     const totalAttendances = await prisma.tripAttendance.count();
@@ -284,7 +279,8 @@ export const adminService = {
       },
       attendance: {
         totalAttendances,
-        averageAttendancePerTrip: Math.round(averageAttendancePerTrip * 10) / 10,
+        averageAttendancePerTrip:
+          Math.round(averageAttendancePerTrip * 10) / 10,
       },
     };
   },
@@ -823,12 +819,14 @@ export const adminService = {
     const totalFamilies = trip.attendees.length;
     const totalAdults = trip.attendees.reduce(
       (sum, att) =>
-        sum + att.family.members.filter((m) => m.type === UserType.ADULT).length,
+        sum +
+        att.family.members.filter((m) => m.type === UserType.ADULT).length,
       0,
     );
     const totalChildren = trip.attendees.reduce(
       (sum, att) =>
-        sum + att.family.members.filter((m) => m.type === UserType.CHILD).length,
+        sum +
+        att.family.members.filter((m) => m.type === UserType.CHILD).length,
       0,
     );
 

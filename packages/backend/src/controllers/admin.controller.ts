@@ -90,11 +90,7 @@ export const adminController = {
    * Get system summary
    * GET /api/admin/summary
    */
-  getSystemSummary: async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
+  getSystemSummary: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const summary = await adminService.getSystemSummary();
 
@@ -434,11 +430,7 @@ export const adminController = {
    * Deactivate family
    * POST /api/admin/families/:familyId/deactivate
    */
-  deactivateFamily: async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
+  deactivateFamily: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { familyId } = req.params;
 
@@ -466,11 +458,7 @@ export const adminController = {
    * Reactivate family
    * POST /api/admin/families/:familyId/reactivate
    */
-  reactivateFamily: async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
+  reactivateFamily: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { familyId } = req.params;
 
@@ -621,11 +609,7 @@ export const adminController = {
    * Assign admins to trip
    * POST /api/admin/trips/:tripId/admins
    */
-  assignTripAdmins: async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
+  assignTripAdmins: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { tripId } = req.params;
       const { adminIds } = req.body as { adminIds: string[] };
@@ -686,11 +670,7 @@ export const adminController = {
    * Remove admin from trip
    * DELETE /api/admin/trips/:tripId/admins/:adminId
    */
-  removeTripAdmin: async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
+  removeTripAdmin: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { tripId, adminId } = req.params;
 

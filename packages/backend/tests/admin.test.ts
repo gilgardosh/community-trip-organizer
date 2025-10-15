@@ -105,8 +105,9 @@ describe('Admin API', () => {
       },
     });
     testFamilyId = familyUser.id;
-    familyUserId = familyUser.members.find((m) => m.type === UserType.ADULT)!
-      .id;
+    familyUserId = familyUser.members.find(
+      (m) => m.type === UserType.ADULT,
+    )!.id;
 
     // Create a pending family for approval tests
     const pendingFamily = await prisma.family.create({
@@ -192,7 +193,9 @@ describe('Admin API', () => {
           .set('Authorization', `Bearer ${superAdminToken}`);
 
         expect(response.status).toBe(200);
-        expect(response.body.data.every((u: any) => u.role === 'SUPER_ADMIN')).toBe(true);
+        expect(
+          response.body.data.every((u: any) => u.role === 'SUPER_ADMIN'),
+        ).toBe(true);
       });
 
       it('should filter users by type', async () => {
@@ -201,7 +204,9 @@ describe('Admin API', () => {
           .set('Authorization', `Bearer ${superAdminToken}`);
 
         expect(response.status).toBe(200);
-        expect(response.body.data.every((u: any) => u.type === 'CHILD')).toBe(true);
+        expect(response.body.data.every((u: any) => u.type === 'CHILD')).toBe(
+          true,
+        );
       });
 
       it('should not allow trip admin to access', async () => {
@@ -279,7 +284,9 @@ describe('Admin API', () => {
 
         expect(response.status).toBe(200);
         expect(Array.isArray(response.body.data)).toBe(true);
-        expect(response.body.data.some((f: any) => f.id === pendingFamilyId)).toBe(true);
+        expect(
+          response.body.data.some((f: any) => f.id === pendingFamilyId),
+        ).toBe(true);
       });
     });
 
@@ -349,13 +356,17 @@ describe('Admin API', () => {
           .send({ familyIds: bulkPendingFamilies });
 
         expect(response.status).toBe(200);
-        expect(response.body.data.approvedIds).toHaveLength(bulkPendingFamilies.length);
+        expect(response.body.data.approvedIds).toHaveLength(
+          bulkPendingFamilies.length,
+        );
 
         // Verify all are approved
         const families = await prisma.family.findMany({
           where: { id: { in: bulkPendingFamilies } },
         });
-        expect(families.every((f) => f.status === FamilyStatus.APPROVED)).toBe(true);
+        expect(families.every((f) => f.status === FamilyStatus.APPROVED)).toBe(
+          true,
+        );
       });
 
       it('should reject empty array', async () => {
@@ -505,7 +516,9 @@ describe('Admin API', () => {
           .set('Authorization', `Bearer ${superAdminToken}`);
 
         expect(response.status).toBe(200);
-        expect(response.body.data.admins.some((a: any) => a.id === tripAdminId)).toBe(true);
+        expect(
+          response.body.data.admins.some((a: any) => a.id === tripAdminId),
+        ).toBe(true);
       });
     });
 
@@ -609,7 +622,9 @@ describe('Admin API', () => {
           .set('Authorization', `Bearer ${superAdminToken}`);
 
         expect(response.status).toBe(200);
-        expect(response.body.data.every((t: any) => t.draft === true)).toBe(true);
+        expect(response.body.data.every((t: any) => t.draft === true)).toBe(
+          true,
+        );
       });
     });
 
@@ -629,7 +644,9 @@ describe('Admin API', () => {
           .set('Authorization', `Bearer ${superAdminToken}`);
 
         expect(response.status).toBe(200);
-        expect(response.body.data.every((f: any) => f.status === 'APPROVED')).toBe(true);
+        expect(
+          response.body.data.every((f: any) => f.status === 'APPROVED'),
+        ).toBe(true);
       });
     });
 
@@ -668,7 +685,9 @@ describe('Admin API', () => {
 
         expect(response.status).toBe(200);
         expect(
-          response.body.data.logs.every((l: any) => l.actionType === ActionType.LOGIN)
+          response.body.data.logs.every(
+            (l: any) => l.actionType === ActionType.LOGIN,
+          ),
         ).toBe(true);
       });
 

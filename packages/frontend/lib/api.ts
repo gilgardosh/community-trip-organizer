@@ -600,37 +600,330 @@ export async function getFamilyGearAssignments(
   return response.json();
 }
 
-/**
- * Get all admins (for super-admin panel)
- */
-export async function getAdmins(): Promise<unknown[]> {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 500));
+// ==================== ADMIN API ====================
 
-  // Return mock admin data
-  return [
+import type {
+  AdminUser,
+  ActivityLog,
+  ActivityLogsFilters,
+  DashboardMetrics,
+  SystemSummary,
+  TripStats,
+  FamilyStats,
+  TripAttendanceReport,
+  UpdateUserRoleData,
+  ExportDataRequest,
+  ExportDataResponse,
+  BulkApproveFamiliesData,
+  BulkDeactivateFamiliesData,
+} from '@/types/admin';
+
+/**
+ * Get all users (Super Admin only)
+ */
+export async function getAllUsers(): Promise<AdminUser[]> {
+  const response = await fetchWithAuth(`/api/admin/users`);
+  return response.json();
+}
+
+/**
+ * Update user role (Super Admin only)
+ */
+export async function updateUserRole(
+  userId: string,
+  data: UpdateUserRoleData,
+): Promise<AdminUser> {
+  const response = await fetchWithAuth(`/api/admin/users/${userId}/role`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
+
+/**
+ * Get user activity logs (Super Admin only)
+ */
+export async function getUserActivityLogs(
+  userId: string,
+): Promise<ActivityLog[]> {
+  const response = await fetchWithAuth(`/api/admin/users/${userId}/logs`);
+  return response.json();
+}
+
+/**
+ * Get pending families (Super Admin only)
+ */
+export async function getPendingFamilies(): Promise<Family[]> {
+  const response = await fetchWithAuth(`/api/admin/families/pending`);
+  return response.json();
+}
+
+/**
+ * Bulk approve families (Super Admin only)
+ */
+export async function bulkApproveFamilies(
+  data: BulkApproveFamiliesData,
+): Promise<{ message: string; approvedCount: number }> {
+  const response = await fetchWithAuth(`/api/admin/families/bulk-approve`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
+
+/**
+ * Bulk deactivate families (Super Admin only)
+ */
+export async function bulkDeactivateFamilies(
+  data: BulkDeactivateFamiliesData,
+): Promise<{ message: string; deactivatedCount: number }> {
+  const response = await fetchWithAuth(`/api/admin/families/bulk-deactivate`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
+
+/**
+ * Approve family (Super Admin only) - admin route
+ */
+export async function adminApproveFamily(familyId: string): Promise<Family> {
+  const response = await fetchWithAuth(
+    `/api/admin/families/${familyId}/approve`,
     {
-      id: 'admin1',
-      name: 'שרה מנהלת',
-      email: 'sarah@example.com',
-      role: 'מנהל טיול',
-      avatar: null,
+      method: 'POST',
     },
+  );
+  return response.json();
+}
+
+/**
+ * Deactivate family (Super Admin only) - admin route
+ */
+export async function adminDeactivateFamily(familyId: string): Promise<Family> {
+  const response = await fetchWithAuth(
+    `/api/admin/families/${familyId}/deactivate`,
     {
-      id: 'admin2',
-      name: 'יוסי מארגן',
-      email: 'yossi@example.com',
-      role: 'מנהל טיול',
-      avatar: null,
+      method: 'POST',
     },
+  );
+  return response.json();
+}
+
+/**
+ * Reactivate family (Super Admin only) - admin route
+ */
+export async function adminReactivateFamily(familyId: string): Promise<Family> {
+  const response = await fetchWithAuth(
+    `/api/admin/families/${familyId}/reactivate`,
     {
-      id: 'superadmin',
-      name: 'אדמין ראשי',
-      email: 'admin@example.com',
-      role: 'סופר אדמין',
-      avatar: null,
+      method: 'POST',
     },
-  ];
+  );
+  return response.json();
+}
+
+/**
+ * Delete family permanently (Super Admin only) - admin route
+ */
+export async function adminDeleteFamily(
+  familyId: string,
+): Promise<{ message: string }> {
+  const response = await fetchWithAuth(`/api/admin/families/${familyId}`, {
+    method: 'DELETE',
+  });
+  return response.json();
+}
+
+/**
+ * Publish trip (Super Admin only) - admin route
+ */
+export async function adminPublishTrip(tripId: string): Promise<TripType> {
+  const response = await fetchWithAuth(`/api/admin/trips/${tripId}/publish`, {
+    method: 'POST',
+  });
+  return response.json();
+}
+
+/**
+ * Unpublish trip (Super Admin only) - admin route
+ */
+export async function adminUnpublishTrip(tripId: string): Promise<TripType> {
+  const response = await fetchWithAuth(`/api/admin/trips/${tripId}/unpublish`, {
+    method: 'POST',
+  });
+  return response.json();
+}
+
+/**
+ * Assign trip admins (Super Admin only) - admin route
+ */
+export async function adminAssignTripAdmins(
+  tripId: string,
+  adminIds: string[],
+): Promise<TripType> {
+  const response = await fetchWithAuth(`/api/admin/trips/${tripId}/admins`, {
+    method: 'POST',
+    body: JSON.stringify({ adminIds }),
+  });
+  return response.json();
+}
+
+/**
+ * Add trip admin (Super Admin only) - admin route
+ */
+export async function adminAddTripAdmin(
+  tripId: string,
+  adminId: string,
+): Promise<TripType> {
+  const response = await fetchWithAuth(
+    `/api/admin/trips/${tripId}/admins/${adminId}`,
+    {
+      method: 'POST',
+    },
+  );
+  return response.json();
+}
+
+/**
+ * Remove trip admin (Super Admin only) - admin route
+ */
+export async function adminRemoveTripAdmin(
+  tripId: string,
+  adminId: string,
+): Promise<TripType> {
+  const response = await fetchWithAuth(
+    `/api/admin/trips/${tripId}/admins/${adminId}`,
+    {
+      method: 'DELETE',
+    },
+  );
+  return response.json();
+}
+
+/**
+ * Delete trip permanently (Super Admin only) - admin route
+ */
+export async function adminDeleteTrip(
+  tripId: string,
+): Promise<{ message: string }> {
+  const response = await fetchWithAuth(`/api/admin/trips/${tripId}`, {
+    method: 'DELETE',
+  });
+  return response.json();
+}
+
+/**
+ * Get dashboard metrics (Super Admin and Trip Admin)
+ */
+export async function getDashboardMetrics(): Promise<DashboardMetrics> {
+  const response = await fetchWithAuth(`/api/admin/metrics`);
+  return response.json();
+}
+
+/**
+ * Get system summary (Super Admin and Trip Admin)
+ */
+export async function getSystemSummary(): Promise<SystemSummary> {
+  const response = await fetchWithAuth(`/api/admin/summary`);
+  return response.json();
+}
+
+/**
+ * Get trip statistics (Super Admin and Trip Admin)
+ */
+export async function getTripStats(): Promise<TripStats> {
+  const response = await fetchWithAuth(`/api/admin/stats/trips`);
+  return response.json();
+}
+
+/**
+ * Get family statistics (Super Admin and Trip Admin)
+ */
+export async function getFamilyStats(): Promise<FamilyStats> {
+  const response = await fetchWithAuth(`/api/admin/stats/families`);
+  return response.json();
+}
+
+/**
+ * Get trip attendance report (Super Admin and Trip Admin)
+ */
+export async function getTripAttendanceReport(
+  tripId: string,
+): Promise<TripAttendanceReport> {
+  const response = await fetchWithAuth(
+    `/api/admin/reports/trips/${tripId}/attendance`,
+  );
+  return response.json();
+}
+
+/**
+ * Get all activity logs (Super Admin only)
+ */
+export async function getActivityLogs(
+  filters?: ActivityLogsFilters,
+): Promise<ActivityLog[]> {
+  const params = new URLSearchParams();
+
+  if (filters?.entityType) {
+    params.append('entityType', filters.entityType);
+  }
+
+  if (filters?.actionType) {
+    params.append('actionType', filters.actionType);
+  }
+
+  if (filters?.userId) {
+    params.append('userId', filters.userId);
+  }
+
+  if (filters?.dateFrom) {
+    params.append('dateFrom', filters.dateFrom);
+  }
+
+  if (filters?.dateTo) {
+    params.append('dateTo', filters.dateTo);
+  }
+
+  if (filters?.limit) {
+    params.append('limit', String(filters.limit));
+  }
+
+  if (filters?.offset) {
+    params.append('offset', String(filters.offset));
+  }
+
+  const queryString = params.toString();
+  const endpoint = `/api/admin/logs${queryString ? `?${queryString}` : ''}`;
+
+  const response = await fetchWithAuth(endpoint);
+  return response.json();
+}
+
+/**
+ * Get entity activity logs (Super Admin only)
+ */
+export async function getEntityActivityLogs(
+  entityType: string,
+  entityId: string,
+): Promise<ActivityLog[]> {
+  const response = await fetchWithAuth(
+    `/api/admin/logs/${entityType}/${entityId}`,
+  );
+  return response.json();
+}
+
+/**
+ * Export system data (Super Admin only)
+ */
+export async function exportData(
+  request: ExportDataRequest,
+): Promise<ExportDataResponse> {
+  const response = await fetchWithAuth(`/api/admin/export`, {
+    method: 'POST',
+    body: JSON.stringify(request),
+  });
+  return response.json();
 }
 
 // ==================== WHATSAPP API ====================
