@@ -22,8 +22,8 @@ const envSchema = z.object({
   GOOGLE_CALLBACK_URL: z.string().url(),
 
   // OAuth - Facebook (optional)
-  FACEBOOK_CLIENT_ID: z.string().optional(),
-  FACEBOOK_CLIENT_SECRET: z.string().optional(),
+  FACEBOOK_APP_ID: z.string().optional(),
+  FACEBOOK_APP_SECRET: z.string().optional(),
   FACEBOOK_CALLBACK_URL: z.string().url().optional(),
 
   // Server
@@ -37,8 +37,8 @@ const envSchema = z.object({
   ALLOWED_ORIGINS: z.string().transform((str) => str.split(',')),
 
   // Rate Limiting
-  RATE_LIMIT_WINDOW_MS: z.string().transform(Number).default('900000'),
-  RATE_LIMIT_MAX_REQUESTS: z.string().transform(Number).default('100'),
+  RATE_LIMIT_WINDOW_MS: z.string().default('900000').transform(Number),
+  RATE_LIMIT_MAX_REQUESTS: z.string().default('100').transform(Number),
 
   // Security
   SESSION_SECRET: z.string().min(32).optional(),
@@ -77,7 +77,7 @@ function parseEnv(): Env {
     return envSchema.parse(process.env);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const missingVars = error.errors
+      const missingVars = error.issues
         .map((err) => `  - ${err.path.join('.')}: ${err.message}`)
         .join('\n');
 
@@ -130,6 +130,25 @@ export function getCorsConfig() {
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+  };
+}
+
+/**
+ * Get OAuth configuration
+ */
+export function getOAuthConfig() {
+  return {
+    google: {
+      clientID: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+      callbackURL: env.GOOGLE_CALLBACK_URL,
+    },
+    facebook: {
+      clientID: env.FACEBOOK_APP_ID || '',
+      clientSecret: env.FACEBOOK_APP_SECRET || '',
+      callbackURL: env.FACEBOOK_CALLBACK_URL || '',
+      profileFields: ['id', 'displayName', 'photos', 'email'],
+    },
   };
 }
 

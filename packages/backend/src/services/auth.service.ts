@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { User } from '@prisma/client';
-import config from '../config/index.js';
+import { env } from '../config/env.js';
 
 /**
  * Hash a password with bcrypt
@@ -26,15 +26,9 @@ const generateToken = (user: Pick<User, 'id' | 'role'>): string => {
     role: user.role,
   };
 
-  // Ensure JWT secret is defined
-  const secret = config.jwt.secret;
-  if (!secret) {
-    throw new Error('JWT secret is not defined');
-  }
-
-  // Generate token
-  return jwt.sign(payload, String(secret), {
-    expiresIn: config.jwt.expiresIn ?? '1d',
+  // Generate token (env.JWT_SECRET is already validated)
+  return jwt.sign(payload, env.JWT_SECRET, {
+    expiresIn: env.JWT_EXPIRES_IN,
   });
 };
 
@@ -51,7 +45,7 @@ const isOAuthUser = (user: User): boolean => {
  * Get redirect URL after OAuth login
  */
 const getOAuthRedirectUrl = (token: string): string => {
-  return `${config.clientUrl}/oauth-success?token=${token}`;
+  return `${env.CLIENT_URL}/oauth-success?token=${token}`;
 };
 
 export const authService = {

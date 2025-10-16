@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import passport from 'passport';
-import config from './config/index.js';
+import { getCorsConfig, isDevelopment } from './config/env.js';
 import apiRoutes from './routes/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { ApiError } from './utils/ApiError.js';
@@ -12,9 +12,9 @@ const app: Express = express();
 
 // Middleware
 app.use(helmet());
-app.use(cors({ origin: config.clientUrl }));
+app.use(cors(getCorsConfig()));
 app.use(express.json());
-app.use(morgan('dev'));
+app.use(morgan(isDevelopment ? 'dev' : 'combined'));
 app.use(passport.initialize());
 
 // API Routes

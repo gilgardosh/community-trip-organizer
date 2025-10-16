@@ -8,17 +8,19 @@ import {
   Profile as FacebookProfile,
 } from 'passport-facebook';
 import { prisma } from '../utils/db.js';
-import config from '../config/index.js';
+import { getOAuthConfig } from '../config/env.js';
 import { UserType, Role, User } from '@prisma/client';
 import { VerifyCallback } from 'passport-oauth2';
+
+const oauthConfig = getOAuthConfig();
 
 // Google OAuth Strategy
 passport.use(
   new GoogleStrategy(
     {
-      clientID: config.oauth.google.clientID,
-      clientSecret: config.oauth.google.clientSecret,
-      callbackURL: config.oauth.google.callbackURL,
+      clientID: oauthConfig.google.clientID,
+      clientSecret: oauthConfig.google.clientSecret,
+      callbackURL: oauthConfig.google.callbackURL,
       scope: ['profile', 'email'],
     },
     (
@@ -37,10 +39,10 @@ passport.use(
 passport.use(
   new FacebookStrategy(
     {
-      clientID: config.oauth.facebook.clientID,
-      clientSecret: config.oauth.facebook.clientSecret,
-      callbackURL: config.oauth.facebook.callbackURL,
-      profileFields: config.oauth.facebook.profileFields,
+      clientID: oauthConfig.facebook.clientID,
+      clientSecret: oauthConfig.facebook.clientSecret,
+      callbackURL: oauthConfig.facebook.callbackURL,
+      profileFields: oauthConfig.facebook.profileFields,
     },
     (
       accessToken: string,

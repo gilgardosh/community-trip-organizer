@@ -41,8 +41,7 @@ export const cspConfig = helmet.contentSecurityPolicy({
     ],
     frameSrc: ["'self'", 'https://vercel.live'],
     objectSrc: ["'none'"],
-    upgradeInsecureRequests:
-      process.env.NODE_ENV === 'production' ? [] : undefined,
+    upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
   },
 });
 

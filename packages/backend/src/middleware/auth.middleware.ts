@@ -9,15 +9,11 @@ import {
 import { prisma } from '../utils/db.js';
 import { Role, User } from '@prisma/client';
 import { ApiError } from '../utils/ApiError.js';
-import config from '../config/index.js';
-
-if (!config.jwt.secret) {
-  throw new Error('JWT secret is not defined');
-}
+import { env } from '../config/env.js';
 
 const jwtOptions: StrategyOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: config.jwt.secret,
+  secretOrKey: env.JWT_SECRET,
 };
 
 interface JwtPayload {

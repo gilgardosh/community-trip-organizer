@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ApiError } from '../utils/ApiError.js';
 import { ZodError } from 'zod';
+import { isDevelopment } from '../config/env.js';
 
 export const errorHandler = (
   err: Error,
@@ -12,7 +13,7 @@ export const errorHandler = (
   if (err instanceof ApiError) {
     return res.status(err.statusCode).json({
       message: err.message,
-      ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+      ...(isDevelopment && { stack: err.stack }),
     });
   }
 
@@ -21,7 +22,7 @@ export const errorHandler = (
     return res.status(400).json({
       message: 'Validation error',
       errors: err.issues,
-      ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+      ...(isDevelopment && { stack: err.stack }),
     });
   }
 
