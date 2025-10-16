@@ -7,7 +7,7 @@ import {
   VerifyCallback,
 } from 'passport-jwt';
 import { prisma } from '../utils/db.js';
-import { Role, User } from '@prisma/client';
+import { Role } from '@prisma/client';
 import { ApiError } from '../utils/ApiError.js';
 import { env } from '../config/env.js';
 
@@ -48,7 +48,7 @@ export const authorize = (...roles: Role[]) => {
     if (!req.user) {
       return next(new ApiError(401, 'Not authenticated'));
     }
-    const user = req.user as User;
+    const user = req.user;
     if (!roles.includes(user.role)) {
       return next(new ApiError(403, 'Forbidden'));
     }
