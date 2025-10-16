@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a responsive web app to manage neighborhood family trips. It supports planning, attendance tracking, dietary requirements, shared gear, and trip schedules. The app integrates with WhatsApp for notifications by generating copy-paste-ready messages. It is designed to be fully in Hebrew with RTL support.
+This is a production-ready, responsive web app to manage neighborhood family trips. It supports planning, attendance tracking, dietary requirements, shared gear, and trip schedules. The app integrates with WhatsApp for notifications by generating copy-paste-ready messages. It is designed to be fully in Hebrew with RTL support.
 
 The application has three user roles:
 
@@ -10,12 +10,23 @@ The application has three user roles:
 - **Trip Admin:** Manages assigned trips, including participants, gear, dietary info, and schedules.
 - **Super-admin:** Approves new families and trips, manages trip admins, and has oversight of all data.
 
+## 🌟 Production Features
+
+- ⚡ **Performance Optimized**: Code splitting, lazy loading, and API caching
+- 🔒 **Security Hardened**: Rate limiting, input validation, and security headers
+- 📊 **Monitored**: Structured logging, metrics, and health checks
+- 💾 **Backed Up**: Automated daily backups with disaster recovery
+- 🚀 **CI/CD Ready**: Automated testing and deployment pipelines
+- ☁️ **Vercel Optimized**: Production-ready deployment configuration
+
 ## Tech Stack
 
-- **Frontend:** React + TypeScript (with Vite)
+- **Frontend:** Next.js 15 + React 19 + TypeScript
 - **Backend:** Node.js + Express + TypeScript
-- **Database:** PostgreSQL
-- **Deployment:** Vercel
+- **Database:** PostgreSQL with Prisma ORM
+- **Deployment:** Vercel (full-stack)
+- **Monitoring:** Built-in health checks and metrics
+- **CI/CD:** GitHub Actions
 
 ## Project Structure
 
@@ -170,10 +181,125 @@ The frontend development server will start on `http://localhost:5173`.
 
 **See [packages/frontend/README.md](./packages/frontend/README.md) for frontend documentation.**
 
-## Documentation
+## 📚 Documentation
+
+### Development
 
 - 🚀 [QUICKSTART_DOCKER.md](./QUICKSTART_DOCKER.md) - Get started with Docker in 30 seconds
 - 📖 [DOCKER_DEV_GUIDE.md](./DOCKER_DEV_GUIDE.md) - Docker development quick reference
 - 🔧 [packages/backend/DEV_SETUP.md](./packages/backend/DEV_SETUP.md) - Detailed backend setup guide
 - 🌱 [packages/backend/prisma/SEED_DATA.md](./packages/backend/prisma/SEED_DATA.md) - Test user credentials
 - 📋 [SPEC.md](./SPEC.md) - Application specifications
+
+### Production Deployment
+
+- 🚀 [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) - Complete deployment guide
+- ✅ [PRODUCTION_CHECKLIST.md](./PRODUCTION_CHECKLIST.md) - Pre-deployment verification
+- 📊 [OPTIMIZATION_SUMMARY.md](./OPTIMIZATION_SUMMARY.md) - Production optimizations overview
+- 🔄 [DISASTER_RECOVERY.md](./DISASTER_RECOVERY.md) - Backup and recovery procedures
+
+### User Documentation
+
+- 📖 [USER_MANUAL.md](./USER_MANUAL.md) - Complete user guide (Hebrew)
+- 🔧 [TRIP_API_REFERENCE.md](./TRIP_API_REFERENCE.md) - API documentation
+- 💬 [packages/frontend/WHATSAPP_QUICKSTART.md](./packages/frontend/WHATSAPP_QUICKSTART.md) - WhatsApp integration guide
+
+## 🚀 Quick Deploy to Vercel
+
+1. **Fork this repository**
+
+2. **Set up environment variables in Vercel**:
+   - Database URL
+   - JWT secret
+   - OAuth credentials
+   - See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for complete list
+
+3. **Deploy**:
+   ```bash
+   npm install -g vercel
+   vercel --prod
+   ```
+
+4. **Run database migrations**:
+   ```bash
+   cd packages/backend
+   npx prisma migrate deploy
+   tsx prisma/seed.ts
+   ```
+
+📖 **Full deployment instructions**: [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
+
+## 🔐 Security
+
+This application implements multiple security layers:
+
+- 🔒 Rate limiting on all endpoints
+- 🛡️ Input validation and sanitization
+- 🔐 JWT-based authentication
+- 🌐 CORS and CSP configuration
+- 📝 Request logging and monitoring
+- 🔑 Secure password hashing
+
+See [Security Documentation](./DEPLOYMENT_GUIDE.md#security-checklist) for details.
+
+## 📊 Monitoring
+
+Access monitoring endpoints:
+
+- **Health Check**: `GET /api/health`
+- **Detailed Health**: `GET /api/health/detailed`
+- **Metrics**: `GET /api/metrics`
+- **Ready**: `GET /api/ready`
+- **Live**: `GET /api/live`
+
+## 💾 Backup & Recovery
+
+- **Automated Backups**: Daily via GitHub Actions
+- **Manual Backup**: `./packages/backend/scripts/backup-database.sh`
+- **Restore**: `./packages/backend/scripts/restore-database.sh`
+
+See [DISASTER_RECOVERY.md](./DISASTER_RECOVERY.md) for complete procedures.
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+yarn test
+
+# Run with coverage
+cd packages/backend && yarn test:coverage
+cd packages/frontend && yarn test:coverage
+
+# Run specific test suite
+cd packages/backend && yarn test auth.test.ts
+```
+
+## 🎯 Performance
+
+Production optimizations include:
+
+- Code splitting and lazy loading
+- API response caching (5min TTL)
+- Image optimization
+- Minification and tree shaking
+- Connection pooling
+- Static asset caching
+
+**Target Metrics**:
+- First Contentful Paint: < 1.5s
+- Time to Interactive: < 3.5s
+- API Response Time: < 200ms
+- Lighthouse Score: > 90
+
+## 📈 CI/CD
+
+Automated pipelines for:
+
+- ✅ Linting and type checking
+- 🧪 Unit and integration tests
+- 🏗️ Build verification
+- 🔒 Security audits
+- 🚀 Automatic deployment
+- 💾 Daily backups
+
+Workflows located in `.github/workflows/`
