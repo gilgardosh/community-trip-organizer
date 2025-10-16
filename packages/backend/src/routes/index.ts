@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import healthRouter from './health.js';
+import monitoringRouter from './monitoring.js';
 import authRouter from './auth.js';
 import protectedRouter from './protected.js';
 import roleProtectedRouter from './role-protected.js';
@@ -12,6 +13,7 @@ import adminRouter from './admin.js';
 const router = Router();
 
 router.use('/health', healthRouter);
+router.use('/monitoring', monitoringRouter);
 router.use('/auth', authRouter);
 router.use('/protected', protectedRouter);
 router.use('/role-protected', roleProtectedRouter);

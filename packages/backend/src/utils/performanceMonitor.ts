@@ -5,11 +5,22 @@
 
 import { logger } from '../utils/logger.js';
 
+type MetricMetadata = Record<string, string | number | boolean>;
+
 interface PerformanceMetric {
   name: string;
   duration: number;
   timestamp: string;
-  metadata?: Record<string, any>;
+  metadata?: MetricMetadata;
+}
+
+export interface PerformanceStats {
+  name: string;
+  count: number;
+  avg: number;
+  min: number;
+  max: number;
+  total: number;
 }
 
 class PerformanceMonitor {
@@ -26,7 +37,7 @@ class PerformanceMonitor {
   /**
    * End timing and record metric
    */
-  end(name: string, metadata?: Record<string, any>): number {
+  end(name: string, metadata?: MetricMetadata): number {
     const startTime = this.timers.get(name);
     if (!startTime) {
       logger.warn(`Performance timer '${name}' was never started`);
@@ -62,7 +73,7 @@ class PerformanceMonitor {
   async measure<T>(
     name: string,
     operation: () => Promise<T>,
-    metadata?: Record<string, any>,
+    metadata?: MetricMetadata,
   ): Promise<T> {
     this.start(name);
     try {
@@ -70,7 +81,7 @@ class PerformanceMonitor {
       this.end(name, metadata);
       return result;
     } catch (error) {
-      this.end(name, { ...metadata, error: true });
+      this.end(name, metadata ? { ...metadata, error: true } : { error: true });
       throw error;
     }
   }
@@ -78,7 +89,7 @@ class PerformanceMonitor {
   /**
    * Get performance statistics
    */
-  getStats(metricName?: string) {
+  getStats(metricName?: string): PerformanceStats | null {
     const filtered = metricName
       ? this.metrics.filter((m) => m.name === metricName)
       : this.metrics;
@@ -138,21 +149,28 @@ setInterval(() => {
  * Performance monitoring decorator
  */
 export function Monitor(name?: string) {
-  return function (
-    target: any,
+  return function <T extends (...args: Parameters<T>) => Promise<ReturnType<T>>>(
+    target: object,
     propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
+    descriptor: TypedPropertyDescriptor<T>,
+  ): TypedPropertyDescriptor<T> {
     const originalMethod = descriptor.value;
+    if (!originalMethod) {
+      return descriptor;
+    }
+
     const metricName = name || `${target.constructor.name}.${propertyKey}`;
 
-    descriptor.value = async function (...args: any[]) {
+    descriptor.value = async function (
+      this: ThisParameterType<T>,
+      ...args: Parameters<T>
+    ): Promise<Awaited<ReturnType<T>>> {
       return performanceMonitor.measure(
         metricName,
-        () => originalMethod.apply(this, args),
+        () => originalMethod.apply(this, args) as Promise<Awaited<ReturnType<T>>>,
         { method: propertyKey },
       );
-    };
+    } as T;
 
     return descriptor;
   };

@@ -5,35 +5,60 @@
 
 import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { performanceMonitor } from '../utils/performanceMonitor.js';
+import { performanceMonitor, PerformanceStats } from '../utils/performanceMonitor.js';
 import { responseCache } from '../middleware/cache.js';
 
 const router = Router();
 const prisma = new PrismaClient();
 
-/**
- * Basic health check
- */
-router.get('/health', async (req: Request, res: Response) => {
-  res.json({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    environment: process.env.NODE_ENV,
-  });
-});
+interface CheckStatus {
+  status: 'ok' | 'error';
+  message?: string;
+}
+
+interface CacheCheckStatus extends CheckStatus {
+  hits?: number;
+  misses?: number;
+  size?: number;
+}
+
+interface HealthCheckResponse {
+  status: 'ok' | 'degraded';
+  timestamp: string;
+  uptime: number;
+  environment: string | undefined;
+  memory: NodeJS.MemoryUsage;
+  checks: {
+    database: CheckStatus;
+    cache: CacheCheckStatus;
+  };
+  performance: PerformanceStats | null;
+}
+
+interface ReadinessResponse {
+  ready: boolean;
+  error?: string;
+}
+
+interface LivenessResponse {
+  alive: boolean;
+}
 
 /**
  * Detailed health check with dependencies
  */
-router.get('/health/detailed', async (req: Request, res: Response) => {
-  const checks: Record<string, any> = {
+router.get('/health', async (req: Request, res: Response<HealthCheckResponse>): Promise<void> => {
+  const checks: HealthCheckResponse = {
     status: 'ok',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: process.env.NODE_ENV,
     memory: process.memoryUsage(),
-    checks: {},
+    checks: {
+      database: { status: 'ok' },
+      cache: { status: 'ok' },
+    },
+    performance: null,
   };
 
   // Database check
@@ -63,7 +88,7 @@ router.get('/health/detailed', async (req: Request, res: Response) => {
   try {
     const perfStats = performanceMonitor.getStats();
     checks.performance = perfStats;
-  } catch (error) {
+  } catch {
     // Non-critical
   }
 
@@ -73,12 +98,12 @@ router.get('/health/detailed', async (req: Request, res: Response) => {
 /**
  * Readiness check (for Kubernetes/container orchestration)
  */
-router.get('/ready', async (req: Request, res: Response) => {
+router.get('/ready', async (req: Request, res: Response<ReadinessResponse>): Promise<void> => {
   try {
     // Check database connection
     await prisma.$queryRaw`SELECT 1`;
     res.json({ ready: true });
-  } catch (error) {
+  } catch {
     res.status(503).json({
       ready: false,
       error: 'Database not ready',
@@ -89,14 +114,14 @@ router.get('/ready', async (req: Request, res: Response) => {
 /**
  * Liveness check (for Kubernetes/container orchestration)
  */
-router.get('/live', (req: Request, res: Response) => {
+router.get('/live', (req: Request, res: Response<LivenessResponse>): void => {
   res.json({ alive: true });
 });
 
 /**
  * Metrics endpoint (Prometheus-compatible)
  */
-router.get('/metrics', (req: Request, res: Response) => {
+router.get('/metrics', (req: Request, res: Response<string>): void => {
   const metrics = performanceMonitor.getMetrics();
   const stats = performanceMonitor.getStats();
 
