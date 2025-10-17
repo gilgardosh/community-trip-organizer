@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { tripController } from '../controllers/trip.controller.js';
 import { protect, authorize } from '../middleware/auth.middleware.js';
 import { rateLimiters } from '../middleware/rateLimiter.js';
+import { cacheResponse, invalidateCache } from '../middleware/cache.js';
 import { Role } from '@prisma/client';
 
 const router = Router();
@@ -16,19 +17,20 @@ router.post(
   rateLimiters.write,
   authorize(Role.TRIP_ADMIN, Role.SUPER_ADMIN),
   tripController.createTrip,
+  invalidateCache(/^GET:.*\/api\/trips$/),
 );
 
 // Get all trips
 // FAMILY: only published trips
 // TRIP_ADMIN: only trips they manage (including drafts)
 // SUPER_ADMIN: all trips
-router.get('/', rateLimiters.api, tripController.getAllTrips);
+router.get('/', cacheResponse({ ttl: 300 }), rateLimiters.api, tripController.getAllTrips);
 
 // Get trip by ID
 // FAMILY: only published trips
 // TRIP_ADMIN: only trips they manage (including drafts)
 // SUPER_ADMIN: all trips
-router.get('/:id', rateLimiters.api, tripController.getTripById);
+router.get('/:id', cacheResponse({ ttl: 600 }), rateLimiters.api, tripController.getTripById);
 
 // Update trip
 // Only trip admins of this trip and SUPER_ADMIN can update
@@ -37,10 +39,11 @@ router.put(
   rateLimiters.write,
   authorize(Role.TRIP_ADMIN, Role.SUPER_ADMIN),
   tripController.updateTrip,
+  invalidateCache(/^GET:.*\/api\/trips/),
 );
 
 // Delete trip permanently (SUPER_ADMIN only)
-router.delete('/:id', rateLimiters.write, authorize(Role.SUPER_ADMIN), tripController.deleteTrip);
+router.delete('/:id', rateLimiters.write, authorize(Role.SUPER_ADMIN), tripController.deleteTrip, invalidateCache(/^GET:.*\/api\/trips/));
 
 // Trip publishing workflow
 
@@ -92,11 +95,11 @@ router.delete(
 // FAMILY: can mark their own family's attendance
 // TRIP_ADMIN: can mark for any family in trips they manage
 // SUPER_ADMIN: can mark for any family in any trip
-router.post('/:id/attendance', rateLimiters.write, tripController.markAttendance);
+router.post('/:id/attendance', rateLimiters.write, tripController.markAttendance, invalidateCache(/^GET:.*\/api\/trips.*\/attendees/));
 
 // Get trip attendees
 // All authenticated users can view (based on role and trip visibility)
-router.get('/:id/attendees', rateLimiters.api, tripController.getTripAttendees);
+router.get('/:id/attendees', cacheResponse({ ttl: 180 }), rateLimiters.api, tripController.getTripAttendees);
 
 // Dietary requirements
 
@@ -113,7 +116,7 @@ router.put(
 // Trip schedule management
 
 // Get trip schedule
-router.get('/:id/schedule', rateLimiters.api, tripController.getTripSchedule);
+router.get('/:id/schedule', cacheResponse({ ttl: 300 }), rateLimiters.api, tripController.getTripSchedule);
 
 // Add schedule item (TRIP_ADMIN and SUPER_ADMIN only)
 router.post(
@@ -121,6 +124,7 @@ router.post(
   rateLimiters.write,
   authorize(Role.TRIP_ADMIN, Role.SUPER_ADMIN),
   tripController.addScheduleItem,
+  invalidateCache(/^GET:.*\/api\/trips.*\/schedule/),
 );
 
 // Update schedule item (TRIP_ADMIN and SUPER_ADMIN only)
