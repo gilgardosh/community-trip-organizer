@@ -26,7 +26,7 @@ export function requestLogger(req: Request, res: Response, next: NextFunction) {
   const startTime = Date.now();
 
   // Get user ID if authenticated
-  const userId = (req.user as any)?.id;
+  const userId = req.user?.id;
 
   // Log request
   logger.withContext(userId, requestId).info('Incoming request', {
@@ -39,7 +39,7 @@ export function requestLogger(req: Request, res: Response, next: NextFunction) {
 
   // Override res.json to log response
   const originalJson = res.json.bind(res);
-  res.json = function (data: any) {
+  res.json = function (data: unknown) {
     const duration = Date.now() - startTime;
 
     // Log response
@@ -79,24 +79,15 @@ export function errorLogger(
   res: Response,
   next: NextFunction,
 ) {
-  const userId = (req.user as any)?.id;
+  const userId = req.user?.id;
   const requestId = req.requestId;
 
   logger.withContext(userId, requestId).error('Request error', err, {
     method: req.method,
     path: req.path,
     query: req.query,
-    body: req.body,
+    body: req.body as unknown,
   });
 
   next(err);
-}
-
-// Extend Express Request type
-declare global {
-  namespace Express {
-    interface Request {
-      requestId?: string;
-    }
-  }
 }

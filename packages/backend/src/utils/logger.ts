@@ -17,7 +17,7 @@ interface LogEntry {
   timestamp: string;
   level: LogLevel;
   message: string;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   error?: Error;
   userId?: string;
   requestId?: string;
@@ -95,7 +95,7 @@ class Logger {
     }
   }
 
-  error(message: string, error?: Error, context?: Record<string, any>): void {
+  error(message: string, error?: Error, context?: Record<string, unknown>): void {
     this.write({
       timestamp: new Date().toISOString(),
       level: LogLevel.ERROR,
@@ -105,7 +105,7 @@ class Logger {
     });
   }
 
-  warn(message: string, context?: Record<string, any>): void {
+  warn(message: string, context?: Record<string, unknown>): void {
     this.write({
       timestamp: new Date().toISOString(),
       level: LogLevel.WARN,
@@ -114,7 +114,7 @@ class Logger {
     });
   }
 
-  info(message: string, context?: Record<string, any>): void {
+  info(message: string, context?: Record<string, unknown>): void {
     this.write({
       timestamp: new Date().toISOString(),
       level: LogLevel.INFO,
@@ -123,7 +123,7 @@ class Logger {
     });
   }
 
-  debug(message: string, context?: Record<string, any>): void {
+  debug(message: string, context?: Record<string, unknown>): void {
     this.write({
       timestamp: new Date().toISOString(),
       level: LogLevel.DEBUG,
@@ -135,7 +135,7 @@ class Logger {
   // Context-aware logging methods
   withContext(userId?: string, requestId?: string) {
     return {
-      error: (message: string, error?: Error, context?: Record<string, any>) =>
+      error: (message: string, error?: Error, context?: Record<string, unknown>) =>
         this.write({
           timestamp: new Date().toISOString(),
           level: LogLevel.ERROR,
@@ -145,7 +145,7 @@ class Logger {
           userId,
           requestId,
         }),
-      warn: (message: string, context?: Record<string, any>) =>
+      warn: (message: string, context?: Record<string, unknown>) =>
         this.write({
           timestamp: new Date().toISOString(),
           level: LogLevel.WARN,
@@ -154,7 +154,7 @@ class Logger {
           userId,
           requestId,
         }),
-      info: (message: string, context?: Record<string, any>) =>
+      info: (message: string, context?: Record<string, unknown>) =>
         this.write({
           timestamp: new Date().toISOString(),
           level: LogLevel.INFO,
@@ -163,7 +163,7 @@ class Logger {
           userId,
           requestId,
         }),
-      debug: (message: string, context?: Record<string, any>) =>
+      debug: (message: string, context?: Record<string, unknown>) =>
         this.write({
           timestamp: new Date().toISOString(),
           level: LogLevel.DEBUG,

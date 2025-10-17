@@ -1,9 +1,8 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import morgan from 'morgan';
 import passport from 'passport';
-import { getCorsConfig, isDevelopment } from './config/env.js';
+import { getCorsConfig } from './config/env.js';
 import apiRoutes from './routes/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { ApiError } from './utils/ApiError.js';
@@ -13,6 +12,7 @@ import {
   preventParameterPollution,
   requestFingerprint,
 } from './middleware/security.js';
+import { requestLogger, errorLogger } from './middleware/requestLogger.js';
 
 const app: Express = express();
 
@@ -26,7 +26,7 @@ app.use(requestFingerprint); // Request fingerprinting for security tracking
 // CORS and other middleware
 app.use(cors(getCorsConfig()));
 app.use(express.json());
-app.use(morgan(isDevelopment ? 'dev' : 'combined'));
+app.use(requestLogger);
 app.use(passport.initialize());
 
 // API Routes
@@ -36,6 +36,9 @@ app.use('/api', apiRoutes);
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(new ApiError(404, 'Not Found'));
 });
+
+// Error Logger (before error handler)
+app.use(errorLogger);
 
 // Error Handler
 app.use(errorHandler);
