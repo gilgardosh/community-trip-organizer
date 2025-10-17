@@ -18,12 +18,12 @@ Rate limiting middleware has been integrated to protect the API from abuse and e
 
 ### Rate Limit Configuration
 
-| Endpoint Type | Limit | Window | Use Case |
-|--------------|-------|--------|----------|
-| **Auth** (login/register) | 5 requests | 15 minutes | Prevent brute force attacks |
-| **Admin** | 20 requests | 1 minute | Protect sensitive operations |
-| **Write** (create/update) | 10 requests | 1 minute | Prevent abuse of mutations |
-| **General API** | 100 requests | 15 minutes | Baseline protection |
+| Endpoint Type             | Limit        | Window     | Use Case                     |
+| ------------------------- | ------------ | ---------- | ---------------------------- |
+| **Auth** (login/register) | 5 requests   | 15 minutes | Prevent brute force attacks  |
+| **Admin**                 | 20 requests  | 1 minute   | Protect sensitive operations |
+| **Write** (create/update) | 10 requests  | 1 minute   | Prevent abuse of mutations   |
+| **General API**           | 100 requests | 15 minutes | Baseline protection          |
 
 ### HTTP Headers
 
@@ -95,15 +95,18 @@ These settings affect the **general API** rate limiter. Specific endpoint limite
 ## Features
 
 ### ✅ In-Memory Storage
+
 - Fast performance
 - No external dependencies
 - Automatic cleanup of expired entries
 
 ### ✅ Per-User Tracking
+
 - Authenticated requests: tracked by user ID
 - Anonymous requests: tracked by IP address
 
 ### ✅ Customizable
+
 - Different limits for different endpoint types
 - Custom key generators
 - Custom error messages

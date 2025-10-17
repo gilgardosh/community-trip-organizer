@@ -8,7 +8,9 @@ import { responseCache } from '../src/middleware/cache.js';
 // Mock modules
 vi.mock('../src/middleware/oauth.middleware.js', () => ({
   default: {
-    authenticate: (_strategy: string) => (req: any, res: any, next: () => void) => next(),
+    authenticate:
+      (_strategy: string) => (req: any, res: any, next: () => void) =>
+        next(),
   },
   __esModule: true,
 }));
@@ -87,7 +89,9 @@ describe('Monitoring Routes', () => {
     it('should return degraded status when database fails', async () => {
       // Mock database failure
       const originalQueryRaw = prisma.$queryRaw;
-      prisma.$queryRaw = vi.fn().mockRejectedValue(new Error('Database connection failed'));
+      prisma.$queryRaw = vi
+        .fn()
+        .mockRejectedValue(new Error('Database connection failed'));
 
       const response = await request(app).get('/api/monitoring/health');
 
@@ -121,7 +125,9 @@ describe('Monitoring Routes', () => {
     it('should return 503 when database is not ready', async () => {
       // Mock database failure
       const originalQueryRaw = prisma.$queryRaw;
-      prisma.$queryRaw = vi.fn().mockRejectedValue(new Error('Connection refused'));
+      prisma.$queryRaw = vi
+        .fn()
+        .mockRejectedValue(new Error('Connection refused'));
 
       const response = await request(app).get('/api/monitoring/ready');
 
@@ -167,9 +173,15 @@ describe('Monitoring Routes', () => {
 
       expect(response.text).toContain('# HELP app_memory_usage_bytes');
       expect(response.text).toContain('# TYPE app_memory_usage_bytes gauge');
-      expect(response.text).toContain('app_memory_usage_bytes{type="heapUsed"}');
-      expect(response.text).toContain('app_memory_usage_bytes{type="heapTotal"}');
-      expect(response.text).toContain('app_memory_usage_bytes{type="external"}');
+      expect(response.text).toContain(
+        'app_memory_usage_bytes{type="heapUsed"}',
+      );
+      expect(response.text).toContain(
+        'app_memory_usage_bytes{type="heapTotal"}',
+      );
+      expect(response.text).toContain(
+        'app_memory_usage_bytes{type="external"}',
+      );
     });
 
     it('should include request duration metrics when available', async () => {
@@ -196,8 +208,12 @@ describe('Monitoring Routes', () => {
 
       // Extract metric values from response
       const lines = response.text.split('\n');
-      const totalLine = lines.find((line) => line.startsWith('app_requests_total'));
-      const sumLine = lines.find((line) => line.startsWith('app_request_duration_ms_sum'));
+      const totalLine = lines.find((line) =>
+        line.startsWith('app_requests_total'),
+      );
+      const sumLine = lines.find((line) =>
+        line.startsWith('app_request_duration_ms_sum'),
+      );
 
       expect(totalLine).toBeDefined();
       expect(sumLine).toBeDefined();

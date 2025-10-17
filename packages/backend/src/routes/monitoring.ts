@@ -5,7 +5,10 @@
 
 import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { performanceMonitor, PerformanceStats } from '../utils/performanceMonitor.js';
+import {
+  performanceMonitor,
+  PerformanceStats,
+} from '../utils/performanceMonitor.js';
 import { responseCache } from '../middleware/cache.js';
 
 const router = Router();
@@ -47,69 +50,75 @@ interface LivenessResponse {
 /**
  * Detailed health check with dependencies
  */
-router.get('/health', async (req: Request, res: Response<HealthCheckResponse>): Promise<void> => {
-  const checks: HealthCheckResponse = {
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    environment: process.env.NODE_ENV,
-    memory: process.memoryUsage(),
-    checks: {
-      database: { status: 'ok' },
-      cache: { status: 'ok' },
-    },
-    performance: null,
-  };
-
-  // Database check
-  try {
-    await prisma.$queryRaw`SELECT 1`;
-    checks.checks.database = { status: 'ok' };
-  } catch (error) {
-    checks.checks.database = {
-      status: 'error',
-      message: (error as Error).message,
+router.get(
+  '/health',
+  async (req: Request, res: Response<HealthCheckResponse>): Promise<void> => {
+    const checks: HealthCheckResponse = {
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV,
+      memory: process.memoryUsage(),
+      checks: {
+        database: { status: 'ok' },
+        cache: { status: 'ok' },
+      },
+      performance: null,
     };
-    checks.status = 'degraded';
-  }
 
-  // Cache check
-  try {
-    const cacheStats = responseCache.stats();
-    checks.checks.cache = { status: 'ok', ...cacheStats };
-  } catch (error) {
-    checks.checks.cache = {
-      status: 'error',
-      message: (error as Error).message,
-    };
-  }
+    // Database check
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      checks.checks.database = { status: 'ok' };
+    } catch (error) {
+      checks.checks.database = {
+        status: 'error',
+        message: (error as Error).message,
+      };
+      checks.status = 'degraded';
+    }
 
-  // Performance metrics
-  try {
-    const perfStats = performanceMonitor.getStats();
-    checks.performance = perfStats;
-  } catch {
-    // Non-critical
-  }
+    // Cache check
+    try {
+      const cacheStats = responseCache.stats();
+      checks.checks.cache = { status: 'ok', ...cacheStats };
+    } catch (error) {
+      checks.checks.cache = {
+        status: 'error',
+        message: (error as Error).message,
+      };
+    }
 
-  res.json(checks);
-});
+    // Performance metrics
+    try {
+      const perfStats = performanceMonitor.getStats();
+      checks.performance = perfStats;
+    } catch {
+      // Non-critical
+    }
+
+    res.json(checks);
+  },
+);
 
 /**
  * Readiness check (for Kubernetes/container orchestration)
  */
-router.get('/ready', async (req: Request, res: Response<ReadinessResponse>): Promise<void> => {
-  try {
-    // Check database connection
-    await prisma.$queryRaw`SELECT 1`;
-    res.json({ ready: true });
-  } catch {
-    res.status(503).json({
-      ready: false,
-      error: 'Database not ready',
-    });
-  }
-});
+router.get(
+  '/ready',
+  async (req: Request, res: Response<ReadinessResponse>): Promise<void> => {
+    try {
+      // Check database connection
+      await prisma.$queryRaw`SELECT 1`;
+      res.json({ ready: true });
+    } catch {
+      res.status(503).json({
+        ready: false,
+        error: 'Database not ready',
+      });
+    }
+  },
+);
 
 /**
  * Liveness check (for Kubernetes/container orchestration)

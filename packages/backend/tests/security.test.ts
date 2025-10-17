@@ -223,15 +223,13 @@ describe('Security Middleware', () => {
     });
 
     it('should work with JSON body parser', async () => {
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send({
-          email: 'test@example.com',
-          password: 'password123',
-          name: 'Test User',
-          familyName: 'Test Family',
-          phone: '1234567890',
-        });
+      const response = await request(app).post('/api/auth/register').send({
+        email: 'test@example.com',
+        password: 'password123',
+        name: 'Test User',
+        familyName: 'Test Family',
+        phone: '1234567890',
+      });
 
       // Should have security headers on POST requests
       expect(response.headers).toHaveProperty('x-frame-options');
@@ -271,34 +269,34 @@ describe('Security Middleware', () => {
     });
 
     describe('Security Headers for Different Methods', () => {
-    it('should apply security headers to GET requests', async () => {
-      const response = await request(app).get('/api/health');
+      it('should apply security headers to GET requests', async () => {
+        const response = await request(app).get('/api/health');
 
-      expect(response.headers).toHaveProperty('x-frame-options');
-      expect(response.headers).toHaveProperty('x-content-type-options');
+        expect(response.headers).toHaveProperty('x-frame-options');
+        expect(response.headers).toHaveProperty('x-content-type-options');
+      });
+
+      it('should apply security headers to POST requests', async () => {
+        const response = await request(app).post('/api/health');
+
+        expect(response.headers).toHaveProperty('x-frame-options');
+        expect(response.headers).toHaveProperty('x-content-type-options');
+      });
+
+      it('should apply security headers to PUT requests', async () => {
+        const response = await request(app).put('/api/health');
+
+        expect(response.headers).toHaveProperty('x-frame-options');
+        expect(response.headers).toHaveProperty('x-content-type-options');
+      });
+
+      it('should apply security headers to DELETE requests', async () => {
+        const response = await request(app).delete('/api/health');
+
+        expect(response.headers).toHaveProperty('x-frame-options');
+        expect(response.headers).toHaveProperty('x-content-type-options');
+      });
     });
-
-    it('should apply security headers to POST requests', async () => {
-      const response = await request(app).post('/api/health');
-
-      expect(response.headers).toHaveProperty('x-frame-options');
-      expect(response.headers).toHaveProperty('x-content-type-options');
-    });
-
-    it('should apply security headers to PUT requests', async () => {
-      const response = await request(app).put('/api/health');
-
-      expect(response.headers).toHaveProperty('x-frame-options');
-      expect(response.headers).toHaveProperty('x-content-type-options');
-    });
-
-    it('should apply security headers to DELETE requests', async () => {
-      const response = await request(app).delete('/api/health');
-
-      expect(response.headers).toHaveProperty('x-frame-options');
-      expect(response.headers).toHaveProperty('x-content-type-options');
-    });
-  });
   });
 
   describe('Security Best Practices', () => {

@@ -95,7 +95,11 @@ class Logger {
     }
   }
 
-  error(message: string, error?: Error, context?: Record<string, unknown>): void {
+  error(
+    message: string,
+    error?: Error,
+    context?: Record<string, unknown>,
+  ): void {
     this.write({
       timestamp: new Date().toISOString(),
       level: LogLevel.ERROR,
@@ -135,7 +139,11 @@ class Logger {
   // Context-aware logging methods
   withContext(userId?: string, requestId?: string) {
     return {
-      error: (message: string, error?: Error, context?: Record<string, unknown>) =>
+      error: (
+        message: string,
+        error?: Error,
+        context?: Record<string, unknown>,
+      ) =>
         this.write({
           timestamp: new Date().toISOString(),
           level: LogLevel.ERROR,

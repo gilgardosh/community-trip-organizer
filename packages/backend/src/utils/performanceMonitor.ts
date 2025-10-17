@@ -149,7 +149,9 @@ setInterval(() => {
  * Performance monitoring decorator
  */
 export function Monitor(name?: string) {
-  return function <T extends (...args: Parameters<T>) => Promise<ReturnType<T>>>(
+  return function <
+    T extends (...args: Parameters<T>) => Promise<ReturnType<T>>,
+  >(
     target: object,
     propertyKey: string,
     descriptor: TypedPropertyDescriptor<T>,
@@ -167,7 +169,8 @@ export function Monitor(name?: string) {
     ): Promise<Awaited<ReturnType<T>>> {
       return performanceMonitor.measure(
         metricName,
-        () => originalMethod.apply(this, args) as Promise<Awaited<ReturnType<T>>>,
+        () =>
+          originalMethod.apply(this, args) as Promise<Awaited<ReturnType<T>>>,
         { method: propertyKey },
       );
     } as T;

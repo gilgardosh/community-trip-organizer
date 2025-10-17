@@ -24,13 +24,23 @@ router.post(
 // FAMILY: only published trips
 // TRIP_ADMIN: only trips they manage (including drafts)
 // SUPER_ADMIN: all trips
-router.get('/', cacheResponse({ ttl: 300 }), rateLimiters.api, tripController.getAllTrips);
+router.get(
+  '/',
+  cacheResponse({ ttl: 300 }),
+  rateLimiters.api,
+  tripController.getAllTrips,
+);
 
 // Get trip by ID
 // FAMILY: only published trips
 // TRIP_ADMIN: only trips they manage (including drafts)
 // SUPER_ADMIN: all trips
-router.get('/:id', cacheResponse({ ttl: 600 }), rateLimiters.api, tripController.getTripById);
+router.get(
+  '/:id',
+  cacheResponse({ ttl: 600 }),
+  rateLimiters.api,
+  tripController.getTripById,
+);
 
 // Update trip
 // Only trip admins of this trip and SUPER_ADMIN can update
@@ -43,7 +53,13 @@ router.put(
 );
 
 // Delete trip permanently (SUPER_ADMIN only)
-router.delete('/:id', authorize(Role.SUPER_ADMIN), rateLimiters.write, tripController.deleteTrip, invalidateCache(/^GET:.*\/api\/trips/));
+router.delete(
+  '/:id',
+  authorize(Role.SUPER_ADMIN),
+  rateLimiters.write,
+  tripController.deleteTrip,
+  invalidateCache(/^GET:.*\/api\/trips/),
+);
 
 // Trip publishing workflow
 
@@ -95,11 +111,21 @@ router.delete(
 // FAMILY: can mark their own family's attendance
 // TRIP_ADMIN: can mark for any family in trips they manage
 // SUPER_ADMIN: can mark for any family in any trip
-router.post('/:id/attendance', rateLimiters.write, tripController.markAttendance, invalidateCache(/^GET:.*\/api\/trips.*\/attendees/));
+router.post(
+  '/:id/attendance',
+  rateLimiters.write,
+  tripController.markAttendance,
+  invalidateCache(/^GET:.*\/api\/trips.*\/attendees/),
+);
 
 // Get trip attendees
 // All authenticated users can view (based on role and trip visibility)
-router.get('/:id/attendees', cacheResponse({ ttl: 180 }), rateLimiters.api, tripController.getTripAttendees);
+router.get(
+  '/:id/attendees',
+  cacheResponse({ ttl: 180 }),
+  rateLimiters.api,
+  tripController.getTripAttendees,
+);
 
 // Dietary requirements
 
@@ -116,7 +142,12 @@ router.put(
 // Trip schedule management
 
 // Get trip schedule
-router.get('/:id/schedule', cacheResponse({ ttl: 300 }), rateLimiters.api, tripController.getTripSchedule);
+router.get(
+  '/:id/schedule',
+  cacheResponse({ ttl: 300 }),
+  rateLimiters.api,
+  tripController.getTripSchedule,
+);
 
 // Add schedule item (TRIP_ADMIN and SUPER_ADMIN only)
 router.post(

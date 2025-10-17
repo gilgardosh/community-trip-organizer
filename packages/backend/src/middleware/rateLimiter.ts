@@ -120,7 +120,7 @@ export function rateLimit(options: RateLimitOptions) {
     // Skip rate limiting in test environment unless explicitly testing rate limits
     // Check process.env directly for dynamic evaluation
     const shouldSkipRateLimit = isTest && !process.env.TEST_RATE_LIMITING;
-    
+
     if (shouldSkipRateLimit) {
       return next();
     }

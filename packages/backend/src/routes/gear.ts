@@ -22,11 +22,21 @@ router.post(
 
 // Get all gear items for a trip
 // All authenticated users can view (based on role and trip status)
-router.get('/trip/:tripId', cacheResponse({ ttl: 300 }), rateLimiters.api, gearController.getGearItemsByTripId);
+router.get(
+  '/trip/:tripId',
+  cacheResponse({ ttl: 300 }),
+  rateLimiters.api,
+  gearController.getGearItemsByTripId,
+);
 
 // Get gear summary for a trip
 // All authenticated users can view (based on role and trip status)
-router.get('/trip/:tripId/summary', cacheResponse({ ttl: 180 }), rateLimiters.api, gearController.getGearSummary);
+router.get(
+  '/trip/:tripId/summary',
+  cacheResponse({ ttl: 180 }),
+  rateLimiters.api,
+  gearController.getGearSummary,
+);
 
 // Get family's gear assignments for a trip
 // Families can view their own, trip admins can view for any family
@@ -39,7 +49,12 @@ router.get(
 
 // Get gear item by ID
 // All authenticated users can view (based on role and trip status)
-router.get('/:id', cacheResponse({ ttl: 600 }), rateLimiters.api, gearController.getGearItemById);
+router.get(
+  '/:id',
+  cacheResponse({ ttl: 600 }),
+  rateLimiters.api,
+  gearController.getGearItemById,
+);
 
 // Update gear item
 // Only trip admins of the specific trip and SUPER_ADMIN can update
@@ -62,10 +77,20 @@ router.delete(
 
 // Assign gear to a family (volunteer)
 // Families can volunteer for their own gear, trip admins can assign to any family
-router.post('/:id/assign', rateLimiters.write, gearController.assignGear, invalidateCache(/^GET:.*\/api\/gear/));
+router.post(
+  '/:id/assign',
+  rateLimiters.write,
+  gearController.assignGear,
+  invalidateCache(/^GET:.*\/api\/gear/),
+);
 
 // Remove gear assignment from a family
 // Families can remove their own assignments, trip admins can remove any
-router.delete('/:id/assign/:familyId', rateLimiters.write, gearController.removeGearAssignment, invalidateCache(/^GET:.*\/api\/gear/));
+router.delete(
+  '/:id/assign/:familyId',
+  rateLimiters.write,
+  gearController.removeGearAssignment,
+  invalidateCache(/^GET:.*\/api\/gear/),
+);
 
 export default router;
