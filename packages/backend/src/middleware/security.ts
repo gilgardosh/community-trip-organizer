@@ -149,7 +149,7 @@ export function requestFingerprint(
   };
 
   // Attach to request for logging/tracking
-  (req as any).fingerprint = fingerprint;
+  req.fingerprint = fingerprint;
 
   next();
 }

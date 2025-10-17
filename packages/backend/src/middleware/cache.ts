@@ -12,7 +12,7 @@ interface CacheOptions {
 }
 
 interface CacheEntry {
-  data: any;
+  data: unknown;
   timestamp: number;
   ttl: number;
 }
@@ -37,7 +37,7 @@ class ResponseCache {
     }
 
     const { method, path, query, user } = req;
-    const userId = (user as any)?.id || 'anonymous';
+    const userId = user?.id || 'anonymous';
 
     // Filter query params
     const filteredQuery = { ...query };
@@ -51,7 +51,7 @@ class ResponseCache {
   /**
    * Get cached response
    */
-  get(key: string): any | null {
+  get(key: string): unknown {
     const entry = this.cache.get(key);
     if (!entry) return null;
 
@@ -67,7 +67,7 @@ class ResponseCache {
   /**
    * Set cached response
    */
-  set(key: string, data: any, ttl: number): void {
+  set(key: string, data: unknown, ttl: number): void {
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
@@ -151,7 +151,7 @@ export function cacheResponse(options: CacheOptions = {}) {
 
     // Override res.json to cache the response
     const originalJson = res.json.bind(res);
-    res.json = function (data: any) {
+    res.json = function (data: unknown) {
       responseCache.set(cacheKey, data, ttl);
       return originalJson(data);
     };

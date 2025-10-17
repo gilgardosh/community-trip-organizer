@@ -7,6 +7,12 @@ declare global {
 
     interface Request {
       requestId?: string;
+      fingerprint?: {
+        ip: string | undefined;
+        userAgent: string | undefined;
+        acceptLanguage: string | undefined;
+        timestamp: string;
+      };
     }
   }
 }
