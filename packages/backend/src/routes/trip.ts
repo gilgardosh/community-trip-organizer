@@ -14,8 +14,8 @@ router.use(protect);
 // Only TRIP_ADMIN and SUPER_ADMIN can create trips
 router.post(
   '/',
-  rateLimiters.write,
   authorize(Role.TRIP_ADMIN, Role.SUPER_ADMIN),
+  rateLimiters.write,
   tripController.createTrip,
   invalidateCache(/^GET:.*\/api\/trips$/),
 );
@@ -36,30 +36,30 @@ router.get('/:id', cacheResponse({ ttl: 600 }), rateLimiters.api, tripController
 // Only trip admins of this trip and SUPER_ADMIN can update
 router.put(
   '/:id',
-  rateLimiters.write,
   authorize(Role.TRIP_ADMIN, Role.SUPER_ADMIN),
+  rateLimiters.write,
   tripController.updateTrip,
   invalidateCache(/^GET:.*\/api\/trips/),
 );
 
 // Delete trip permanently (SUPER_ADMIN only)
-router.delete('/:id', rateLimiters.write, authorize(Role.SUPER_ADMIN), tripController.deleteTrip, invalidateCache(/^GET:.*\/api\/trips/));
+router.delete('/:id', authorize(Role.SUPER_ADMIN), rateLimiters.write, tripController.deleteTrip, invalidateCache(/^GET:.*\/api\/trips/));
 
 // Trip publishing workflow
 
 // Publish trip (SUPER_ADMIN only)
 router.post(
   '/:id/publish',
-  rateLimiters.write,
   authorize(Role.SUPER_ADMIN),
+  rateLimiters.write,
   tripController.publishTrip,
 );
 
 // Unpublish trip - set to draft (SUPER_ADMIN only)
 router.post(
   '/:id/unpublish',
-  rateLimiters.write,
   authorize(Role.SUPER_ADMIN),
+  rateLimiters.write,
   tripController.unpublishTrip,
 );
 
@@ -68,24 +68,24 @@ router.post(
 // Assign admins to trip (replace all admins) - SUPER_ADMIN only
 router.put(
   '/:id/admins',
-  rateLimiters.write,
   authorize(Role.SUPER_ADMIN),
+  rateLimiters.write,
   tripController.assignAdmins,
 );
 
 // Add an admin to trip (SUPER_ADMIN only)
 router.post(
   '/:id/admins/:adminId',
-  rateLimiters.write,
   authorize(Role.SUPER_ADMIN),
+  rateLimiters.write,
   tripController.addAdmin,
 );
 
 // Remove an admin from trip (SUPER_ADMIN only)
 router.delete(
   '/:id/admins/:adminId',
-  rateLimiters.write,
   authorize(Role.SUPER_ADMIN),
+  rateLimiters.write,
   tripController.removeAdmin,
 );
 
@@ -121,8 +121,8 @@ router.get('/:id/schedule', cacheResponse({ ttl: 300 }), rateLimiters.api, tripC
 // Add schedule item (TRIP_ADMIN and SUPER_ADMIN only)
 router.post(
   '/:id/schedule',
-  rateLimiters.write,
   authorize(Role.TRIP_ADMIN, Role.SUPER_ADMIN),
+  rateLimiters.write,
   tripController.addScheduleItem,
   invalidateCache(/^GET:.*\/api\/trips.*\/schedule/),
 );
@@ -130,16 +130,16 @@ router.post(
 // Update schedule item (TRIP_ADMIN and SUPER_ADMIN only)
 router.put(
   '/:id/schedule/:scheduleId',
-  rateLimiters.write,
   authorize(Role.TRIP_ADMIN, Role.SUPER_ADMIN),
+  rateLimiters.write,
   tripController.updateScheduleItem,
 );
 
 // Delete schedule item (TRIP_ADMIN and SUPER_ADMIN only)
 router.delete(
   '/:id/schedule/:scheduleId',
-  rateLimiters.write,
   authorize(Role.TRIP_ADMIN, Role.SUPER_ADMIN),
+  rateLimiters.write,
   tripController.deleteScheduleItem,
 );
 

@@ -57,8 +57,8 @@ router.get('/me', protect, rateLimiters.api, authController.getCurrentUser);
 router.post(
   '/admin',
   protect,
-  rateLimiters.write,
   authorize(Role.SUPER_ADMIN),
+  rateLimiters.write,
   authController.createAdmin,
 );
 

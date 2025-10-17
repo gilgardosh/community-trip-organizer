@@ -14,8 +14,8 @@ router.use(protect);
 // Only TRIP_ADMIN (of that specific trip) and SUPER_ADMIN can create gear items
 router.post(
   '/',
-  rateLimiters.write,
   authorize(Role.TRIP_ADMIN, Role.SUPER_ADMIN),
+  rateLimiters.write,
   gearController.createGearItem,
   invalidateCache(/^GET:.*\/api\/gear/),
 );
@@ -45,8 +45,8 @@ router.get('/:id', cacheResponse({ ttl: 600 }), rateLimiters.api, gearController
 // Only trip admins of the specific trip and SUPER_ADMIN can update
 router.put(
   '/:id',
-  rateLimiters.write,
   authorize(Role.TRIP_ADMIN, Role.SUPER_ADMIN),
+  rateLimiters.write,
   gearController.updateGearItem,
   invalidateCache(/^GET:.*\/api\/gear/),
 );
@@ -55,8 +55,8 @@ router.put(
 // Only trip admins of the specific trip and SUPER_ADMIN can delete
 router.delete(
   '/:id',
-  rateLimiters.write,
   authorize(Role.TRIP_ADMIN, Role.SUPER_ADMIN),
+  rateLimiters.write,
   gearController.deleteGearItem,
 );
 

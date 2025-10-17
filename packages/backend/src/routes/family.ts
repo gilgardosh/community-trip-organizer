@@ -30,8 +30,8 @@ router.get('/:id', cacheResponse({ ttl: 600 }), rateLimiters.api, familyControll
 // FAMILY: can only update their own family
 router.put(
   '/:id',
-  rateLimiters.write,
   authorize(Role.SUPER_ADMIN, Role.FAMILY),
+  rateLimiters.write,
   familyController.updateFamily,
   invalidateCache(/^GET:.*\/api\/families/),
 );
@@ -39,32 +39,32 @@ router.put(
 // Approve family (SUPER_ADMIN only)
 router.post(
   '/:id/approve',
-  rateLimiters.write,
   authorize(Role.SUPER_ADMIN),
+  rateLimiters.write,
   familyController.approveFamily,
 );
 
 // Deactivate family (SUPER_ADMIN only)
 router.post(
   '/:id/deactivate',
-  rateLimiters.write,
   authorize(Role.SUPER_ADMIN),
+  rateLimiters.write,
   familyController.deactivateFamily,
 );
 
 // Reactivate family (SUPER_ADMIN only)
 router.post(
   '/:id/reactivate',
-  rateLimiters.write,
   authorize(Role.SUPER_ADMIN),
+  rateLimiters.write,
   familyController.reactivateFamily,
 );
 
 // Delete family permanently (SUPER_ADMIN only)
 router.delete(
   '/:id',
-  rateLimiters.write,
   authorize(Role.SUPER_ADMIN),
+  rateLimiters.write,
   familyController.deleteFamily,
 );
 
@@ -84,8 +84,8 @@ router.get('/:id/children', cacheResponse({ ttl: 300 }), rateLimiters.api, famil
 // FAMILY: can only add to their own family
 router.post(
   '/:id/members',
-  rateLimiters.write,
   authorize(Role.SUPER_ADMIN, Role.FAMILY),
+  rateLimiters.write,
   familyController.addMember,
   invalidateCache(/^GET:.*\/api\/families.*\/members|adults|children/),
 );
@@ -95,8 +95,8 @@ router.post(
 // FAMILY: can only update members in their own family
 router.put(
   '/:id/members/:memberId',
-  rateLimiters.write,
   authorize(Role.SUPER_ADMIN, Role.FAMILY),
+  rateLimiters.write,
   familyController.updateMember,
   invalidateCache(/^GET:.*\/api\/families.*\/members|adults|children/),
 );
@@ -106,8 +106,8 @@ router.put(
 // FAMILY: can only remove members from their own family
 router.delete(
   '/:id/members/:memberId',
-  rateLimiters.write,
   authorize(Role.SUPER_ADMIN, Role.FAMILY),
+  rateLimiters.write,
   familyController.removeMember,
 );
 
