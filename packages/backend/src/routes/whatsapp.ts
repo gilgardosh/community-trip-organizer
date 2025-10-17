@@ -1,12 +1,14 @@
 import { Router } from 'express';
 import { whatsappController } from '../controllers/whatsapp.controller.js';
 import { protect, authorize } from '../middleware/auth.middleware.js';
+import { rateLimiters } from '../middleware/rateLimiter.js';
 import { Role } from '@prisma/client';
 
 const router = Router();
 
-// All WhatsApp routes require authentication
+// All WhatsApp routes require authentication and rate limiting
 router.use(protect);
+router.use(rateLimiters.write);
 
 // Template Management Routes
 // Only SUPER_ADMIN can manage templates

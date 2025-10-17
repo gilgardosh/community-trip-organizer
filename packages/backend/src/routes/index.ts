@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { rateLimiters } from '../middleware/rateLimiter.js';
 import healthRouter from './health.js';
 import monitoringRouter from './monitoring.js';
 import authRouter from './auth.js';
@@ -12,15 +13,18 @@ import adminRouter from './admin.js';
 
 const router = Router();
 
-router.use('/health', healthRouter);
-router.use('/monitoring', monitoringRouter);
+// Apply general API rate limiting to protected routes
+router.use('/health', rateLimiters.api, healthRouter);
+router.use('/monitoring', rateLimiters.api, monitoringRouter);
+router.use('/protected', rateLimiters.api, protectedRouter);
+router.use('/role-protected', rateLimiters.api, roleProtectedRouter);
+
+// Auth, admin, families, trips, whatsapp, and gear have their own specific rate limiters
 router.use('/auth', authRouter);
-router.use('/protected', protectedRouter);
-router.use('/role-protected', roleProtectedRouter);
+router.use('/admin', adminRouter);
 router.use('/families', familyRouter);
 router.use('/trips', tripRouter);
 router.use('/gear', gearRouter);
 router.use('/whatsapp', whatsappRouter);
-router.use('/admin', adminRouter);
 
 export default router;

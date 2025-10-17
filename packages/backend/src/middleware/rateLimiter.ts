@@ -5,6 +5,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { ApiError } from '../utils/ApiError.js';
+import { isTest } from '../config/env.js';
 
 interface RateLimitOptions {
   windowMs: number; // Time window in milliseconds
@@ -108,12 +109,22 @@ export function rateLimit(options: RateLimitOptions) {
     message = 'Too many requests, please try again later',
     skipSuccessfulRequests = false,
     keyGenerator = (req) => {
-      const user = req.user as any;
-      return user ? `user:${user.id}` : `ip:${req.ip}`;
+      const user = req.user;
+      const baseKey = user ? `user:${user.id}` : `ip:${req.ip}`;
+      // Include the endpoint path to ensure separate buckets per endpoint
+      return `${baseKey}:${req.path}`;
     },
   } = options;
 
   return (req: Request, res: Response, next: NextFunction) => {
+    // Skip rate limiting in test environment unless explicitly testing rate limits
+    // Check process.env directly for dynamic evaluation
+    const shouldSkipRateLimit = isTest && !process.env.TEST_RATE_LIMITING;
+    
+    if (shouldSkipRateLimit) {
+      return next();
+    }
+
     const key = keyGenerator(req);
     const result = rateLimiter.check(key, windowMs, maxRequests);
 
@@ -177,3 +188,10 @@ export const rateLimiters = {
     maxRequests: 20,
   }),
 };
+
+/**
+ * Clear all rate limits (for testing)
+ */
+export function clearRateLimits(): void {
+  rateLimiter.clear();
+}

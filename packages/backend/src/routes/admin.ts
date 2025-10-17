@@ -1,12 +1,14 @@
 import { Router } from 'express';
 import { adminController } from '../controllers/admin.controller.js';
 import { protect, authorize } from '../middleware/auth.middleware.js';
+import { rateLimiters } from '../middleware/rateLimiter.js';
 import { Role } from '@prisma/client';
 
 const router = Router();
 
-// All admin routes require authentication
+// All admin routes require authentication and rate limiting
 router.use(protect);
+router.use(rateLimiters.admin);
 
 /**
  * User Management Routes (SUPER_ADMIN only)
