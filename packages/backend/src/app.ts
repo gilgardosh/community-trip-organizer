@@ -7,11 +7,23 @@ import { getCorsConfig, isDevelopment } from './config/env.js';
 import apiRoutes from './routes/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { ApiError } from './utils/ApiError.js';
+import {
+  cspConfig,
+  securityHeaders,
+  preventParameterPollution,
+  requestFingerprint,
+} from './middleware/security.js';
 
 const app: Express = express();
 
-// Middleware
-app.use(helmet());
+// Security Middleware
+app.use(helmet()); // Basic helmet protection
+app.use(cspConfig); // Content Security Policy
+app.use(securityHeaders); // Additional security headers
+app.use(preventParameterPollution); // Prevent parameter pollution attacks
+app.use(requestFingerprint); // Request fingerprinting for security tracking
+
+// CORS and other middleware
 app.use(cors(getCorsConfig()));
 app.use(express.json());
 app.use(morgan(isDevelopment ? 'dev' : 'combined'));
