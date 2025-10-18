@@ -41,37 +41,8 @@ export function useData<T>(
   const { showError, showSuccess } = useNotification();
   const isMounted = useRef(true);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  const fetchData = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const result = await fetcher();
-
-      if (isMounted.current) {
-        setData(result);
-        onSuccess?.(result);
-        if (showSuccessToast && successMessage) {
-          showSuccess(successMessage);
-        }
-      }
-    } catch (err) {
-      const error = err instanceof Error ? err : new Error('Unknown error');
-
-      if (isMounted.current) {
-        setError(error);
-        onError?.(error);
-        if (showErrorToast) {
-          showError(error.message);
-        }
-      }
-    } finally {
-      if (isMounted.current) {
-        setIsLoading(false);
-      }
-    }
-  }, [
-    fetcher,
+  const fetcherRef = useRef(fetcher);
+  const optionsRef = useRef({
     onSuccess,
     onError,
     showErrorToast,
@@ -79,9 +50,59 @@ export function useData<T>(
     successMessage,
     showError,
     showSuccess,
-  ]);
+  });
 
+  // Update refs when dependencies change - using no deps to run on every render
   useEffect(() => {
+    fetcherRef.current = fetcher;
+    optionsRef.current = {
+      onSuccess,
+      onError,
+      showErrorToast,
+      showSuccessToast,
+      successMessage,
+      showError,
+      showSuccess,
+    };
+  });
+
+  const fetchData = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const result = await fetcherRef.current();
+
+      if (isMounted.current) {
+        setData(result);
+        optionsRef.current.onSuccess?.(result);
+        if (
+          optionsRef.current.showSuccessToast &&
+          optionsRef.current.successMessage
+        ) {
+          optionsRef.current.showSuccess(optionsRef.current.successMessage);
+        }
+      }
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error('Unknown error');
+
+      if (isMounted.current) {
+        setError(error);
+        optionsRef.current.onError?.(error);
+        if (optionsRef.current.showErrorToast) {
+          optionsRef.current.showError(error.message);
+        }
+      }
+    } finally {
+      if (isMounted.current) {
+        setIsLoading(false);
+      }
+    }
+  }, []);
+
+  // Single effect for initial fetch and auto-refresh
+  useEffect(() => {
+    isMounted.current = true;
+    
     fetchData();
 
     if (autoRefresh && refreshInterval > 0) {
@@ -94,9 +115,12 @@ export function useData<T>(
       isMounted.current = false;
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
     };
-  }, [fetchData, autoRefresh, refreshInterval]);
+    // Only depend on stable fetchData, autoRefresh, and refreshInterval
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoRefresh, refreshInterval]);
 
   const refresh = useCallback(async () => {
     await fetchData();

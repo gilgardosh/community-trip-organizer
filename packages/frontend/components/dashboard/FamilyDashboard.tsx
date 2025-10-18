@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useApp } from '@/contexts/AppContext';
@@ -17,11 +17,16 @@ export function FamilyDashboard({ familyId }: { familyId: string }) {
   const { user, family } = useAuth();
   const { refreshTriggers } = useApp();
 
+  // Memoize fetcher functions to prevent infinite loops
+  const fetchTrips = useCallback(() => getTrips({ draft: false }), []);
+  const fetchFamily = useCallback(() => getFamilyById(familyId), [familyId]);
+
   const {
     data: trips,
     isLoading: isLoadingTrips,
+    error: tripsError,
     refresh: refreshTrips,
-  } = useData<Trip[]>(() => getTrips({ draft: false }), {
+  } = useData<Trip[]>(fetchTrips, {
     autoRefresh: true,
     refreshInterval: 60000,
   });
@@ -29,22 +34,55 @@ export function FamilyDashboard({ familyId }: { familyId: string }) {
   const {
     data: familyData,
     isLoading: isLoadingFamily,
+    error: familyError,
     refresh: refreshFamily,
-  } = useData(() => getFamilyById(familyId), {
+  } = useData(fetchFamily, {
     autoRefresh: true,
     refreshInterval: 120000,
   });
 
+  // Refresh when triggers change
   useEffect(() => {
-    refreshTrips();
+    if (refreshTriggers.trips) {
+      refreshTrips();
+    }
   }, [refreshTriggers.trips, refreshTrips]);
 
   useEffect(() => {
-    refreshFamily();
+    if (refreshTriggers.families) {
+      refreshFamily();
+    }
   }, [refreshTriggers.families, refreshFamily]);
 
   if (isLoadingTrips || isLoadingFamily) {
     return <LoadingDashboard />;
+  }
+
+  // Show error states
+  if (tripsError || familyError) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="max-w-md">
+          <CardHeader>
+            <CardTitle>שגיאה בטעינת הנתונים</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">
+              {tripsError?.message || familyError?.message}
+            </p>
+            <Button
+              className="mt-4"
+              onClick={() => {
+                refreshTrips();
+                refreshFamily();
+              }}
+            >
+              נסה שוב
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   const upcomingTrips =
@@ -197,9 +235,9 @@ export function FamilyDashboard({ familyId }: { familyId: string }) {
                       <div>
                         <p className="font-medium">{member.name}</p>
                         <p className="text-sm text-muted-foreground">
-                          {member.type === 'adult'
+                          {member.type === 'ADULT'
                             ? 'מבוגר'
-                            : `ילד, גיל ${member.age}`}
+                            : `ילד, גיל ${member.age || ''}`}
                         </p>
                       </div>
                     </div>

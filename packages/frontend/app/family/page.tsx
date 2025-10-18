@@ -6,13 +6,10 @@ import { FamilyDashboard } from '@/components/dashboard';
 
 export default function FamilyPage() {
   const { user } = useAuth();
-  if (!user) {
-    return null;
-  }
 
   return (
     <ProtectedRoute allowedRoles={['FAMILY', 'TRIP_ADMIN', 'SUPER_ADMIN']}>
-      <FamilyDashboard familyId={user.familyId} />
+      {user?.familyId && <FamilyDashboard familyId={user.familyId} />}
     </ProtectedRoute>
   );
 }
