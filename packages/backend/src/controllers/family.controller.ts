@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { familyService, FamilyFilters } from '../services/family.service.js';
 import { logService } from '../services/log.service.js';
 import { ActionType, UserType, User, FamilyStatus } from '@prisma/client';
-import { ApiError } from '../utils/ApiError.js';
 
 // Validation schemas
 const adultSchema = z.object({
@@ -97,7 +96,11 @@ const getAllFamilies = asyncHandler(async (req: Request, res: Response) => {
 
   // FAMILY role can only see their own family
   if (user.role === 'FAMILY') {
-    const family = await familyService.getFamilyById(user.familyId);
+    const family = await familyService.getFamilyById(
+      user.familyId,
+      user.id,
+      user.role,
+    );
     res.status(200).json([family]);
   }
   // TRIP_ADMIN can only see families in trips they admin
@@ -123,12 +126,7 @@ const getFamilyById = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const user = req.user as User;
 
-  // FAMILY role can only access their own family
-  if (user.role === 'FAMILY' && user.familyId !== id) {
-    throw new ApiError(403, 'You can only access your own family');
-  }
-
-  const family = await familyService.getFamilyById(id);
+  const family = await familyService.getFamilyById(id, user.id, user.role);
   res.status(200).json(family);
 });
 
@@ -141,13 +139,13 @@ const updateFamily = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as User;
   const data = updateFamilySchema.parse(req.body);
 
-  // FAMILY role can only update their own family
-  if (user.role === 'FAMILY' && user.familyId !== id) {
-    throw new ApiError(403, 'You can only update your own family');
-  }
-
-  const oldFamily = await familyService.getFamilyById(id);
-  const updatedFamily = await familyService.updateFamily(id, data);
+  const oldFamily = await familyService.getFamilyById(id, user.id, user.role);
+  const updatedFamily = await familyService.updateFamily(
+    id,
+    data,
+    user.id,
+    user.role,
+  );
 
   // Log the update
   await logService.log(user.id, ActionType.UPDATE, 'Family', id, {
@@ -240,12 +238,7 @@ const addMember = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as User;
   const data = addMemberSchema.parse(req.body);
 
-  // FAMILY role can only add members to their own family
-  if (user.role === 'FAMILY' && user.familyId !== id) {
-    throw new ApiError(403, 'You can only add members to your own family');
-  }
-
-  const member = await familyService.addMember(id, data);
+  const member = await familyService.addMember(id, data, user.id, user.role);
 
   // Log the member addition
   await logService.log(user.id, ActionType.CREATE, 'User', member.id, {
@@ -266,12 +259,13 @@ const updateMember = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as User;
   const data = updateMemberSchema.parse(req.body);
 
-  // FAMILY role can only update members in their own family
-  if (user.role === 'FAMILY' && user.familyId !== id) {
-    throw new ApiError(403, 'You can only update members in your own family');
-  }
-
-  const updatedMember = await familyService.updateMember(id, memberId, data);
+  const updatedMember = await familyService.updateMember(
+    id,
+    memberId,
+    data,
+    user.id,
+    user.role,
+  );
 
   // Log the member update
   await logService.log(user.id, ActionType.UPDATE, 'User', memberId, {
@@ -290,12 +284,7 @@ const removeMember = asyncHandler(async (req: Request, res: Response) => {
   const { id, memberId } = req.params;
   const user = req.user as User;
 
-  // FAMILY role can only remove members from their own family
-  if (user.role === 'FAMILY' && user.familyId !== id) {
-    throw new ApiError(403, 'You can only remove members from your own family');
-  }
-
-  await familyService.removeMember(id, memberId);
+  await familyService.removeMember(id, memberId, user.id, user.role);
 
   // Log the member removal
   await logService.log(user.id, ActionType.DELETE, 'User', memberId, {
@@ -313,12 +302,7 @@ const getFamilyMembers = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const user = req.user as User;
 
-  // FAMILY role can only access their own family members
-  if (user.role === 'FAMILY' && user.familyId !== id) {
-    throw new ApiError(403, 'You can only access your own family members');
-  }
-
-  const members = await familyService.getFamilyMembers(id);
+  const members = await familyService.getFamilyMembers(id, user.id, user.role);
   res.status(200).json(members);
 });
 
@@ -330,12 +314,7 @@ const getFamilyAdults = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const user = req.user as User;
 
-  // FAMILY role can only access their own family adults
-  if (user.role === 'FAMILY' && user.familyId !== id) {
-    throw new ApiError(403, 'You can only access your own family members');
-  }
-
-  const adults = await familyService.getFamilyAdults(id);
+  const adults = await familyService.getFamilyAdults(id, user.id, user.role);
   res.status(200).json(adults);
 });
 
@@ -347,12 +326,11 @@ const getFamilyChildren = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const user = req.user as User;
 
-  // FAMILY role can only access their own family children
-  if (user.role === 'FAMILY' && user.familyId !== id) {
-    throw new ApiError(403, 'You can only access your own family members');
-  }
-
-  const children = await familyService.getFamilyChildren(id);
+  const children = await familyService.getFamilyChildren(
+    id,
+    user.id,
+    user.role,
+  );
   res.status(200).json(children);
 });
 

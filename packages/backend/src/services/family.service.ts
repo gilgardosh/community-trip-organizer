@@ -1,5 +1,5 @@
 import { prisma } from '../utils/db.js';
-import { FamilyStatus, UserType, Prisma } from '@prisma/client';
+import { FamilyStatus, UserType, Prisma, Role } from '@prisma/client';
 import { ApiError } from '../utils/ApiError.js';
 
 export interface CreateFamilyData {
@@ -115,8 +115,9 @@ export const familyService = {
 
   /**
    * Get family by ID
+   * Authorization: FAMILY users can only view their own family
    */
-  getFamilyById: async (id: string) => {
+  getFamilyById: async (id: string, userId?: string, userRole?: Role) => {
     const family = await prisma.family.findUnique({
       where: { id },
       include: {
@@ -138,6 +139,26 @@ export const familyService = {
 
     if (!family) {
       throw new ApiError(404, 'Family not found');
+    }
+
+    // Check authorization if userId and userRole are provided
+    if (userId && userRole) {
+      if (userRole === Role.FAMILY) {
+        // Get user's family to verify access
+        const user = await prisma.user.findUnique({
+          where: { id: userId },
+          select: { familyId: true },
+        });
+
+        if (!user) {
+          throw new ApiError(404, 'User not found');
+        }
+
+        if (user.familyId !== id) {
+          throw new ApiError(403, 'You can only access your own family');
+        }
+      }
+      // TRIP_ADMIN and SUPER_ADMIN can access any family
     }
 
     return family;
@@ -240,8 +261,14 @@ export const familyService = {
 
   /**
    * Update family details
+   * Authorization: FAMILY users can only update their own family
    */
-  updateFamily: async (id: string, data: UpdateFamilyData) => {
+  updateFamily: async (
+    id: string,
+    data: UpdateFamilyData,
+    userId: string,
+    userRole: Role,
+  ) => {
     // Check if family exists
     const existingFamily = await prisma.family.findUnique({
       where: { id },
@@ -250,6 +277,23 @@ export const familyService = {
     if (!existingFamily) {
       throw new ApiError(404, 'Family not found');
     }
+
+    // Check authorization
+    if (userRole === Role.FAMILY) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { familyId: true },
+      });
+
+      if (!user) {
+        throw new ApiError(404, 'User not found');
+      }
+
+      if (user.familyId !== id) {
+        throw new ApiError(403, 'You can only update your own family');
+      }
+    }
+    // SUPER_ADMIN can update any family
 
     const updatedFamily = await prisma.family.update({
       where: { id },
@@ -424,8 +468,14 @@ export const familyService = {
 
   /**
    * Add a member to a family
+   * Authorization: FAMILY users can only add to their own family
    */
-  addMember: async (familyId: string, memberData: AddMemberData) => {
+  addMember: async (
+    familyId: string,
+    memberData: AddMemberData,
+    userId: string,
+    userRole: Role,
+  ) => {
     // Check if family exists
     const family = await prisma.family.findUnique({
       where: { id: familyId },
@@ -434,6 +484,23 @@ export const familyService = {
     if (!family) {
       throw new ApiError(404, 'Family not found');
     }
+
+    // Check authorization
+    if (userRole === Role.FAMILY) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { familyId: true },
+      });
+
+      if (!user) {
+        throw new ApiError(404, 'User not found');
+      }
+
+      if (user.familyId !== familyId) {
+        throw new ApiError(403, 'You can only add members to your own family');
+      }
+    }
+    // SUPER_ADMIN can add to any family
 
     // Validate adult member has email
     if (memberData.type === UserType.ADULT && !memberData.email) {
@@ -480,11 +547,14 @@ export const familyService = {
 
   /**
    * Update a family member
+   * Authorization: FAMILY users can only update members in their own family
    */
   updateMember: async (
     familyId: string,
     memberId: string,
     memberData: UpdateMemberData,
+    userId: string,
+    userRole: Role,
   ) => {
     // Check if member exists and belongs to the family
     const member = await prisma.user.findUnique({
@@ -498,6 +568,26 @@ export const familyService = {
     if (member.familyId !== familyId) {
       throw new ApiError(403, 'Member does not belong to this family');
     }
+
+    // Check authorization
+    if (userRole === Role.FAMILY) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { familyId: true },
+      });
+
+      if (!user) {
+        throw new ApiError(404, 'User not found');
+      }
+
+      if (user.familyId !== familyId) {
+        throw new ApiError(
+          403,
+          'You can only update members in your own family',
+        );
+      }
+    }
+    // SUPER_ADMIN can update any member
 
     // Check if email is being updated and already exists
     if (memberData.email && memberData.email !== member.email) {
@@ -526,8 +616,14 @@ export const familyService = {
 
   /**
    * Remove a member from a family
+   * Authorization: FAMILY users can only remove members from their own family
    */
-  removeMember: async (familyId: string, memberId: string) => {
+  removeMember: async (
+    familyId: string,
+    memberId: string,
+    userId: string,
+    userRole: Role,
+  ) => {
     // Check if member exists and belongs to the family
     const member = await prisma.user.findUnique({
       where: { id: memberId },
@@ -540,6 +636,26 @@ export const familyService = {
     if (member.familyId !== familyId) {
       throw new ApiError(403, 'Member does not belong to this family');
     }
+
+    // Check authorization
+    if (userRole === Role.FAMILY) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { familyId: true },
+      });
+
+      if (!user) {
+        throw new ApiError(404, 'User not found');
+      }
+
+      if (user.familyId !== familyId) {
+        throw new ApiError(
+          403,
+          'You can only remove members from your own family',
+        );
+      }
+    }
+    // SUPER_ADMIN can remove any member
 
     // Check if this is the last adult in the family
     const adultCount = await prisma.user.count({
@@ -562,8 +678,13 @@ export const familyService = {
 
   /**
    * Get family members
+   * Authorization: FAMILY users can only view their own family members
    */
-  getFamilyMembers: async (familyId: string) => {
+  getFamilyMembers: async (
+    familyId: string,
+    userId: string,
+    userRole: Role,
+  ) => {
     const family = await prisma.family.findUnique({
       where: { id: familyId },
     });
@@ -571,6 +692,23 @@ export const familyService = {
     if (!family) {
       throw new ApiError(404, 'Family not found');
     }
+
+    // Check authorization
+    if (userRole === Role.FAMILY) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { familyId: true },
+      });
+
+      if (!user) {
+        throw new ApiError(404, 'User not found');
+      }
+
+      if (user.familyId !== familyId) {
+        throw new ApiError(403, 'You can only access your own family members');
+      }
+    }
+    // TRIP_ADMIN and SUPER_ADMIN can view any family members
 
     const members = await prisma.user.findMany({
       where: { familyId },
@@ -593,8 +731,9 @@ export const familyService = {
 
   /**
    * Get adults in a family
+   * Authorization: FAMILY users can only view their own family adults
    */
-  getFamilyAdults: async (familyId: string) => {
+  getFamilyAdults: async (familyId: string, userId: string, userRole: Role) => {
     const family = await prisma.family.findUnique({
       where: { id: familyId },
     });
@@ -602,6 +741,23 @@ export const familyService = {
     if (!family) {
       throw new ApiError(404, 'Family not found');
     }
+
+    // Check authorization
+    if (userRole === Role.FAMILY) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { familyId: true },
+      });
+
+      if (!user) {
+        throw new ApiError(404, 'User not found');
+      }
+
+      if (user.familyId !== familyId) {
+        throw new ApiError(403, 'You can only access your own family members');
+      }
+    }
+    // TRIP_ADMIN and SUPER_ADMIN can view any family
 
     const adults = await prisma.user.findMany({
       where: {
@@ -626,8 +782,13 @@ export const familyService = {
 
   /**
    * Get children in a family
+   * Authorization: FAMILY users can only view their own family children
    */
-  getFamilyChildren: async (familyId: string) => {
+  getFamilyChildren: async (
+    familyId: string,
+    userId: string,
+    userRole: Role,
+  ) => {
     const family = await prisma.family.findUnique({
       where: { id: familyId },
     });
@@ -635,6 +796,23 @@ export const familyService = {
     if (!family) {
       throw new ApiError(404, 'Family not found');
     }
+
+    // Check authorization
+    if (userRole === Role.FAMILY) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { familyId: true },
+      });
+
+      if (!user) {
+        throw new ApiError(404, 'User not found');
+      }
+
+      if (user.familyId !== familyId) {
+        throw new ApiError(403, 'You can only access your own family members');
+      }
+    }
+    // TRIP_ADMIN and SUPER_ADMIN can view any family
 
     const children = await prisma.user.findMany({
       where: {
