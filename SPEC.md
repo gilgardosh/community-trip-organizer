@@ -44,8 +44,8 @@ A responsive web app to manage neighborhood family trips.
 | Role        | Capabilities                                                                                                         |
 | ----------- | -------------------------------------------------------------------------------------------------------------------- |
 | Family      | View trips, mark attendance, update family/child profiles, volunteer for gear                                        |
-| Trip Admin  | Manage assigned trip: participants, gear, dietary info, schedule, packing lists; manually trigger WhatsApp reminders |
-| Super-admin | Approve trips and trip admins, approve families, delete/deactivate families, view all trips and families             |
+| Trip Admin  | Manage assigned trip: participants, gear, dietary info, schedule, packing lists; manually trigger WhatsApp reminders; cancel trips (soft-delete) |
+| Super-admin | Approve trips and trip admins, approve families, delete/deactivate families, view all trips and families; restore cancelled trips; permanently delete trips |
 
 - Roles are **hardcoded**; trip admins are **trip-specific**.
 
@@ -92,15 +92,41 @@ A responsive web app to manage neighborhood family trips.
   - `id` (PK)
   - `name`, `location`, `description`
   - `start_date`, `end_date`
-  - `draft` (bool)
+  - `draft` (bool) - true = draft, false = published
+  - `requireParticipationApproval` (bool) - true = admin must approve, false = open enrollment (default: true)
+  - `publishRequested` (bool) - trip admin requested publish
+  - `publishRequestedAt` (timestamp, nullable)
+  - `publishedAt` (timestamp, nullable)
+  - `publishedBy` (FK to User, nullable)
+  - `unpublishedAt` (timestamp, nullable) - audit trail
+  - `deleted` (bool) - soft-delete flag
+  - `deletedAt` (timestamp, nullable)
+  - `deletedBy` (FK to User, nullable)
+  - `deletionReason` (text, nullable)
+  - `lastModifiedBy` (FK to User, nullable)
+  - `lastModifiedAt` (timestamp, nullable)
   - `attendance_cutoff_date`
   - `photo_album_link` (external)
   - `created_at`, `updated_at`
 
 - **Relationships:**
-  - Many-to-many: **Family ↔ Trip** (attendance)
+  - Many-to-many: **Family ↔ Trip** (attendance via TripAttendance)
   - One-to-many: **Trip ↔ GearItem**
   - Many-to-many: **Trip ↔ Admin (User)**
+
+### 5.3a TripAttendance (Join Table)
+
+- **Fields:**
+  - `id` (PK)
+  - `trip_id` (FK to Trip)
+  - `family_id` (FK to Family)
+  - `status` (enum: PENDING, APPROVED, REJECTED) - approval status
+  - `requestedAt` (timestamp) - when family requested to join
+  - `respondedAt` (timestamp, nullable) - when admin approved/rejected
+  - `respondedBy` (FK to User, nullable) - which admin responded
+  - `rejectionReason` (text, nullable) - why request was rejected
+  - `dietaryRequirements` (text, nullable)
+  - `created_at`, `updated_at`
 
 ### 5.4 GearItem
 
@@ -133,12 +159,18 @@ A responsive web app to manage neighborhood family trips.
 
 ## 6. **Trip Workflow**
 
-1. **Draft Creation:** Trip admin prepares trip in draft mode (completely hidden).
-2. **Trip Publishing:** Super-admin assigns trip admins and publishes trip.
-3. **Family Participation:** Families mark attendance (checkbox), input dietary info.
-4. **Gear Assignment:** Families volunteer for gear; quantities tracked per family; editable until trip starts.
-5. **Reminders:** Admins manually trigger WhatsApp messages for reminders, gear lists, etc.
-6. **Trip Completion:** Trips remain read-only after completion.
+1. **Draft Creation:** Family member creates trip in draft mode (completely hidden from other families); creator becomes trip admin; sets approval requirement (default: required).
+2. **Publish Request:** Trip admin requests publishing when ready; super-admins receive notification.
+3. **Trip Publishing:** Super-admin reviews trip, optionally assigns additional admins, then publishes trip (makes visible to families).
+4. **Trip Editing:** Trip admins can edit trip details at any time; participants are notified of changes to published trips.
+5. **Family Participation:** 
+   - If approval required: Family requests to join → sees limited info → admin approves/rejects → if approved, gains full access
+   - If open enrollment: Family marks attendance directly (checkbox) → immediate full access
+6. **Gear Assignment:** Approved families volunteer for gear; quantities tracked per family; editable until trip starts.
+7. **Reminders:** Admins manually trigger WhatsApp messages for reminders, gear lists, etc.
+8. **Trip Completion:** Trips remain read-only after completion.
+9. **Trip Cancellation:** Trip admins can cancel trips (soft-delete with required reason); cancelled trips are hidden from families but data is preserved; super-admins can restore or permanently delete cancelled trips.
+10. **Unpublishing:** Super-admins can unpublish trips (moves back to draft); participating families are notified.
 
 ---
 
