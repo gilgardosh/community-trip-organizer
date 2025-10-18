@@ -15,46 +15,50 @@ import { VerifyCallback } from 'passport-oauth2';
 const oauthConfig = getOAuthConfig();
 
 // Google OAuth Strategy
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: oauthConfig.google.clientID,
-      clientSecret: oauthConfig.google.clientSecret,
-      callbackURL: oauthConfig.google.callbackURL,
-      scope: ['profile', 'email'],
-    },
-    (
-      accessToken: string,
-      refreshToken: string,
-      profile: GoogleProfile,
-      done: VerifyCallback,
-    ) => {
-      // Wrap in void to ignore Promise
-      void handleOAuthUser('google', profile, done);
-    },
-  ),
-);
+if (oauthConfig.google.clientID && oauthConfig.google.clientID !== '') {
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: oauthConfig.google.clientID,
+        clientSecret: oauthConfig.google.clientSecret,
+        callbackURL: oauthConfig.google.callbackURL,
+        scope: ['profile', 'email'],
+      },
+      (
+        accessToken: string,
+        refreshToken: string,
+        profile: GoogleProfile,
+        done: VerifyCallback,
+      ) => {
+        // Wrap in void to ignore Promise
+        void handleOAuthUser('google', profile, done);
+      },
+    ),
+  );
+}
 
 // Facebook OAuth Strategy
-passport.use(
-  new FacebookStrategy(
-    {
-      clientID: oauthConfig.facebook.clientID,
-      clientSecret: oauthConfig.facebook.clientSecret,
-      callbackURL: oauthConfig.facebook.callbackURL,
-      profileFields: oauthConfig.facebook.profileFields,
-    },
-    (
-      accessToken: string,
-      refreshToken: string,
-      profile: FacebookProfile,
-      done: VerifyCallback,
-    ) => {
-      // Wrap in void to ignore Promise
-      void handleOAuthUser('facebook', profile, done);
-    },
-  ),
-);
+if (oauthConfig.facebook.clientID && oauthConfig.facebook.clientID !== '') {
+  passport.use(
+    new FacebookStrategy(
+      {
+        clientID: oauthConfig.facebook.clientID,
+        clientSecret: oauthConfig.facebook.clientSecret,
+        callbackURL: oauthConfig.facebook.callbackURL,
+        profileFields: oauthConfig.facebook.profileFields,
+      },
+      (
+        accessToken: string,
+        refreshToken: string,
+        profile: FacebookProfile,
+        done: VerifyCallback,
+      ) => {
+        // Wrap in void to ignore Promise
+        void handleOAuthUser('facebook', profile, done);
+      },
+    ),
+  );
+}
 
 // Common handler for OAuth users
 async function handleOAuthUser(

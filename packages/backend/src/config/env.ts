@@ -10,21 +10,21 @@ import { z } from 'zod';
  */
 const envSchema = z.object({
   // Database
-  DATABASE_URL: z.string().url(),
+  DATABASE_URL: z.url(),
 
   // JWT
   JWT_SECRET: z.string().min(32),
   JWT_EXPIRES_IN: z.string().default('7d'),
 
   // OAuth - Google
-  GOOGLE_CLIENT_ID: z.string().min(1),
-  GOOGLE_CLIENT_SECRET: z.string().min(1),
-  GOOGLE_CALLBACK_URL: z.string().url(),
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GOOGLE_CLIENT_SECRET: z.string().optional(),
+  GOOGLE_CALLBACK_URL: z.url().optional(),
 
   // OAuth - Facebook (optional)
   FACEBOOK_APP_ID: z.string().optional(),
   FACEBOOK_APP_SECRET: z.string().optional(),
-  FACEBOOK_CALLBACK_URL: z.string().url().optional(),
+  FACEBOOK_CALLBACK_URL: z.url().optional(),
 
   // Server
   PORT: z.string().transform(Number).default(3001),
@@ -61,7 +61,7 @@ const envSchema = z.object({
     .default(false),
 
   // Monitoring (optional)
-  SENTRY_DSN: z.string().url().optional(),
+  SENTRY_DSN: z.url().optional(),
 });
 
 /**
@@ -139,9 +139,9 @@ export function getCorsConfig() {
 export function getOAuthConfig() {
   return {
     google: {
-      clientID: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET,
-      callbackURL: env.GOOGLE_CALLBACK_URL,
+      clientID: env.GOOGLE_CLIENT_ID || '',
+      clientSecret: env.GOOGLE_CLIENT_SECRET || '',
+      callbackURL: env.GOOGLE_CALLBACK_URL || '',
     },
     facebook: {
       clientID: env.FACEBOOK_APP_ID || '',

@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 
 interface NavItem {
+  id: string;
   title: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -38,54 +39,63 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   {
+    id: 'home',
     title: 'דף הבית',
     href: '/family',
     icon: Home,
     roles: ['FAMILY', 'TRIP_ADMIN', 'SUPER_ADMIN'],
   },
   {
+    id: 'my-family',
     title: 'המשפחה שלי',
     href: '/family',
     icon: Users,
     roles: ['FAMILY', 'TRIP_ADMIN', 'SUPER_ADMIN'],
   },
   {
+    id: 'trips',
     title: 'טיולים',
     href: '/family/trip',
     icon: MapPin,
     roles: ['FAMILY', 'TRIP_ADMIN', 'SUPER_ADMIN'],
   },
   {
+    id: 'admin-trips',
     title: 'ניהול טיולים',
     href: '/admin/trip',
     icon: Calendar,
     roles: ['TRIP_ADMIN', 'SUPER_ADMIN'],
   },
   {
+    id: 'gear',
     title: 'ציוד',
     href: '/admin/gear',
     icon: Package,
     roles: ['TRIP_ADMIN', 'SUPER_ADMIN'],
   },
   {
+    id: 'whatsapp',
     title: 'הודעות WhatsApp',
     href: '/admin/whatsapp',
     icon: MessageSquare,
     roles: ['TRIP_ADMIN', 'SUPER_ADMIN'],
   },
   {
+    id: 'families',
     title: 'ניהול משפחות',
     href: '/super-admin/families',
     icon: Users,
     roles: ['SUPER_ADMIN'],
   },
   {
+    id: 'activity-log',
     title: 'יומן פעילות',
     href: '/super-admin/activity-log',
     icon: ActivitySquare,
     roles: ['SUPER_ADMIN'],
   },
   {
+    id: 'super-admin',
     title: 'פאנל מנהל',
     href: '/super-admin',
     icon: Crown,
@@ -152,7 +162,7 @@ export function MainNav() {
               const isActive = pathname === item.href;
 
               return (
-                <Link key={item.href} href={item.href}>
+                <Link key={item.id} href={item.href}>
                   <Button
                     variant={isActive ? 'default' : 'ghost'}
                     size="sm"
@@ -206,7 +216,7 @@ export function MainNav() {
                   {filteredNavItems.map((item) => {
                     const Icon = item.icon;
                     return (
-                      <DropdownMenuItem key={item.href} asChild>
+                      <DropdownMenuItem key={item.id} asChild>
                         <Link
                           href={item.href}
                           className="flex items-center gap-2 cursor-pointer"
@@ -255,7 +265,7 @@ export function MainNav() {
 
                     return (
                       <Link
-                        key={item.href}
+                        key={item.id}
                         href={item.href}
                         onClick={() => setIsOpen(false)}
                       >

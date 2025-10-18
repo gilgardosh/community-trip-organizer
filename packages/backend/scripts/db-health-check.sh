@@ -17,7 +17,7 @@ fi
 echo "🔍 Checking database connection..."
 
 # Try to connect and run a simple query
-if npx prisma db execute --stdin <<EOF
+if npx prisma db execute --url "$DATABASE_URL" --stdin <<EOF
 SELECT 1 as health_check;
 EOF
 then
@@ -39,7 +39,7 @@ fi
 # Get database version
 echo ""
 echo "📊 Database information:"
-npx prisma db execute --stdin <<EOF
+npx prisma db execute --url "$DATABASE_URL" --stdin <<EOF
 SELECT version();
 EOF
 
