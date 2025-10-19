@@ -147,4 +147,8 @@
   [dir='rtl'] textarea {
     text-align: right;
   }
+  /* Make CSS Grid respect RTL direction */
+  [dir='rtl'] .grid {
+    direction: rtl;
+  }
 }
