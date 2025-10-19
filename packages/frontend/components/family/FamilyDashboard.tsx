@@ -1,10 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert } from '@/components/ui/alert';
+import { LoadingDashboard } from '@/components/layout/LoadingStates';
+import { useApp } from '@/contexts/AppContext';
+import { useData } from '@/hooks/use-data';
 import { getFamilyById } from '@/lib/api';
 import type { Family } from '@/types/family';
 import FamilyProfileView from './FamilyProfileView';
@@ -18,46 +21,37 @@ interface FamilyDashboardProps {
 }
 
 export default function FamilyDashboard({ familyId }: FamilyDashboardProps) {
-  const [family, setFamily] = useState<Family | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
+  const { refreshTriggers } = useApp();
 
+  // Memoize fetcher function to prevent infinite loops
+  const fetchFamily = useCallback(() => getFamilyById(familyId), [familyId]);
+
+  const {
+    data: family,
+    isLoading,
+    error,
+    refresh: refreshFamily,
+  } = useData<Family>(fetchFamily, {
+    autoRefresh: true,
+    refreshInterval: 120000, // Refresh every 2 minutes
+  });
+
+  // Refresh when triggers change
   useEffect(() => {
-    loadFamily();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [familyId]);
-
-  const loadFamily = async () => {
-    setIsLoading(true);
-    setError('');
-
-    try {
-      const data = await getFamilyById(familyId);
-      setFamily(data);
-    } catch (error: unknown) {
-      console.error('Error loading family:', error);
-      alert('שגיאה בטעינת פרטי המשפחה');
-    } finally {
-      setIsLoading(false);
+    if (refreshTriggers.families) {
+      refreshFamily();
     }
-  };
+  }, [refreshTriggers.families, refreshFamily]);
 
   const handleEditSuccess = (updatedFamily: Family) => {
-    setFamily(updatedFamily);
+    refreshFamily();
     setIsEditing(false);
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]" dir="rtl">
-        <div className="text-center space-y-4">
-          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto" />
-          <p className="text-muted-foreground">טוען נתוני משפחה...</p>
-        </div>
-      </div>
-    );
+    return <LoadingDashboard />;
   }
 
   if (error || !family) {
@@ -65,9 +59,9 @@ export default function FamilyDashboard({ familyId }: FamilyDashboardProps) {
       <div className="p-4" dir="rtl">
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          {error || 'לא נמצאו נתוני משפחה'}
+          {error?.message || 'לא נמצאו נתוני משפחה'}
         </Alert>
-        <Button onClick={loadFamily} className="mt-4">
+        <Button onClick={refreshFamily} className="mt-4">
           נסה שוב
         </Button>
       </div>
@@ -149,7 +143,7 @@ export default function FamilyDashboard({ familyId }: FamilyDashboardProps) {
           <AdultsManagement
             familyId={familyId}
             adults={adults}
-            onUpdate={loadFamily}
+            onUpdate={refreshFamily}
           />
         </TabsContent>
 
@@ -157,7 +151,7 @@ export default function FamilyDashboard({ familyId }: FamilyDashboardProps) {
           <ChildrenManagement
             familyId={familyId}
             childMembers={children}
-            onUpdate={loadFamily}
+            onUpdate={refreshFamily}
           />
         </TabsContent>
       </Tabs>
