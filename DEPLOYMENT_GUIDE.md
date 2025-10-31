@@ -4,6 +4,27 @@
 
 This guide provides comprehensive instructions for deploying the Community Trip Organizer application to production on Vercel.
 
+### Monorepo Structure
+
+This project is organized as a Yarn workspace monorepo with two packages:
+
+```
+community-trip-organizer/
+├── packages/
+│   ├── frontend/        # Next.js frontend application
+│   └── backend/         # Express.js backend API with Prisma
+├── package.json         # Root workspace configuration
+├── vercel.json          # Vercel deployment configuration
+└── build-vercel.sh      # Custom build script for Vercel
+```
+
+**Key Points:**
+- Both frontend and backend are deployed to Vercel
+- Frontend runs as a Next.js application
+- Backend runs as Vercel serverless functions
+- Shared dependencies are hoisted to the root
+- Database migrations are managed via Prisma in the backend package
+
 ## Table of Contents
 
 1. [Prerequisites](#prerequisites)
@@ -36,6 +57,7 @@ Before deploying, ensure you have:
 
 Set these in Vercel Dashboard → Project → Settings → Environment Variables:
 
+**Backend Variables:**
 ```bash
 # Database
 DATABASE_URL="postgresql://user:password@host:5432/database?pgbouncer=true&connection_limit=1"
@@ -77,6 +99,12 @@ NEXT_PUBLIC_APP_URL="https://your-domain.vercel.app"
 NEXT_PUBLIC_GOOGLE_CLIENT_ID="your-client-id.apps.googleusercontent.com"
 ```
 
+**Important Notes:**
+- All `NEXT_PUBLIC_*` variables are exposed to the browser
+- Backend variables are only accessible in API routes and serverless functions
+- Ensure DATABASE_URL includes connection pooling parameters for Vercel serverless
+- Both packages share the same environment variables in Vercel
+
 ### 2. Configure OAuth Providers
 
 #### Google OAuth Setup
@@ -110,6 +138,10 @@ NEXT_PUBLIC_GOOGLE_CLIENT_ID="your-client-id.apps.googleusercontent.com"
 4. Run migrations:
 
 ```bash
+# From project root
+DATABASE_URL="your-connection-string" yarn db:migrate
+
+# Or manually from backend
 cd packages/backend
 DATABASE_URL="your-connection-string" npx prisma migrate deploy
 ```
@@ -117,11 +149,15 @@ DATABASE_URL="your-connection-string" npx prisma migrate deploy
 ### Option 2: External PostgreSQL (Supabase, Railway, etc.)
 
 1. Create a PostgreSQL database instance
-2. Get the connection string
-3. Update `DATABASE_URL` environment variable
+2. Get the connection string (ensure it includes connection pooling parameters for serverless)
+3. Update `DATABASE_URL` environment variable in Vercel
 4. Run migrations:
 
 ```bash
+# From project root
+DATABASE_URL="your-connection-string" yarn db:migrate
+
+# Or manually from backend
 cd packages/backend
 DATABASE_URL="your-connection-string" npx prisma migrate deploy
 ```
@@ -129,6 +165,10 @@ DATABASE_URL="your-connection-string" npx prisma migrate deploy
 ### Seed Initial Data
 
 ```bash
+# From project root
+DATABASE_URL="your-connection-string" yarn db:seed
+
+# Or from backend directory
 cd packages/backend
 DATABASE_URL="your-connection-string" tsx prisma/seed.ts
 ```
@@ -154,11 +194,12 @@ This creates:
    - Go to [Vercel Dashboard](https://vercel.com/dashboard)
    - Click "Add New..." → "Project"
    - Import your GitHub repository
-   - Configure:
-     - Framework Preset: Next.js
-     - Root Directory: `packages/frontend`
-     - Build Command: `cd ../.. && yarn install && yarn build`
-     - Output Directory: `.next`
+   - **Important:** Vercel will auto-detect "Next.js" as the framework (not "Other") because the `vercel.json` specifies `"framework": "nextjs"`
+   - The build settings are pre-configured in `vercel.json`:
+     - Build Command: `yarn workspace backend run build && yarn workspace frontend run build`
+     - Output Directory: `packages/frontend/.next`
+     - Install Command: `yarn install`
+   - You don't need to manually configure these unless you want to override
 
 3. **Add Environment Variables**:
    - In project settings, add all environment variables listed above
@@ -167,6 +208,19 @@ This creates:
 4. **Deploy**:
    - Click "Deploy"
    - Vercel will automatically build and deploy
+
+**Note:** The project includes a `vercel.json` configuration that:
+- Sets the framework to Next.js for proper auto-detection
+- Configures the monorepo build command to build both packages
+- Uses modern Vercel configuration (no legacy `builds` or `routes`)
+- Enables Yarn 4.x via Corepack
+
+**Backend Deployment Strategy:**
+This project uses a **hybrid approach**:
+- The **frontend** (Next.js) is deployed as the main Vercel project
+- The **backend** (Express API) should be deployed separately to its own Vercel project OR integrated into Next.js API routes
+- For separate backend deployment, create a second Vercel project pointing to `packages/backend`
+- Update `NEXT_PUBLIC_API_URL` to point to your deployed backend URL
 
 ### Method 2: Vercel CLI
 
@@ -177,9 +231,22 @@ npm install -g vercel
 # Login to Vercel
 vercel login
 
-# Deploy to production
+# Deploy to production (from project root)
 vercel --prod
 ```
+
+**Vercel Configuration (`vercel.json`):**
+
+The project uses a modern `vercel.json` configuration:
+- Framework is set to `"nextjs"` for proper detection
+- Build command builds both backend and frontend workspaces
+- No legacy `builds` or `routes` properties (deprecated)
+- Uses Corepack for Yarn 4.x compatibility
+
+**Important Notes:**
+- The `builds` property is **deprecated** and conflicts with `functions`
+- Modern Vercel deployments use `framework`, `buildCommand`, and `outputDirectory` instead
+- For monorepos, use workspace commands in `buildCommand`
 
 ---
 
@@ -202,7 +269,10 @@ curl https://your-domain.vercel.app/api/health/detailed
 Ensure migrations are applied:
 
 ```bash
-# From local machine
+# From project root
+DATABASE_URL="your-production-db" yarn db:migrate
+
+# Or from backend directory
 cd packages/backend
 DATABASE_URL="your-production-db" npx prisma migrate deploy
 ```
@@ -212,6 +282,10 @@ DATABASE_URL="your-production-db" npx prisma migrate deploy
 If not seeded, create manually:
 
 ```bash
+# From project root
+DATABASE_URL="your-production-db" yarn db:seed
+
+# Or from backend directory
 cd packages/backend
 DATABASE_URL="your-production-db" tsx prisma/seed.ts
 ```
@@ -257,11 +331,70 @@ View logs in:
 - Vercel Dashboard → Project → Logs
 - Vercel CLI: `vercel logs`
 
+### Build Verification
+
+Test the build locally before deploying:
+
+```bash
+# From project root
+yarn install
+yarn build
+
+# Verify backend build
+ls -la packages/backend/dist
+
+# Verify frontend build  
+ls -la packages/frontend/.next
+```
+
 ---
 
 ## Troubleshooting
 
+### Monorepo-Specific Issues
+
+**Issue**: Yarn workspace not found or dependency resolution errors
+**Solution**:
+```bash
+# Clear all node_modules and reinstall
+rm -rf node_modules packages/*/node_modules
+yarn install
+
+# Ensure you're using correct Yarn version
+yarn --version  # Should be 4.x
+```
+
+**Issue**: Build fails with "Cannot find module" from workspace
+**Solution**:
+- Ensure `postinstall` script in root package.json runs Prisma generate
+- Check that shared dependencies are properly hoisted
+- Verify workspace references in package.json files
+
+**Issue**: Prisma client import errors
+**Solution**:
+```bash
+# Regenerate Prisma client
+yarn workspace backend exec prisma generate
+
+# Or from backend directory
+cd packages/backend
+npx prisma generate
+```
+
 ### Build Failures
+
+**Issue**: "The `functions` property cannot be used in conjunction with the `builds` property"
+**Solution**: 
+- This occurs when using legacy `builds` property with modern `functions` property
+- Solution: Remove the `builds` property from `vercel.json`
+- Use modern configuration: `framework`, `buildCommand`, `outputDirectory`
+- Current `vercel.json` has been updated to use only modern properties
+
+**Issue**: Framework Preset shows "Other" instead of "Next.js"
+**Solution**:
+- Ensure `"framework": "nextjs"` is set in `vercel.json`
+- Remove any `builds` property (it overrides framework detection)
+- Vercel will auto-detect Next.js when the config is correct
 
 **Issue**: Build fails with "Module not found"
 **Solution**: 
@@ -269,15 +402,25 @@ View logs in:
 # Clear Vercel cache
 vercel --force
 
-# Ensure all dependencies are in package.json
+# Ensure all dependencies are in package.json (from root)
 yarn install
+
+# Test build locally
+yarn build
 ```
+
+**Issue**: Prisma client not generated
+**Solution**: 
+- Ensure `postinstall` script runs: `yarn workspace backend exec prisma generate`
+- Add to vercel.json build env if needed
+- Check that DATABASE_URL is set during build
 
 **Issue**: TypeScript errors during build
 **Solution**: 
 - Check `packages/frontend/next.config.mjs`
 - Ensure `typescript.ignoreBuildErrors` is set for initial deployment
 - Fix TypeScript errors incrementally
+- Run `yarn lint` to catch errors before deployment
 
 ### Database Connection Issues
 

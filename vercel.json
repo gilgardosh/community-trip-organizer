@@ -1,44 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
-  "name": "community-trip-organizer",
-  "builds": [
-    {
-      "src": "packages/frontend/package.json",
-      "use": "@vercel/next"
-    },
-    {
-      "src": "packages/backend/package.json",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "packages/backend/dist/index.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "packages/frontend/$1"
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  },
+  "buildCommand": "yarn workspace backend run build && yarn workspace frontend run build",
+  "installCommand": "yarn install",
+  "outputDirectory": "packages/frontend/.next",
+  "framework": "nextjs",
   "build": {
     "env": {
       "ENABLE_EXPERIMENTAL_COREPACK": "1"
-    }
-  },
-  "installCommand": "yarn install",
-  "buildCommand": "yarn build",
-  "outputDirectory": "packages/frontend/.next",
-  "framework": "nextjs",
-  "regions": ["iad1"],
-  "functions": {
-    "packages/backend/dist/index.js": {
-      "memory": 1024,
-      "maxDuration": 10
     }
   }
 }

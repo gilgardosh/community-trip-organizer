@@ -5,10 +5,15 @@
   "private": true,
   "scripts": {
     "start": "node .",
+    "dev": "yarn workspaces foreach -A -p -i run dev",
+    "build": "yarn workspace backend run build && yarn workspace frontend run build",
     "lint": "yarn workspaces foreach -A -p -t run lint",
     "test": "yarn workspaces foreach -A -p -t run test",
     "format": "yarn workspaces foreach -A -p -t run format",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "db:migrate": "yarn workspace backend exec prisma migrate deploy",
+    "db:seed": "yarn workspace backend run db:seed",
+    "postinstall": "yarn workspace backend exec prisma generate"
   },
   "workspaces": [
     "packages/*"
