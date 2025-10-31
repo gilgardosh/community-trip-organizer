@@ -194,6 +194,7 @@ This creates:
    - Go to [Vercel Dashboard](https://vercel.com/dashboard)
    - Click "Add New..." → "Project"
    - Import your GitHub repository
+   - **Critical:** Set **Root Directory** to empty (leave blank) - do NOT set it to `packages/backend` or `packages/frontend`
    - **Important:** Vercel will auto-detect "Next.js" as the framework (not "Other") because the `vercel.json` specifies `"framework": "nextjs"`
    - The build settings are pre-configured in `vercel.json`:
      - Build Command: `yarn workspace backend run build && yarn workspace frontend run build`
@@ -352,6 +353,15 @@ ls -la packages/frontend/.next
 ## Troubleshooting
 
 ### Monorepo-Specific Issues
+
+**Issue**: Build fails with "The file .../packages/backend/packages/frontend/.next/routes-manifest.json couldn't be found"
+**Solution**:
+- This indicates the Root Directory is incorrectly set to `packages/backend` in Vercel dashboard
+- Go to Vercel Project Settings → General → Root Directory
+- **Set it to empty** (leave blank) - the root should be the repository root
+- Alternatively, if root is already correct, check if `output: 'standalone'` is set in `next.config.mjs`
+- Remove `output: 'standalone'` from Next.js config - Vercel handles optimization automatically
+- Redeploy the project
 
 **Issue**: Yarn workspace not found or dependency resolution errors
 **Solution**:
