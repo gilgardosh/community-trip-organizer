@@ -31,6 +31,7 @@ For issues and questions:
 ## Acknowledgments
 
 Built with:
+
 - [Next.js](https://nextjs.org/)
 - [React](https://react.dev/)
 - [Prisma](https://www.prisma.io/)

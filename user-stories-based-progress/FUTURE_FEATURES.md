@@ -21,9 +21,11 @@ This document lists features that have been analyzed and designed but deprioriti
 **Estimated Effort:** 2.5 days
 
 #### Description
+
 Allow users to request to join an existing family during registration instead of creating a new family. This enables organic family growth without requiring direct coordination outside the app.
 
 #### Business Rules
+
 - User can only belong to one family (forever - no switching)
 - User must register first, then can request to join
 - Request sent to all adults in target family
@@ -33,6 +35,7 @@ Allow users to request to join an existing family during registration instead of
 - Family must manually add new member to trips if desired
 
 #### Workflow
+
 1. During registration, user chooses "Join Existing Family"
 2. User provides: name, email, password, target adult email, optional message
 3. System creates join request
@@ -53,10 +56,10 @@ model FamilyJoinRequest {
   createdAt        DateTime @default(now())
   respondedAt      DateTime?
   respondedBy      String?  // userId of adult who approved/rejected
-  
+
   requestingUser   User   @relation("JoinRequests", fields: [requestingUserId])
   targetFamily     Family @relation(fields: [targetFamilyId])
-  
+
   @@index([requestingUserId])
   @@index([targetFamilyId, status])
 }
@@ -94,6 +97,7 @@ PUT /api/families/join-requests/:id/reject
 #### Frontend Components
 
 **Registration Flow:**
+
 - Add option: "Join Existing Family" vs "Create New Family"
 - Join flow: Simplified form
   - Name, email, password
@@ -103,21 +107,25 @@ PUT /api/families/join-requests/:id/reject
 - User cannot access app until approved
 
 **Family Dashboard:**
+
 - Section: "Pending Join Requests" (visible to adults only)
 - Shows: Requester name, email, message, request date
 - Actions: Approve / Reject buttons
 - Notification badge when requests pending
 
 **After Approval:**
+
 - New member appears in family member list
 - New member does NOT appear on existing trip attendances
 - Family can manually add member to trips if needed
 
 #### Notifications
+
 - All family adults: New join request received
 - Requester: Request approved/rejected
 
 #### MVP Alternative
+
 For MVP, families add adults directly through family management. This requires coordination outside the app (phone call, WhatsApp, etc.) but is much simpler to implement.
 
 ---
@@ -130,9 +138,11 @@ For MVP, families add adults directly through family management. This requires c
 **Estimated Effort:** 2 days
 
 #### Description
+
 Enhance the dietary requirements system with global preferences, auto-complete suggestions, and admin editing capabilities.
 
 #### Current MVP Implementation
+
 - Per-trip, per-member dietary requirements
 - Free text input only
 - Family can edit, admin can view only
@@ -141,12 +151,14 @@ Enhance the dietary requirements system with global preferences, auto-complete s
 #### Future Enhancements
 
 **A) Global Dietary Preferences**
+
 - Store dietary preferences on User model
 - Auto-populate when joining new trips
 - Example: User always has "nut allergy" - pre-fills for all trips
 - Users can override per trip if needed
 
 **B) Auto-Complete Suggestions**
+
 - Common dietary requirements dropdown:
   - Vegetarian
   - Vegan
@@ -161,6 +173,7 @@ Enhance the dietary requirements system with global preferences, auto-complete s
 - Better for filtering/reporting
 
 **C) Admin Editing & Notes**
+
 - Trip admins can add notes to dietary requirements
 - Admin notes visible separately from family input
 - Use case: "Confirmed with family", "Special meal prepared"
@@ -168,6 +181,7 @@ Enhance the dietary requirements system with global preferences, auto-complete s
 - Admin notes for coordination purposes
 
 #### Database Schema Changes
+
 ```typescript
 // Add to User model
 model User {
@@ -186,6 +200,7 @@ model DietaryRequirement {
 ```
 
 #### Implementation Priority
+
 - Global preferences: Phase 3 (P2)
 - Auto-complete: Phase 3 (P2)
 - Admin notes: Phase 2 (P1) - more urgent for coordination
@@ -200,9 +215,11 @@ model DietaryRequirement {
 **Estimated Effort:** 1.5 days
 
 #### Description
+
 Enhance the admin notes system with optional sharing, categories/tags, and rich formatting.
 
 #### Current MVP Implementation
+
 - Per-trip-attendance admin notes
 - Free text only
 - Admin-only visibility
@@ -211,6 +228,7 @@ Enhance the admin notes system with optional sharing, categories/tags, and rich 
 #### Future Enhancements
 
 **A) Optional Note Sharing**
+
 - Admin can choose to share specific notes with families
 - Checkbox: "Share this note with family"
 - Use cases:
@@ -220,6 +238,7 @@ Enhance the admin notes system with optional sharing, categories/tags, and rich 
 - Clear indication which notes are shared vs. private
 
 **B) Note Categories & Tags**
+
 - Predefined categories:
   - 🚗 Transportation/Arrival
   - ♿ Accessibility/Special Needs
@@ -234,12 +253,14 @@ Enhance the admin notes system with optional sharing, categories/tags, and rich 
 - Multiple categories per note
 
 **C) Rich Text Formatting**
+
 - Basic formatting: bold, italic, lists
 - Markdown support
 - Better for longer notes
 - Copy/paste formatted text
 
 **D) Note Templates**
+
 - Common note templates:
   - "Arriving late: [time] on [day]"
   - "Special dietary accommodations: [details]"
@@ -248,12 +269,14 @@ Enhance the admin notes system with optional sharing, categories/tags, and rich 
 - Admin can create custom templates
 
 **E) Note History & Versions**
+
 - Track all edits to notes
 - Show edit history
 - Who changed what and when
 - Restore previous versions
 
 #### Database Schema Changes
+
 ```typescript
 // Enhance TripAttendance notes
 model TripAttendance {
@@ -276,13 +299,14 @@ model AdminNoteHistory {
   tags              string[]
   editedBy          string
   editedAt          DateTime
-  
+
   tripAttendance    TripAttendance @relation(fields: [tripAttendanceId])
   @@index([tripAttendanceId])
 }
 ```
 
 #### Implementation Priority
+
 - Note sharing: Phase 2 (P1) - useful for communication
 - Categories/tags: Phase 3 (P2) - nice organization
 - Rich text: Phase 3 (P2) - not essential
@@ -294,6 +318,7 @@ model AdminNoteHistory {
 ## Future Considerations
 
 ### Features to Design
+
 The following features are mentioned in user stories but require further design and prioritization:
 
 1. **Per-Member Trip Participation** (Question 5)

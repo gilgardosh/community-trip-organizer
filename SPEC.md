@@ -41,10 +41,10 @@ A responsive web app to manage neighborhood family trips.
 
 ## 4. **Roles & Permissions**
 
-| Role        | Capabilities                                                                                                         |
-| ----------- | -------------------------------------------------------------------------------------------------------------------- |
-| Family      | View trips, mark attendance, update family/child profiles, volunteer for gear                                        |
-| Trip Admin  | Manage assigned trip: participants, gear, dietary info, schedule, packing lists; manually trigger WhatsApp reminders; cancel trips (soft-delete) |
+| Role        | Capabilities                                                                                                                                                |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Family      | View trips, mark attendance, update family/child profiles, volunteer for gear                                                                               |
+| Trip Admin  | Manage assigned trip: participants, gear, dietary info, schedule, packing lists; manually trigger WhatsApp reminders; cancel trips (soft-delete)            |
 | Super-admin | Approve trips and trip admins, approve families, delete/deactivate families, view all trips and families; restore cancelled trips; permanently delete trips |
 
 - Roles are **hardcoded**; trip admins are **trip-specific**.
@@ -163,7 +163,7 @@ A responsive web app to manage neighborhood family trips.
 2. **Publish Request:** Trip admin requests publishing when ready; super-admins receive notification.
 3. **Trip Publishing:** Super-admin reviews trip, optionally assigns additional admins, then publishes trip (makes visible to families).
 4. **Trip Editing:** Trip admins can edit trip details at any time; participants are notified of changes to published trips.
-5. **Family Participation:** 
+5. **Family Participation:**
    - If approval required: Family requests to join → sees limited info → admin approves/rejects → if approved, gains full access
    - If open enrollment: Family marks attendance directly (checkbox) → immediate full access
 6. **Gear Assignment:** Approved families volunteer for gear; quantities tracked per family; editable until trip starts.

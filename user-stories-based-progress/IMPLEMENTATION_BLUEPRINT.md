@@ -23,12 +23,14 @@
 This blueprint implements Phase 1 (P0) and Phase 2 (P1) features:
 
 **Phase 1 - Critical (P0):**
+
 - Trip Cancellation/Deletion Workflow
-- Trip Publishing Workflow  
+- Trip Publishing Workflow
 - Per-Member Trip Participation
 - Admin Notes for Participation
 
 **Phase 2 - Important (P1):**
+
 - Trip Participation Approval Workflow
 - Email Verification
 - Password Reset
@@ -94,10 +96,12 @@ Each feature follows this pattern:
 ## Step Breakdown Summary
 
 ### Iteration 1: Foundation & Infrastructure (6-8 hours)
+
 - **1.1** Enhanced Error Handling System (3-4 hours)
 - **1.2** Migration Framework & Safety (2-3 hours)
 
 ### Iteration 2: Trip Cancellation/Deletion (18-22 hours)
+
 - **2.1** Database Schema for Soft Delete (2 hours)
 - **2.2** Cancellation Service Layer (4-5 hours)
 - **2.3** Cancellation API Endpoints (3-4 hours)
@@ -106,6 +110,7 @@ Each feature follows this pattern:
 - **2.6** Permanent Deletion (Super-Admin) (3-4 hours)
 
 ### Iteration 3: Trip Publishing Workflow (20-24 hours)
+
 - **3.1** Database Schema for Publishing (2 hours)
 - **3.2** Publishing Service Layer (4-5 hours)
 - **3.3** Publishing API Endpoints (3-4 hours)
@@ -114,6 +119,7 @@ Each feature follows this pattern:
 - **3.6** Admin Assignment Feature (3-4 hours)
 
 ### Iteration 4: Per-Member Participation (28-32 hours)
+
 - **4.1** Database Schema for Members (3 hours)
 - **4.2** Member Participation Service (6-7 hours)
 - **4.3** Update Attendance API (4-5 hours)
@@ -123,12 +129,14 @@ Each feature follows this pattern:
 - **4.7** Admin View Updates (3-4 hours)
 
 ### Iteration 5: Admin Notes (8-10 hours)
+
 - **5.1** Database Schema for Notes (1 hour)
 - **5.2** Admin Notes Service (2-3 hours)
 - **5.3** Admin Notes API (2 hours)
 - **5.4** Admin Notes UI Component (3-4 hours)
 
 ### Iteration 6: Participation Approval (26-30 hours)
+
 - **6.1** Database Schema for Approval (2 hours)
 - **6.2** Approval Service Layer (6-7 hours)
 - **6.3** Approval API Endpoints (4-5 hours)
@@ -138,6 +146,7 @@ Each feature follows this pattern:
 - **6.7** Limited Info for Pending Users (3-4 hours)
 
 ### Iteration 7: Email Verification (20-24 hours)
+
 - **7.1** Database Schema for Verification (1 hour)
 - **7.2** Email Service Infrastructure (5-6 hours)
 - **7.3** Verification Logic (3-4 hours)
@@ -146,6 +155,7 @@ Each feature follows this pattern:
 - **7.6** Registration Integration (4-5 hours)
 
 ### Iteration 8: Password Reset (14-18 hours)
+
 - **8.1** Database Schema for Reset (1 hour)
 - **8.2** Reset Service Layer (3-4 hours)
 - **8.3** Reset API Endpoints (2-3 hours)
@@ -185,7 +195,7 @@ Each prompt below is designed for a code-generation LLM implementing one step us
 
 ### PROMPT 1.1: Enhanced Error Handling System
 
-```
+````
 TASK: Implement comprehensive error handling infrastructure for a TypeScript/Express backend
 
 CONTEXT:
@@ -303,13 +313,13 @@ SUCCESS CRITERIA:
 ✓ Hebrew error messages displayed
 ✓ Stack traces hidden in production
 ✓ Backward compatible with existing code
-```
+````
 
 ---
 
 ### PROMPT 1.2: Migration Framework Enhancement
 
-```
+````
 TASK: Enhance database migration framework for safe schema changes
 
 CONTEXT:
@@ -341,15 +351,17 @@ REQUIREMENTS:
    #   - Generate migration with descriptive name
    #   - Show generated SQL for review
    #   - Prompt for confirmation
-   ```
-   - Must be executable (chmod +x)
-   - Validate migration name provided
-   - Run npx prisma format first
-   - Run npx prisma migrate dev --name "$1" --create-only
-   - Display generated SQL
-   - Ask user to review before applying
+````
+
+- Must be executable (chmod +x)
+- Validate migration name provided
+- Run npx prisma format first
+- Run npx prisma migrate dev --name "$1" --create-only
+- Display generated SQL
+- Ask user to review before applying
 
 2. CREATE: packages/backend/scripts/run-migrations.sh
+
    ```bash
    #!/bin/bash
    # Safe migration runner with backup checks
@@ -361,6 +373,7 @@ REQUIREMENTS:
    #   - Run migrations
    #   - Verify success
    ```
+
    - Check for recent backup (warn if > 24 hours)
    - List pending migrations
    - Require confirmation (Y/n)
@@ -368,6 +381,7 @@ REQUIREMENTS:
    - Log success/failure
 
 3. CREATE: packages/backend/scripts/rollback-migration.sh
+
    ```bash
    #!/bin/bash
    # Rollback to previous migration state
@@ -379,6 +393,7 @@ REQUIREMENTS:
    #   - Execute rollback
    #   - Verify database state
    ```
+
    - Display current migration
    - Show last 5 migrations
    - Require typing migration name to confirm
@@ -386,6 +401,7 @@ REQUIREMENTS:
    - Provide instructions for data recovery
 
 4. CREATE: packages/backend/scripts/verify-migration.sh
+
    ```bash
    #!/bin/bash
    # Verify migration before applying to production
@@ -397,34 +413,42 @@ REQUIREMENTS:
    #   - Test rollback on dev database
    #   - Report results
    ```
+
    - Run npx prisma validate
    - Check for breaking changes (warn)
    - Suggest review checklist
    - Exit with status code
 
 5. CREATE: packages/backend/prisma/MIGRATION_GUIDE.md
+
    ```markdown
    # Database Migration Guide
 
    ## Creating Migrations
+
    [Step-by-step process]
 
    ## Testing Migrations
+
    [How to test locally]
 
    ## Rollback Procedures
+
    [When and how to rollback]
 
    ## Best Practices
+
    - Always add new fields as nullable or with defaults
    - Never remove fields without deprecation period
    - Use transactions for data migrations
    - Test on staging before production
 
    ## Common Pitfalls
+
    [List of common mistakes]
 
    ## Emergency Procedures
+
    [What to do if migration fails in production]
    ```
 
@@ -435,6 +459,7 @@ REQUIREMENTS:
    - Add to development workflow
 
 CONSTRAINTS:
+
 - Scripts must be POSIX-compliant (work on macOS/Linux)
 - Must not modify existing migrations
 - Must not change current schema
@@ -442,6 +467,7 @@ CONSTRAINTS:
 - All scripts must be idempotent where possible
 
 DELIVERABLES:
+
 - scripts/create-migration.sh (executable, documented)
 - scripts/run-migrations.sh (executable, documented)
 - scripts/rollback-migration.sh (executable, documented)
@@ -455,6 +481,7 @@ SUCCESS CRITERIA:
 ✓ Documentation complete and clear
 ✓ No modifications to existing schema/migrations
 ✓ Scripts work on macOS and Linux
+
 ```
 
 ---
@@ -466,9 +493,11 @@ SUCCESS CRITERIA:
 ### PROMPT 2.1: Database Schema for Trip Cancellation
 
 ```
+
 TASK: Add soft-delete fields to Trip model for cancellation functionality
 
 CONTEXT:
+
 - Previous step: Error handling and migration framework ready
 - Database: PostgreSQL with Prisma ORM
 - Schema: packages/backend/prisma/schema.prisma
@@ -481,20 +510,21 @@ Add soft-delete capability to Trip model with full audit trail.
 REQUIREMENTS:
 
 1. UPDATE: packages/backend/prisma/schema.prisma
-   
+
    Modify Trip model to add:
+
    ```prisma
    model Trip {
      // ... existing fields ...
-     
+
      // Soft delete fields
      deleted       Boolean   @default(false)
      deletedAt     DateTime?
      deletedBy     String?   // userId who cancelled
      deletionReason String?  // Required for cancellation
-     
+
      // ... existing relations ...
-     
+
      @@index([deleted])
    }
    ```
@@ -515,28 +545,30 @@ REQUIREMENTS:
          deleted: true,
          deletedAt: new Date(),
          deletedBy: adminUser.id,
-         deletionReason: 'נדחה עקב מזג אוויר' // Cancelled due to weather
-       }
+         deletionReason: 'נדחה עקב מזג אוויר', // Cancelled due to weather
+       },
      });
      ```
 
 4. CREATE TESTS: packages/backend/tests/migrations/trip-soft-delete.test.ts
    ```typescript
    describe('Trip Soft Delete Migration', () => {
-     test('should apply migration successfully')
-     test('should have deleted default to false')
-     test('should allow nullable deletedAt, deletedBy, deletionReason')
-     test('should create index on deleted field')
-     test('should not break existing trip queries')
-     test('should allow creating trip with deletion fields')
+     test('should apply migration successfully');
+     test('should have deleted default to false');
+     test('should allow nullable deletedAt, deletedBy, deletionReason');
+     test('should create index on deleted field');
+     test('should not break existing trip queries');
+     test('should allow creating trip with deletion fields');
    });
    ```
+
    - Use test database
    - Mock Prisma client if needed
    - Verify data integrity
    - Target: >85% coverage
 
 TEST-DRIVEN APPROACH:
+
 1. Write migration tests first (will fail)
 2. Update schema.prisma
 3. Generate migration
@@ -545,6 +577,7 @@ TEST-DRIVEN APPROACH:
 6. Verify tests pass
 
 CONSTRAINTS:
+
 - Must not break existing Trip queries
 - All new fields nullable or have defaults
 - Migration must be reversible
@@ -552,6 +585,7 @@ CONSTRAINTS:
 - Index added for query performance
 
 DELIVERABLES:
+
 - Updated prisma/schema.prisma
 - Generated migration file in prisma/migrations/
 - Updated prisma/seed.ts with sample data
@@ -563,6 +597,7 @@ SUCCESS CRITERIA:
 ✓ All tests pass
 ✓ No breaking changes to existing queries
 ✓ Seed script runs successfully
+
 ```
 
 ---
@@ -570,9 +605,11 @@ SUCCESS CRITERIA:
 ### PROMPT 2.2: Trip Cancellation Service Layer
 
 ```
+
 TASK: Implement business logic for trip cancellation and restoration
 
 CONTEXT:
+
 - Previous step: Database schema updated with soft-delete fields (Prompt 2.1)
 - Error handling: ApiError system available (Prompt 1.1)
 - Backend: packages/backend/src/
@@ -587,13 +624,14 @@ REQUIREMENTS:
 1. CREATE: packages/backend/src/services/tripCancellation.service.ts
 
    Type definitions:
+
    ```typescript
    interface CancelTripParams {
      tripId: string;
      userId: string;
      reason: string;
    }
-   
+
    interface RestoreTripParams {
      tripId: string;
      userId: string;
@@ -601,11 +639,18 @@ REQUIREMENTS:
    ```
 
    Implement functions:
+
    ```typescript
-   export async function cancelTrip(params: CancelTripParams): Promise<Trip>
-   export async function restoreTrip(params: RestoreTripParams): Promise<Trip>
-   export async function canCancelTrip(tripId: string, userId: string): Promise<boolean>
-   export async function canRestoreTrip(tripId: string, userId: string): Promise<boolean>
+   export async function cancelTrip(params: CancelTripParams): Promise<Trip>;
+   export async function restoreTrip(params: RestoreTripParams): Promise<Trip>;
+   export async function canCancelTrip(
+     tripId: string,
+     userId: string,
+   ): Promise<boolean>;
+   export async function canRestoreTrip(
+     tripId: string,
+     userId: string,
+   ): Promise<boolean>;
    ```
 
 2. IMPLEMENT: cancelTrip function
@@ -640,49 +685,52 @@ REQUIREMENTS:
    ```typescript
    describe('tripCancellation.service', () => {
      describe('cancelTrip', () => {
-       test('should cancel trip when user is trip admin')
-       test('should cancel trip when user is super-admin')
-       test('should throw VALIDATION_ERROR when reason is empty')
-       test('should throw NOT_FOUND when trip does not exist')
-       test('should throw BAD_REQUEST when trip already cancelled')
-       test('should throw FORBIDDEN when user not authorized')
-       test('should set all cancellation fields correctly')
-       test('should log action to activity log')
+       test('should cancel trip when user is trip admin');
+       test('should cancel trip when user is super-admin');
+       test('should throw VALIDATION_ERROR when reason is empty');
+       test('should throw NOT_FOUND when trip does not exist');
+       test('should throw BAD_REQUEST when trip already cancelled');
+       test('should throw FORBIDDEN when user not authorized');
+       test('should set all cancellation fields correctly');
+       test('should log action to activity log');
      });
-     
+
      describe('restoreTrip', () => {
-       test('should restore trip when user is super-admin')
-       test('should throw FORBIDDEN when user is not super-admin')
-       test('should throw NOT_FOUND when trip does not exist')
-       test('should throw BAD_REQUEST when trip not cancelled')
-       test('should clear all cancellation fields')
-       test('should log action to activity log')
+       test('should restore trip when user is super-admin');
+       test('should throw FORBIDDEN when user is not super-admin');
+       test('should throw NOT_FOUND when trip does not exist');
+       test('should throw BAD_REQUEST when trip not cancelled');
+       test('should clear all cancellation fields');
+       test('should log action to activity log');
      });
-     
+
      describe('canCancelTrip', () => {
-       test('should return true for super-admin')
-       test('should return true for trip admin')
-       test('should return false for non-admin user')
+       test('should return true for super-admin');
+       test('should return true for trip admin');
+       test('should return false for non-admin user');
      });
-     
+
      describe('canRestoreTrip', () => {
-       test('should return true for super-admin')
-       test('should return false for non-super-admin')
+       test('should return true for super-admin');
+       test('should return false for non-super-admin');
      });
    });
    ```
+
    - Mock Prisma client
    - Mock user permissions
    - Test all error cases
    - Target: >85% coverage
 
 TEST-DRIVEN APPROACH:
+
 1. Write all test cases first (will fail)
 2. Implement service functions to pass tests one by one
 3. Verify all tests pass
 4. Refactor for code quality
 
 CONSTRAINTS:
+
 - Must use ApiError from Prompt 1.1
 - Must check permissions before any database operation
 - Must validate all inputs
@@ -690,6 +738,7 @@ CONSTRAINTS:
 - Must log all state changes
 
 DELIVERABLES:
+
 - src/services/tripCancellation.service.ts (complete, exported)
 - tests/services/tripCancellation.service.test.ts (>85% coverage, passing)
 - Type-safe implementation with no 'any' types
@@ -700,6 +749,7 @@ SUCCESS CRITERIA:
 ✓ Permission checks work correctly
 ✓ Hebrew error messages via ApiError
 ✓ Activity log integration (if available)
+
 ```
 
 ---
@@ -707,9 +757,11 @@ SUCCESS CRITERIA:
 ### PROMPT 2.3: Trip Cancellation API Endpoints
 
 ```
+
 TASK: Create REST API endpoints for trip cancellation and restoration
 
 CONTEXT:
+
 - Previous step: Cancellation service implemented (Prompt 2.2)
 - Backend: Express + TypeScript
 - Error handling: Global middleware active (Prompt 1.1)
@@ -723,12 +775,16 @@ Expose trip cancellation functionality via RESTful API with proper authorization
 REQUIREMENTS:
 
 1. CREATE: packages/backend/src/controllers/tripCancellation.controller.ts
+
    ```typescript
    import { Request, Response } from 'express';
    import * as tripCancellationService from '../services/tripCancellation.service';
-   
-   export async function cancelTrip(req: Request, res: Response): Promise<void>
-   export async function restoreTrip(req: Request, res: Response): Promise<void>
+
+   export async function cancelTrip(req: Request, res: Response): Promise<void>;
+   export async function restoreTrip(
+     req: Request,
+     res: Response,
+   ): Promise<void>;
    ```
 
    Implement cancelTrip controller:
@@ -748,50 +804,60 @@ REQUIREMENTS:
    - Errors bubble to error middleware
 
 2. UPDATE: packages/backend/src/routes/trips.routes.ts
-   
+
    Add routes:
+
    ```typescript
-   import { cancelTrip, restoreTrip } from '../controllers/tripCancellation.controller';
+   import {
+     cancelTrip,
+     restoreTrip,
+   } from '../controllers/tripCancellation.controller';
    import { authenticate } from '../middleware/auth';
-   
+
    router.post('/trips/:id/cancel', authenticate, cancelTrip);
    router.post('/trips/:id/restore', authenticate, restoreTrip);
    ```
 
 3. CREATE VALIDATION MIDDLEWARE (optional):
+
    ```typescript
    // src/middleware/validateCancellation.ts
    export function validateCancellationReason(req, res, next) {
      const { reason } = req.body;
      if (!reason || reason.trim().length === 0) {
-       throw createValidationError('נדרש לספק סיבה לביטול', { field: 'reason' });
+       throw createValidationError('נדרש לספק סיבה לביטול', {
+         field: 'reason',
+       });
      }
      next();
    }
    ```
+
    - Add to cancel route if desired
 
 4. CREATE TESTS: packages/backend/tests/api/tripCancellation.test.ts
+
    ```typescript
    describe('POST /api/trips/:id/cancel', () => {
-     test('should cancel trip when user is trip admin (200)')
-     test('should cancel trip when user is super-admin (200)')
-     test('should return 400 when reason is missing')
-     test('should return 400 when reason is empty string')
-     test('should return 403 when user is not authorized')
-     test('should return 404 when trip not found')
-     test('should return 400 when trip already cancelled')
-     test('should return updated trip with cancellation details')
+     test('should cancel trip when user is trip admin (200)');
+     test('should cancel trip when user is super-admin (200)');
+     test('should return 400 when reason is missing');
+     test('should return 400 when reason is empty string');
+     test('should return 403 when user is not authorized');
+     test('should return 404 when trip not found');
+     test('should return 400 when trip already cancelled');
+     test('should return updated trip with cancellation details');
    });
-   
+
    describe('POST /api/trips/:id/restore', () => {
-     test('should restore trip when user is super-admin (200)')
-     test('should return 403 when user is not super-admin')
-     test('should return 404 when trip not found')
-     test('should return 400 when trip not cancelled')
-     test('should return restored trip with cleared cancellation fields')
+     test('should restore trip when user is super-admin (200)');
+     test('should return 403 when user is not super-admin');
+     test('should return 404 when trip not found');
+     test('should return 400 when trip not cancelled');
+     test('should return restored trip with cleared cancellation fields');
    });
    ```
+
    - Use supertest for API calls
    - Use test database with seed data
    - Mock authentication middleware (provide test users)
@@ -800,6 +866,7 @@ REQUIREMENTS:
    - Target: >85% coverage
 
 TEST-DRIVEN APPROACH:
+
 1. Write API tests first (will fail)
 2. Implement controller functions
 3. Add routes
@@ -807,6 +874,7 @@ TEST-DRIVEN APPROACH:
 5. Test with real HTTP requests
 
 CONSTRAINTS:
+
 - Must use existing auth middleware
 - Must validate request body (reason required)
 - Must return proper HTTP status codes (200, 400, 403, 404, 500)
@@ -814,6 +882,7 @@ CONSTRAINTS:
 - Must follow RESTful conventions
 
 DELIVERABLES:
+
 - src/controllers/tripCancellation.controller.ts (complete)
 - Updated src/routes/trips.routes.ts (new routes added)
 - tests/api/tripCancellation.test.ts (>85% coverage, passing)
@@ -825,6 +894,7 @@ SUCCESS CRITERIA:
 ✓ Authorization enforced
 ✓ Hebrew error messages in responses
 ✓ No TypeScript errors
+
 ```
 
 ---
@@ -832,9 +902,11 @@ SUCCESS CRITERIA:
 ### PROMPT 2.4: Update Trip Queries for Filtering
 
 ```
+
 TASK: Update trip query logic to filter out cancelled trips for families
 
 CONTEXT:
+
 - Previous steps: Cancelled trips marked with deleted=true
 - Backend: Express + Prisma
 - Existing endpoint: GET /api/trips (lists trips)
@@ -849,6 +921,7 @@ REQUIREMENTS:
 1. UPDATE: packages/backend/src/services/trip.service.ts
 
    Add interface:
+
    ```typescript
    interface GetTripsParams {
      userId: string;
@@ -858,14 +931,16 @@ REQUIREMENTS:
    ```
 
    Update getTrips function signature:
+
    ```typescript
-   export async function getTrips(params: GetTripsParams): Promise<Trip[]>
+   export async function getTrips(params: GetTripsParams): Promise<Trip[]>;
    ```
 
    Implement filtering logic:
+
    ```typescript
    const whereClause: Prisma.TripWhereInput = {};
-   
+
    if (params.userRole === 'FAMILY') {
      // Families NEVER see deleted trips
      whereClause.deleted = false;
@@ -878,56 +953,59 @@ REQUIREMENTS:
        whereClause.deleted = false;
      }
    }
-   
+
    return prisma.trip.findMany({ where: whereClause });
    ```
 
    Update getTripById function:
+
    ```typescript
    export async function getTripById(
      tripId: string,
      userId: string,
-     userRole: UserRole
-   ): Promise<Trip | null>
+     userRole: UserRole,
+   ): Promise<Trip | null>;
    ```
-   
+
    Logic:
    - Get trip by ID
    - If trip.deleted && userRole === 'FAMILY' → throw NOT_FOUND
    - Otherwise return trip
 
 2. UPDATE: packages/backend/src/controllers/trip.controller.ts
-   
+
    Update getTrips controller:
+
    ```typescript
    export async function getTrips(req: Request, res: Response) {
      const userId = req.user.id;
      const userRole = req.user.role;
      const includeDeleted = req.query.includeDeleted === 'true';
-     
+
      const trips = await tripService.getTrips({
        userId,
        userRole,
-       includeDeleted
+       includeDeleted,
      });
-     
+
      res.json({ success: true, data: trips });
    }
    ```
 
    Update getTripById controller:
+
    ```typescript
    export async function getTripById(req: Request, res: Response) {
      const tripId = req.params.id;
      const userId = req.user.id;
      const userRole = req.user.role;
-     
+
      const trip = await tripService.getTripById(tripId, userId, userRole);
-     
+
      if (!trip) {
        throw createNotFoundError('Trip');
      }
-     
+
      res.json({ success: true, data: trip });
    }
    ```
@@ -937,52 +1015,57 @@ REQUIREMENTS:
    - Add query parameter support for ?includeDeleted=true
 
 4. CREATE TESTS: packages/backend/tests/services/tripFilter.test.ts
+
    ```typescript
    describe('Trip Filtering Service', () => {
      describe('getTrips', () => {
-       test('FAMILY role never sees deleted trips')
-       test('FAMILY role with includeDeleted=true still hides deleted')
-       test('TRIP_ADMIN sees only non-deleted by default')
-       test('TRIP_ADMIN with includeDeleted=true sees deleted trips')
-       test('SUPER_ADMIN sees all trips by default')
-       test('SUPER_ADMIN can filter deleted trips with includeDeleted=false')
+       test('FAMILY role never sees deleted trips');
+       test('FAMILY role with includeDeleted=true still hides deleted');
+       test('TRIP_ADMIN sees only non-deleted by default');
+       test('TRIP_ADMIN with includeDeleted=true sees deleted trips');
+       test('SUPER_ADMIN sees all trips by default');
+       test('SUPER_ADMIN can filter deleted trips with includeDeleted=false');
      });
-     
+
      describe('getTripById', () => {
-       test('FAMILY role throws NOT_FOUND for deleted trip')
-       test('TRIP_ADMIN can view deleted trip')
-       test('SUPER_ADMIN can view deleted trip')
-       test('returns trip with deleted flag for admins')
+       test('FAMILY role throws NOT_FOUND for deleted trip');
+       test('TRIP_ADMIN can view deleted trip');
+       test('SUPER_ADMIN can view deleted trip');
+       test('returns trip with deleted flag for admins');
      });
    });
    ```
+
    - Mock Prisma with mixed deleted/non-deleted trips
    - Test all role combinations
    - Target: >85% coverage
 
 5. CREATE TESTS: packages/backend/tests/api/tripFilter.test.ts
+
    ```typescript
    describe('GET /api/trips', () => {
-     test('FAMILY user receives only non-deleted trips')
-     test('TRIP_ADMIN receives only non-deleted by default')
-     test('TRIP_ADMIN with ?includeDeleted=true receives deleted trips')
-     test('SUPER_ADMIN receives all trips by default')
-     test('SUPER_ADMIN with ?includeDeleted=false filters deleted')
+     test('FAMILY user receives only non-deleted trips');
+     test('TRIP_ADMIN receives only non-deleted by default');
+     test('TRIP_ADMIN with ?includeDeleted=true receives deleted trips');
+     test('SUPER_ADMIN receives all trips by default');
+     test('SUPER_ADMIN with ?includeDeleted=false filters deleted');
    });
-   
+
    describe('GET /api/trips/:id', () => {
-     test('FAMILY user gets 404 for deleted trip')
-     test('TRIP_ADMIN can view deleted trip details')
-     test('SUPER_ADMIN can view deleted trip details')
-     test('returns 404 for non-existent trip')
+     test('FAMILY user gets 404 for deleted trip');
+     test('TRIP_ADMIN can view deleted trip details');
+     test('SUPER_ADMIN can view deleted trip details');
+     test('returns 404 for non-existent trip');
    });
    ```
+
    - Use supertest
    - Create test data with deleted and non-deleted trips
    - Mock different user roles
    - Target: >85% coverage
 
 TEST-DRIVEN APPROACH:
+
 1. Write service tests first (will fail)
 2. Update service to pass tests
 3. Write API tests
@@ -991,6 +1074,7 @@ TEST-DRIVEN APPROACH:
 6. Test manually with different roles
 
 CONSTRAINTS:
+
 - Must maintain backward compatibility
 - Must use database-level filtering (Prisma where clause)
 - Must not break existing trip queries
@@ -998,6 +1082,7 @@ CONSTRAINTS:
 - Type-safe implementation
 
 DELIVERABLES:
+
 - Updated src/services/trip.service.ts (with filtering)
 - Updated src/controllers/trip.controller.ts
 - tests/services/tripFilter.test.ts (>85% coverage, passing)
@@ -1012,6 +1097,7 @@ SUCCESS CRITERIA:
 
 CRITICAL NOTE:
 This change affects core trip listing - test extensively!
+
 ```
 
 ---
@@ -1019,9 +1105,11 @@ This change affects core trip listing - test extensively!
 ### PROMPT 2.5: Trip Cancellation Frontend UI
 
 ```
+
 TASK: Create cancellation dialog and UI for trip admins
 
 CONTEXT:
+
 - Previous step: API endpoints ready (Prompt 2.3, 2.4)
 - Frontend: Next.js 14 + React + TypeScript
 - UI Library: Shadcn/UI + Tailwind CSS
@@ -1035,6 +1123,7 @@ Build user interface for trip cancellation with proper validation and feedback.
 REQUIREMENTS:
 
 1. CREATE: packages/frontend/components/trips/TripCancelDialog.tsx
+
    ```typescript
    interface TripCancelDialogProps {
      tripId: string;
@@ -1043,8 +1132,8 @@ REQUIREMENTS:
      onClose: () => void;
      onSuccess: () => void;
    }
-   
-   export function TripCancelDialog(props: TripCancelDialogProps)
+
+   export function TripCancelDialog(props: TripCancelDialogProps);
    ```
 
    Component structure:
@@ -1054,7 +1143,7 @@ REQUIREMENTS:
    - Title: "ביטול טיול" (Cancel Trip)
    - Warning message: "האם אתה בטוח שברצונך לבטל את הטיול?"
    - Textarea for cancellation reason:
-     - Label: "סיבת הביטול *" (Cancellation Reason *)
+     - Label: "סיבת הביטול _" (Cancellation Reason _)
      - Placeholder: "נא להזין סיבת ביטול"
      - Required field
      - Min 10 characters
@@ -1075,23 +1164,24 @@ REQUIREMENTS:
    - Show validation errors in Hebrew
 
 3. IMPLEMENT: API integration
+
    ```typescript
    async function handleCancel() {
      setLoading(true);
      setError(null);
-     
+
      try {
        const response = await fetch(`/api/trips/${tripId}/cancel`, {
          method: 'POST',
          headers: { 'Content-Type': 'application/json' },
-         body: JSON.stringify({ reason })
+         body: JSON.stringify({ reason }),
        });
-       
+
        if (!response.ok) {
          const error = await response.json();
          throw new Error(error.error.message);
        }
-       
+
        onSuccess();
        onClose();
        // Show success toast
@@ -1104,13 +1194,15 @@ REQUIREMENTS:
    ```
 
 4. CREATE: packages/frontend/components/trips/TripStatusBadge.tsx
+
    ```typescript
    interface TripStatusBadgeProps {
      trip: Trip; // has deleted, deletedAt fields
    }
-   
-   export function TripStatusBadge({ trip }: TripStatusBadgeProps)
+
+   export function TripStatusBadge({ trip }: TripStatusBadgeProps);
    ```
+
    - Show "מבוטל" (Cancelled) badge if trip.deleted
    - Red background, white text
    - Include cancellation date
@@ -1129,34 +1221,37 @@ REQUIREMENTS:
    - Show cancellation reason and date
    - For SUPER_ADMIN: Add "שחזר טיול" (Restore Trip) button
 
-7. CREATE TESTS: packages/frontend/__tests__/components/TripCancelDialog.test.tsx
+7. CREATE TESTS: packages/frontend/**tests**/components/TripCancelDialog.test.tsx
+
    ```typescript
    describe('TripCancelDialog', () => {
-     test('renders when open')
-     test('does not render when closed')
-     test('confirm button disabled when reason empty')
-     test('confirm button disabled when reason too short')
-     test('confirm button disabled when checkbox not checked')
-     test('confirm button enabled when valid')
-     test('shows loading state during API call')
-     test('calls onSuccess after successful cancellation')
-     test('displays error message on API failure')
-     test('calls onClose when cancel button clicked')
-     test('clears form when closed and reopened')
+     test('renders when open');
+     test('does not render when closed');
+     test('confirm button disabled when reason empty');
+     test('confirm button disabled when reason too short');
+     test('confirm button disabled when checkbox not checked');
+     test('confirm button enabled when valid');
+     test('shows loading state during API call');
+     test('calls onSuccess after successful cancellation');
+     test('displays error message on API failure');
+     test('calls onClose when cancel button clicked');
+     test('clears form when closed and reopened');
    });
-   
+
    describe('TripStatusBadge', () => {
-     test('shows cancelled badge for deleted trip')
-     test('does not show badge for active trip')
-     test('displays cancellation date')
-     test('shows tooltip with reason on hover (admin only)')
+     test('shows cancelled badge for deleted trip');
+     test('does not show badge for active trip');
+     test('displays cancellation date');
+     test('shows tooltip with reason on hover (admin only)');
    });
    ```
+
    - Mock fetch API
    - Mock user role for visibility tests
    - Target: >85% coverage
 
 TEST-DRIVEN APPROACH:
+
 1. Write component tests first
 2. Implement TripCancelDialog
 3. Implement TripStatusBadge
@@ -1165,6 +1260,7 @@ TEST-DRIVEN APPROACH:
 6. Manual testing in browser
 
 CONSTRAINTS:
+
 - Must use Shadcn/UI components (Dialog, Button, Textarea, Checkbox)
 - Must be fully RTL (Hebrew text and layout)
 - Must validate before API call
@@ -1173,12 +1269,14 @@ CONSTRAINTS:
 - Must be accessible (ARIA labels, keyboard navigation)
 
 DELIVERABLES:
+
 - components/trips/TripCancelDialog.tsx (complete component)
 - components/trips/TripStatusBadge.tsx (badge component)
 - Updated admin trip pages (cancel button added)
-- __tests__/components/TripCancelDialog.test.tsx (>85% coverage, passing)
+- **tests**/components/TripCancelDialog.test.tsx (>85% coverage, passing)
 
 STYLING:
+
 - Use Tailwind CSS classes
 - Destructive button: Shadcn destructive variant
 - Warning: amber-500 color for icon and message
@@ -1194,6 +1292,7 @@ SUCCESS CRITERIA:
 ✓ Loading and error states work
 ✓ Fully RTL compliant
 ✓ Accessible (keyboard, screen reader)
+
 ```
 
 ---
@@ -1201,9 +1300,11 @@ SUCCESS CRITERIA:
 ### PROMPT 2.6: Permanent Deletion (Super-Admin Only)
 
 ```
+
 TASK: Implement hard delete functionality for super-admins with extensive safeguards
 
 CONTEXT:
+
 - Previous steps: Trip cancellation (soft-delete) fully implemented
 - Backend: Express + Prisma + TypeScript
 - Frontend: Next.js + React
@@ -1216,14 +1317,20 @@ Enable permanent deletion with multiple safety measures and confirmations.
 REQUIREMENTS - BACKEND:
 
 1. CREATE: packages/backend/src/services/tripDeletion.service.ts
+
    ```typescript
    interface DeleteTripParams {
      tripId: string;
      userId: string;
    }
-   
-   export async function permanentlyDeleteTrip(params: DeleteTripParams): Promise<void>
-   export async function canPermanentlyDelete(tripId: string, userId: string): Promise<boolean>
+
+   export async function permanentlyDeleteTrip(
+     params: DeleteTripParams,
+   ): Promise<void>;
+   export async function canPermanentlyDelete(
+     tripId: string,
+     userId: string,
+   ): Promise<boolean>;
    ```
 
    Implement permanentlyDeleteTrip:
@@ -1251,41 +1358,47 @@ REQUIREMENTS - BACKEND:
    - Return boolean
 
 2. CREATE: packages/backend/src/controllers/tripDeletion.controller.ts
+
    ```typescript
-   export async function permanentlyDeleteTrip(req: Request, res: Response)
+   export async function permanentlyDeleteTrip(req: Request, res: Response);
    ```
+
    - Extract tripId, userId
    - Call service.permanentlyDeleteTrip
    - Return 204 No Content on success
    - Errors bubble to middleware
 
 3. UPDATE: packages/backend/src/routes/trips.routes.ts
+
    ```typescript
    router.delete('/trips/:id', authenticate, permanentlyDeleteTrip);
    ```
+
    - Only accessible to authenticated users
    - Authorization checked in service layer
 
 4. CREATE TESTS: packages/backend/tests/services/tripDeletion.service.test.ts
+
    ```typescript
    describe('permanentlyDeleteTrip', () => {
-     test('should delete trip and all related data when super-admin')
-     test('should throw FORBIDDEN when user is not super-admin')
-     test('should throw BAD_REQUEST when trip not cancelled')
-     test('should throw NOT_FOUND when trip does not exist')
-     test('should delete in transaction (rollback on error)')
-     test('should log deletion action')
-     test('should delete TripAttendance records')
-     test('should delete GearItem records')
-     test('should delete all related records')
+     test('should delete trip and all related data when super-admin');
+     test('should throw FORBIDDEN when user is not super-admin');
+     test('should throw BAD_REQUEST when trip not cancelled');
+     test('should throw NOT_FOUND when trip does not exist');
+     test('should delete in transaction (rollback on error)');
+     test('should log deletion action');
+     test('should delete TripAttendance records');
+     test('should delete GearItem records');
+     test('should delete all related records');
    });
-   
+
    describe('canPermanentlyDelete', () => {
-     test('should return true for super-admin with cancelled trip')
-     test('should return false for non-super-admin')
-     test('should return false when trip not cancelled')
+     test('should return true for super-admin with cancelled trip');
+     test('should return false for non-super-admin');
+     test('should return false when trip not cancelled');
    });
    ```
+
    - Mock Prisma transaction
    - Mock activity log
    - Test rollback on error
@@ -1294,6 +1407,7 @@ REQUIREMENTS - BACKEND:
 REQUIREMENTS - FRONTEND:
 
 5. CREATE: packages/frontend/components/trips/TripDeleteDialog.tsx
+
    ```typescript
    interface TripDeleteDialogProps {
      tripId: string;
@@ -1316,14 +1430,12 @@ REQUIREMENTS - FRONTEND:
        - כל הנתונים הקשורים (All related data)
      - Checkbox: "אני מבין שמדובר במחיקה צמיתה"
      - Button: "המשך" (Continue) - enabled only after checkbox
-   
    - Step 2: Type trip name confirmation
      - Instruction: "הקלד את שם הטיול לאישור:"
      - Show trip name in bold
      - Text input for user to type
      - Must match exactly (case-sensitive)
      - Button: "המשך" - enabled only when match
-   
    - Step 3: Final confirmation
      - Title: "האם אתה בטוח לחלוטין?"
      - Red warning banner
@@ -1333,14 +1445,15 @@ REQUIREMENTS - FRONTEND:
        - "מחק לצמיתות" (Delete Permanently - destructive, enabled only after checkbox)
 
 6. IMPLEMENT: API integration in dialog
+
    ```typescript
    async function handleDelete() {
      setLoading(true);
      try {
        const response = await fetch(`/api/trips/${tripId}`, {
-         method: 'DELETE'
+         method: 'DELETE',
        });
-       
+
        if (response.status === 204) {
          onSuccess();
          onClose();
@@ -1364,54 +1477,63 @@ REQUIREMENTS - FRONTEND:
    - Only shows for cancelled trips
    - Opens TripDeleteDialog
 
-8. CREATE TESTS: packages/frontend/__tests__/components/TripDeleteDialog.test.tsx
+8. CREATE TESTS: packages/frontend/**tests**/components/TripDeleteDialog.test.tsx
+
    ```typescript
    describe('TripDeleteDialog - Multi-step', () => {
-     test('starts on step 1 warning screen')
-     test('step 1: continue disabled until checkbox checked')
-     test('step 2: continue disabled until trip name matches')
-     test('step 2: case-sensitive name matching')
-     test('step 3: delete disabled until final checkbox checked')
-     test('can navigate back through steps')
-     test('successful deletion calls onSuccess')
-     test('displays error on API failure')
-     test('shows loading state during deletion')
-     test('resets to step 1 when reopened')
+     test('starts on step 1 warning screen');
+     test('step 1: continue disabled until checkbox checked');
+     test('step 2: continue disabled until trip name matches');
+     test('step 2: case-sensitive name matching');
+     test('step 3: delete disabled until final checkbox checked');
+     test('can navigate back through steps');
+     test('successful deletion calls onSuccess');
+     test('displays error on API failure');
+     test('shows loading state during deletion');
+     test('resets to step 1 when reopened');
    });
    ```
+
    - Mock fetch for DELETE request
    - Test all confirmation steps
    - Target: >90% coverage
 
 9. CREATE DOCUMENTATION: packages/backend/TRIP_DELETION.md
+
    ```markdown
    # Trip Permanent Deletion Procedure
-   
+
    ## When to Use
+
    - Only for cancelled trips that need permanent removal
    - After confirmation all data can be deleted
    - Super-admin only operation
-   
+
    ## Safety Procedures
+
    1. Trip must be cancelled first (soft-delete)
    2. Only super-admins can delete
    3. Frontend requires 3-step confirmation
    4. Backend validates trip is cancelled
    5. Database transaction ensures atomicity
-   
+
    ## What Gets Deleted
+
    [Detailed list]
-   
+
    ## Cannot Be Undone
+
    [Warning section]
-   
+
    ## Recovery Procedures
+
    - Only possible from database backup
    - Contact database administrator
    - Provide trip ID and timestamp
    ```
 
 TEST-DRIVEN APPROACH:
+
 1. Write backend tests (service, API)
 2. Implement backend service with safeguards
 3. Write frontend tests
@@ -1420,6 +1542,7 @@ TEST-DRIVEN APPROACH:
 6. Document procedures
 
 CONSTRAINTS:
+
 - Backend: MUST verify user is super-admin
 - Backend: MUST verify trip is cancelled
 - Backend: MUST use database transaction
@@ -1429,12 +1552,13 @@ CONSTRAINTS:
 - Frontend: MUST be super-admin only
 
 DELIVERABLES:
+
 - src/services/tripDeletion.service.ts (backend)
 - src/controllers/tripDeletion.controller.ts
 - Updated routes with DELETE endpoint
 - tests/services/tripDeletion.service.test.ts (>90% coverage)
 - components/trips/TripDeleteDialog.tsx (frontend)
-- __tests__/components/TripDeleteDialog.test.tsx (>90% coverage)
+- **tests**/components/TripDeleteDialog.test.tsx (>90% coverage)
 - TRIP_DELETION.md documentation
 
 SUCCESS CRITERIA:
@@ -1449,6 +1573,7 @@ SUCCESS CRITERIA:
 
 CRITICAL WARNING:
 This is a HIGH-RISK feature. Test extensively before production deployment.
+
 ```
 
 ---
@@ -1499,9 +1624,11 @@ I'll continue with the remaining iterations following the same detailed pattern.
 Each prompt follows this structure:
 
 ```
+
 TASK: [One-line description]
 
 CONTEXT:
+
 - Previous step: [What was completed]
 - Technology: [Relevant stack]
 - Location: [File paths]
@@ -1511,6 +1638,7 @@ OBJECTIVE:
 [Clear statement of what to build]
 
 REQUIREMENTS:
+
 1. CREATE/UPDATE: [File path]
    [Detailed implementation spec]
    [Code examples]
@@ -1518,17 +1646,20 @@ REQUIREMENTS:
 2. [Additional requirements...]
 
 TEST-DRIVEN APPROACH:
+
 1. Write tests first
 2. Implement to pass tests
 3. Refactor
 4. Verify
 
 CONSTRAINTS:
+
 - [Technical constraints]
 - [Business rules]
 - [Quality requirements]
 
 DELIVERABLES:
+
 - [File 1]
 - [File 2]
 - [Tests with coverage]
@@ -1536,6 +1667,7 @@ DELIVERABLES:
 SUCCESS CRITERIA:
 ✓ [Measurable outcome 1]
 ✓ [Measurable outcome 2]
+
 ```
 
 ---
@@ -1596,6 +1728,7 @@ Track progress with:
 
 ---
 
-**Document Version:** 1.0  
-**Last Updated:** October 18, 2025  
+**Document Version:** 1.0
+**Last Updated:** October 18, 2025
 **Status:** Ready for implementation
+```

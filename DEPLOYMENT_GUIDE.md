@@ -19,6 +19,7 @@ community-trip-organizer/
 ```
 
 **Key Points:**
+
 - Both frontend and backend are deployed to Vercel
 - Frontend runs as a Next.js application
 - Backend runs as Vercel serverless functions
@@ -58,6 +59,7 @@ Before deploying, ensure you have:
 Set these in Vercel Dashboard → Project → Settings → Environment Variables:
 
 **Backend Variables:**
+
 ```bash
 # Database
 DATABASE_URL="postgresql://user:password@host:5432/database?pgbouncer=true&connection_limit=1"
@@ -100,6 +102,7 @@ NEXT_PUBLIC_GOOGLE_CLIENT_ID="your-client-id.apps.googleusercontent.com"
 ```
 
 **Important Notes:**
+
 - All `NEXT_PUBLIC_*` variables are exposed to the browser
 - Backend variables are only accessible in API routes and serverless functions
 - Ensure DATABASE_URL includes connection pooling parameters for Vercel serverless
@@ -174,6 +177,7 @@ DATABASE_URL="your-connection-string" tsx prisma/seed.ts
 ```
 
 This creates:
+
 - Super admin user (check console output for credentials)
 - Sample trips (optional)
 
@@ -184,6 +188,7 @@ This creates:
 ### Method 1: GitHub Integration (Recommended)
 
 1. **Push to GitHub**:
+
    ```bash
    git add .
    git commit -m "Production deployment setup"
@@ -211,6 +216,7 @@ This creates:
    - Vercel will automatically build and deploy
 
 **Note:** The project includes a `vercel.json` configuration that:
+
 - Sets the framework to Next.js for proper auto-detection
 - Configures the monorepo build command to build both packages
 - Uses modern Vercel configuration (no legacy `builds` or `routes`)
@@ -218,6 +224,7 @@ This creates:
 
 **Backend Deployment Strategy:**
 This project uses a **hybrid approach**:
+
 - The **frontend** (Next.js) is deployed as the main Vercel project
 - The **backend** (Express API) should be deployed separately to its own Vercel project OR integrated into Next.js API routes
 - For separate backend deployment, create a second Vercel project pointing to `packages/backend`
@@ -239,12 +246,14 @@ vercel --prod
 **Vercel Configuration (`vercel.json`):**
 
 The project uses a modern `vercel.json` configuration:
+
 - Framework is set to `"nextjs"` for proper detection
 - Build command builds both backend and frontend workspaces
 - No legacy `builds` or `routes` properties (deprecated)
 - Uses Corepack for Yarn 4.x compatibility
 
 **Important Notes:**
+
 - The `builds` property is **deprecated** and conflicts with `functions`
 - Modern Vercel deployments use `framework`, `buildCommand`, and `outputDirectory` instead
 - For monorepos, use workspace commands in `buildCommand`
@@ -313,6 +322,7 @@ Monitor application health:
 ### Vercel Analytics
 
 Vercel Analytics is automatically enabled. View in dashboard:
+
 - Real-time visitors
 - Page views
 - Performance metrics
@@ -329,6 +339,7 @@ cd packages/backend
 ### Logs
 
 View logs in:
+
 - Vercel Dashboard → Project → Logs
 - Vercel CLI: `vercel logs`
 
@@ -344,7 +355,7 @@ yarn build
 # Verify backend build
 ls -la packages/backend/dist
 
-# Verify frontend build  
+# Verify frontend build
 ls -la packages/frontend/.next
 ```
 
@@ -356,6 +367,7 @@ ls -la packages/frontend/.next
 
 **Issue**: Build fails with "The file .../packages/backend/packages/frontend/.next/routes-manifest.json couldn't be found"
 **Solution**:
+
 - This indicates the Root Directory is incorrectly set to `packages/backend` in Vercel dashboard
 - Go to Vercel Project Settings → General → Root Directory
 - **Set it to empty** (leave blank) - the root should be the repository root
@@ -365,6 +377,7 @@ ls -la packages/frontend/.next
 
 **Issue**: Yarn workspace not found or dependency resolution errors
 **Solution**:
+
 ```bash
 # Clear all node_modules and reinstall
 rm -rf node_modules packages/*/node_modules
@@ -376,12 +389,14 @@ yarn --version  # Should be 4.x
 
 **Issue**: Build fails with "Cannot find module" from workspace
 **Solution**:
+
 - Ensure `postinstall` script in root package.json runs Prisma generate
 - Check that shared dependencies are properly hoisted
 - Verify workspace references in package.json files
 
 **Issue**: Prisma client import errors
 **Solution**:
+
 ```bash
 # Regenerate Prisma client
 yarn workspace backend exec prisma generate
@@ -394,7 +409,8 @@ npx prisma generate
 ### Build Failures
 
 **Issue**: "The `functions` property cannot be used in conjunction with the `builds` property"
-**Solution**: 
+**Solution**:
+
 - This occurs when using legacy `builds` property with modern `functions` property
 - Solution: Remove the `builds` property from `vercel.json`
 - Use modern configuration: `framework`, `buildCommand`, `outputDirectory`
@@ -402,12 +418,14 @@ npx prisma generate
 
 **Issue**: Framework Preset shows "Other" instead of "Next.js"
 **Solution**:
+
 - Ensure `"framework": "nextjs"` is set in `vercel.json`
 - Remove any `builds` property (it overrides framework detection)
 - Vercel will auto-detect Next.js when the config is correct
 
 **Issue**: Build fails with "Module not found"
-**Solution**: 
+**Solution**:
+
 ```bash
 # Clear Vercel cache
 vercel --force
@@ -420,13 +438,15 @@ yarn build
 ```
 
 **Issue**: Prisma client not generated
-**Solution**: 
+**Solution**:
+
 - Ensure `postinstall` script runs: `yarn workspace backend exec prisma generate`
 - Add to vercel.json build env if needed
 - Check that DATABASE_URL is set during build
 
 **Issue**: TypeScript errors during build
-**Solution**: 
+**Solution**:
+
 - Check `packages/frontend/next.config.mjs`
 - Ensure `typescript.ignoreBuildErrors` is set for initial deployment
 - Fix TypeScript errors incrementally
@@ -436,12 +456,14 @@ yarn build
 
 **Issue**: "Cannot connect to database"
 **Solution**:
+
 - Verify `DATABASE_URL` is set correctly
 - Check database is accessible from Vercel IPs
 - Use connection pooling (PgBouncer) for serverless
 
 **Issue**: "Too many connections"
 **Solution**:
+
 - Add `?connection_limit=1` to DATABASE_URL
 - Use Prisma connection pooling
 - Consider using PgBouncer
@@ -450,6 +472,7 @@ yarn build
 
 **Issue**: "Redirect URI mismatch"
 **Solution**:
+
 - Update OAuth provider redirect URIs
 - Ensure HTTPS is used in production
 - Check callback URLs match exactly
@@ -458,6 +481,7 @@ yarn build
 
 **Issue**: Slow API responses
 **Solution**:
+
 - Check database query performance
 - Review Vercel function logs
 - Enable API response caching
@@ -498,6 +522,7 @@ If deployment fails:
 ## Support
 
 For issues:
+
 1. Check [Troubleshooting](#troubleshooting) section
 2. Review Vercel logs
 3. Check GitHub Issues
@@ -519,6 +544,6 @@ After successful deployment:
 
 ---
 
-**Deployment Date**: _________________  
-**Deployed By**: _________________  
+**Deployment Date**: ********\_********  
+**Deployed By**: ********\_********  
 **Version**: 1.0.0

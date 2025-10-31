@@ -23,12 +23,14 @@
 ## Priority Overview
 
 ### 🔴 P0 - Critical (Must implement before production)
+
 1. Resolve trip deletion permissions conflict
 2. Clarify and implement trip publishing workflow
 3. Add trip participation notes field
 4. Standardize status terminology
 
 ### 🟡 P1 - Important (Should implement soon)
+
 5. Trip participation approval workflow
 6. Email verification on registration
 7. Password reset functionality
@@ -36,6 +38,7 @@
 9. Capacity limits for trips
 
 ### 🟢 P2 - Nice to Have (Future enhancements)
+
 10. Family join request workflow
 11. Per-member trip participation
 12. Per-member dietary requirements
@@ -59,6 +62,7 @@
 #### Backend Changes
 
 **Database Schema:**
+
 ```typescript
 // Add to Trip model
 deleted: boolean (default: false)
@@ -68,6 +72,7 @@ deletionReason: string | null  // Required for cancellation
 ```
 
 **API Endpoints:**
+
 ```typescript
 // Trip Admin: Cancel trip (soft-delete)
 POST /api/trips/:id/cancel
@@ -88,6 +93,7 @@ DELETE /api/trips/:id
 ```
 
 **Business Logic:**
+
 - Families must select at least one member when marking attendance
 - Empty `participatingMemberIds` array treated as all members (backward compatible)
 - Dietary requirements optional but per-member when provided
@@ -104,6 +110,7 @@ DELETE /api/trips/:id
 #### Frontend Changes
 
 **Trip Admin View:**
+
 - Change "Delete Trip" button to "Cancel Trip"
 - Show cancellation dialog with:
   - Warning message about cancellation
@@ -114,22 +121,26 @@ DELETE /api/trips/:id
 - Show cancellation reason and date in trip details
 
 **Super-Admin View:**
+
 - Show "Restore Trip" button on cancelled trips
 - Show "Permanently Delete" button on cancelled trips
 - Extra confirmation dialog for permanent deletion
 - Warning: "This will permanently remove all trip data. This action cannot be undone."
 
 **Family Member View:**
+
 - Hide cancelled trips from all trip lists
 - If family had marked attendance, trip disappears from "My Trips"
 - No notification or message shown
 
 **Filtering:**
+
 - Default: Show only non-cancelled trips to families
 - Admin views: Show filter toggle for cancelled trips
 - Super-admin: Can view all trips including cancelled
 
 #### Database Migration
+
 ```sql
 ALTER TABLE "Trip" ADD COLUMN "deleted" BOOLEAN DEFAULT false;
 ALTER TABLE "Trip" ADD COLUMN "deletedAt" TIMESTAMP;
@@ -152,6 +163,7 @@ CREATE INDEX "Trip_deleted_idx" ON "Trip"("deleted");
 **Implementation Requirements:**
 
 #### Workflow
+
 1. Family member creates trip → Status: DRAFT, creator becomes trip admin
 2. Trip admin clicks "Request Publish" → Notifies all super-admins
 3. Super-admin reviews trip → Can assign additional admins
@@ -162,6 +174,7 @@ CREATE INDEX "Trip_deleted_idx" ON "Trip"("deleted");
 #### Backend Changes
 
 **Database Schema:**
+
 ```typescript
 // Add to Trip model
 publishRequested: boolean (default: false)
@@ -174,6 +187,7 @@ lastModifiedAt: DateTime | null
 ```
 
 **API Endpoints:**
+
 ```typescript
 // Trip Admin: Request publish
 POST /api/trips/:id/request-publish
@@ -200,6 +214,7 @@ POST /api/trips/:id/admins
 ```
 
 **Business Logic:**
+
 - Trip creator automatically becomes first trip admin
 - Cannot request publish without: name, location, dates, at least one admin
 - Trip admins can edit details at any time (draft or published)
@@ -211,6 +226,7 @@ POST /api/trips/:id/admins
 #### Frontend Changes
 
 **Trip Admin View:**
+
 - Show "Request Publish" button on draft trips (if not already requested)
 - Show "Publish Requested" badge if request pending
 - Show "Published" badge with date if published
@@ -219,6 +235,7 @@ POST /api/trips/:id/admins
 - "Manage Admins" section accessible to creators and existing admins
 
 **Super-Admin Dashboard:**
+
 - "Pending Publish Requests" section showing:
   - Trip name, creator, request date
   - Quick link to trip details
@@ -226,17 +243,20 @@ POST /api/trips/:id/admins
 - "All Trips" view with filters: Draft, Published, Pending Request
 
 **Super-Admin Trip Detail:**
+
 - "Publish Trip" button (on draft trips)
 - "Unpublish Trip" button (on published trips)
 - "Assign Admin" button
 - Show publish history: when published, by whom, if unpublished
 
 **Family Member View:**
+
 - Only see published trips
 - Hidden when trip unpublished (removed from their lists)
 - Notification if trip they're attending gets unpublished
 
 **Notifications:**
+
 - Super-admins: New publish request created
 - Trip admin: Trip published by super-admin
 - Trip admin: New admin assigned to their trip
@@ -245,6 +265,7 @@ POST /api/trips/:id/admins
 - Participants with attendance: Trip unpublished
 
 #### Database Migration
+
 ```sql
 ALTER TABLE "Trip" ADD COLUMN "publishRequested" BOOLEAN DEFAULT false;
 ALTER TABLE "Trip" ADD COLUMN "publishRequestedAt" TIMESTAMP;
@@ -272,14 +293,16 @@ UPDATE "Trip" SET "publishedAt" = "createdAt" WHERE "draft" = false;
 **User Story:** US-T007 (partially)
 
 **Backend Changes:**
+
 ```typescript
 // Add to TripAttendance model
-adminNotes: string (nullable)
-adminNotesUpdatedAt: Date
-adminNotesUpdatedBy: string (userId)
+adminNotes: string(nullable);
+adminNotesUpdatedAt: Date;
+adminNotesUpdatedBy: string(userId);
 ```
 
 **API Endpoint:**
+
 ```typescript
 PUT /api/trips/:tripId/attendees/:attendeeId/notes
 // Only TRIP_ADMIN and SUPER_ADMIN
@@ -287,6 +310,7 @@ PUT /api/trips/:tripId/attendees/:attendeeId/notes
 ```
 
 **Frontend Changes:**
+
 - Add notes field in attendance summary (admin view)
 - Show edit icon next to each family
 - Modal/inline edit for notes
@@ -307,14 +331,16 @@ PUT /api/trips/:tripId/attendees/:attendeeId/notes
 #### Backend Changes
 
 **Database Schema:**
+
 ```typescript
 // Add to TripAttendance model
-adminNotes: string | null
-adminNotesUpdatedAt: DateTime | null
-adminNotesUpdatedBy: string | null  // userId
+adminNotes: string | null;
+adminNotesUpdatedAt: DateTime | null;
+adminNotesUpdatedBy: string | null; // userId
 ```
 
 **API Endpoint:**
+
 ```typescript
 PUT /api/trips/:tripId/attendees/:attendeeId/notes
 // Body: { notes: string }
@@ -323,6 +349,7 @@ PUT /api/trips/:tripId/attendees/:attendeeId/notes
 ```
 
 **Business Logic:**
+
 - Notes are per-trip-attendance (specific to family's participation in specific trip)
 - Admin-only visibility (families cannot see these notes)
 - Free text field (no predefined categories)
@@ -332,6 +359,7 @@ PUT /api/trips/:tripId/attendees/:attendeeId/notes
 #### Frontend Changes
 
 **Attendance Summary (Admin View):**
+
 - Add notes column/field in attendance table
 - Show edit icon next to each family
 - Click to open inline edit or modal
@@ -340,6 +368,7 @@ PUT /api/trips/:tripId/attendees/:attendeeId/notes
 - Empty state: "Add note" button
 
 **Notes Editor:**
+
 - Text area for free-text entry
 - Auto-save on blur or "Save" button
 - Character limit: 500-1000 characters
@@ -347,12 +376,14 @@ PUT /api/trips/:tripId/attendees/:attendeeId/notes
 - Clear visual indication that notes are admin-only
 
 **Display:**
+
 - Badge or icon if family has notes
 - Quick preview on hover
 - Full notes in expanded family view
 - Not visible in family-facing views
 
 #### Database Migration
+
 ```sql
 ALTER TABLE "TripAttendance" ADD COLUMN "adminNotes" TEXT;
 ALTER TABLE "TripAttendance" ADD COLUMN "adminNotesUpdatedAt" TIMESTAMP;
@@ -374,17 +405,19 @@ CREATE INDEX "TripAttendance_adminNotes_idx" ON "TripAttendance"("adminNotes") W
 **Recommended Changes:**
 
 #### Family Status
+
 ```typescript
 enum FamilyStatus {
-  PENDING = 'PENDING',           // Awaiting super-admin approval
-  APPROVED = 'APPROVED',         // Can sign in and participate
-  INACTIVE = 'INACTIVE'          // Deactivated by super-admin
+  PENDING = 'PENDING', // Awaiting super-admin approval
+  APPROVED = 'APPROVED', // Can sign in and participate
+  INACTIVE = 'INACTIVE', // Deactivated by super-admin
 }
 
 // Remove isActive field, use status instead
 ```
 
 #### Trip Status
+
 ```typescript
 // Keep existing draft: boolean field
 // Add: cancelled: boolean field
@@ -397,6 +430,7 @@ enum FamilyStatus {
 ```
 
 **Database Migration:**
+
 ```sql
 -- For families
 ALTER TABLE "Family" ADD COLUMN "status" TEXT DEFAULT 'APPROVED';
@@ -410,6 +444,7 @@ ALTER TABLE "Trip" ADD COLUMN "cancelledBy" TEXT;
 ```
 
 **Update All Components:**
+
 - Replace `isActive` checks with `status` checks
 - Update filters and badges
 - Update API responses
@@ -432,6 +467,7 @@ ALTER TABLE "Trip" ADD COLUMN "cancelledBy" TEXT;
 #### Backend Changes
 
 **Database Schema:**
+
 ```typescript
 // Add to Trip model
 requireParticipationApproval: boolean (default: true)
@@ -445,6 +481,7 @@ rejectionReason: string | null
 ```
 
 **API Endpoints:**
+
 ```typescript
 // Modified endpoint: Create/update attendance
 POST /api/trips/:id/attendance
@@ -480,6 +517,7 @@ GET /api/trips/:id
 ```
 
 **Business Logic:**
+
 - Default `requireParticipationApproval = true` for new trips
 - Trip creator can toggle during creation or edit
 - Pending families see limited trip information:
@@ -497,12 +535,14 @@ GET /api/trips/:id
 #### Frontend Changes
 
 **Trip Creation/Edit Form:**
+
 - Add checkbox: "Require admin approval for participation"
 - Default: checked (true)
 - Tooltip: "When enabled, families must request to join and wait for your approval"
 - Show in trip settings section
 
 **Family Member View - Available Trips:**
+
 - If `requireParticipationApproval = false`: Show "Join Trip" button
 - If `requireParticipationApproval = true`: Show "Request to Join" button
 - Request dialog:
@@ -512,6 +552,7 @@ GET /api/trips/:id
   - Note: "Trip admin will review your request"
 
 **Family Member View - Pending Request:**
+
 - Show "Pending Approval" badge on trip card
 - Trip detail page:
   - Limited information shown (description, schedule, basic participant list)
@@ -521,18 +562,21 @@ GET /api/trips/:id
   - Button: "Cancel Request" (removes attendance record)
 
 **Family Member View - Rejected Request:**
+
 - Show "Request Rejected" message
 - Display rejection reason if provided by admin
 - Show "Request to Join Again" button
 - No cooldown period
 
 **Family Member View - Approved:**
+
 - Full trip access (same as open enrollment)
 - Can volunteer for gear
 - Can see full participant details
 - Can edit dietary requirements
 
 **Trip Admin View:**
+
 - New section: "Participation Requests"
 - Badge showing count of pending requests
 - Component: `ParticipationRequestsList`
@@ -552,6 +596,7 @@ GET /api/trips/:id
 - Success toasts: "Family approved" / "Family rejected"
 
 **Notifications:**
+
 - Trip admin: New participation request received
   - "[Family Name] requested to join [Trip Name]"
 - Family: Request approved
@@ -560,6 +605,7 @@ GET /api/trips/:id
   - "Your request to join [Trip Name] was declined. [Reason if provided]"
 
 #### Database Migration
+
 ```sql
 -- Add to Trip table
 ALTER TABLE "Trip" ADD COLUMN "requireParticipationApproval" BOOLEAN DEFAULT true;
@@ -591,6 +637,7 @@ UPDATE "TripAttendance" SET "requestedAt" = "createdAt";
 **User Story:** Not explicitly mentioned, but security best practice
 
 **Backend Changes:**
+
 ```typescript
 // Add to User model
 emailVerified: boolean (default: false)
@@ -604,21 +651,24 @@ emailService.ts
 ```
 
 **API Endpoints:**
+
 ```typescript
-POST /api/auth/verify-email
+POST / api / auth / verify - email;
 // Body: { token: string }
 
-POST /api/auth/resend-verification
+POST / api / auth / resend - verification;
 // Resend verification email
 ```
 
 **Workflow:**
+
 1. User registers → Account created with emailVerified=false
 2. System sends verification email with token
 3. User clicks link → Redirects to app → Verifies email
 4. For OAuth users, auto-verify email (trusted provider)
 
 **Frontend Changes:**
+
 - Show "Please verify your email" banner for unverified users
 - "Resend verification email" button
 - Email verification success page
@@ -633,27 +683,30 @@ POST /api/auth/resend-verification
 **User Story:** Not in stories, but essential
 
 **Backend Changes:**
+
 ```typescript
 // Add to User model
-resetPasswordToken: string (nullable)
-resetPasswordExpiry: Date (nullable)
+resetPasswordToken: string(nullable);
+resetPasswordExpiry: Date(nullable);
 
 // Add to emailService.ts
-sendPasswordResetEmail(email, token)
+sendPasswordResetEmail(email, token);
 ```
 
 **API Endpoints:**
+
 ```typescript
-POST /api/auth/forgot-password
+POST / api / auth / forgot - password;
 // Body: { email: string }
 // Sends reset email
 
-POST /api/auth/reset-password
+POST / api / auth / reset - password;
 // Body: { token: string, newPassword: string }
 // Resets password if token valid
 ```
 
 **Frontend Changes:**
+
 - "Forgot Password?" link on login page
 - Forgot password page with email input
 - Reset password page (from email link)
@@ -668,6 +721,7 @@ POST /api/auth/reset-password
 **User Story:** US-X001
 
 **Backend Changes:**
+
 ```typescript
 // Standardize error responses
 interface ApiError {
@@ -690,6 +744,7 @@ errorHandler.ts
 ```
 
 **Frontend Changes:**
+
 ```typescript
 // Create error handler utility
 handleApiError(error) {
@@ -704,6 +759,7 @@ handleApiError(error) {
 ```
 
 **Error Messages (Hebrew):**
+
 - Network errors: "בעיית תקשורת, אנא נסה שוב"
 - Validation errors: Field-specific messages
 - Auth errors: "אין לך הרשאה לבצע פעולה זו"
@@ -719,21 +775,24 @@ handleApiError(error) {
 **Decision Pending:** Question #17 in questions document
 
 **Backend Changes:**
+
 ```typescript
 // Add to Trip model
-maxParticipants: number (nullable) // null = unlimited
-currentParticipants: number (computed)
+maxParticipants: number(nullable); // null = unlimited
+currentParticipants: number(computed);
 ```
 
 **API Changes:**
+
 ```typescript
 // Validation in markAttendance
 if (trip.maxParticipants && currentCount >= trip.maxParticipants) {
-  throw new ApiError(400, 'Trip is full')
+  throw new ApiError(400, 'Trip is full');
 }
 ```
 
 **Frontend Changes:**
+
 - Add "Max Participants" field in trip form (optional)
 - Show "X / Y families registered" in trip list
 - Show "Full" badge when capacity reached
@@ -760,6 +819,7 @@ if (trip.maxParticipants && currentCount >= trip.maxParticipants) {
 #### Backend Changes
 
 **Database Schema:**
+
 ```typescript
 // New model
 model FamilyJoinRequest {
@@ -771,10 +831,10 @@ model FamilyJoinRequest {
   createdAt        DateTime @default(now())
   respondedAt      DateTime?
   respondedBy      String?  // userId of adult who approved/rejected
-  
+
   requestingUser   User   @relation("JoinRequests", fields: [requestingUserId])
   targetFamily     Family @relation(fields: [targetFamilyId])
-  
+
   @@index([requestingUserId])
   @@index([targetFamilyId, status])
 }
@@ -787,6 +847,7 @@ enum RequestStatus {
 ```
 
 **API Endpoints:**
+
 ```typescript
 POST /api/families/join-request
 // Create request to join family
@@ -809,6 +870,7 @@ PUT /api/families/join-requests/:id/reject
 ```
 
 **Business Logic:**
+
 - User can only belong to one family (forever)
 - User must register first, then can request to join
 - Request sent to all adults in target family
@@ -820,6 +882,7 @@ PUT /api/families/join-requests/:id/reject
 #### Frontend Changes
 
 **Registration Flow:**
+
 - Add option: "Join Existing Family" vs "Create New Family"
 - Join flow: Simplified form
   - Name, email, password
@@ -829,17 +892,20 @@ PUT /api/families/join-requests/:id/reject
 - User cannot access app until approved
 
 **Family Dashboard:**
+
 - Section: "Pending Join Requests" (visible to adults only)
 - Shows: Requester name, email, message, request date
 - Actions: Approve / Reject buttons
 - Notification badge when requests pending
 
 **After Approval:**
+
 - New member appears in family member list
 - New member does NOT appear on existing trip attendances
 - Family can manually add member to trips if needed
 
 **Notifications:**
+
 - All family adults: New join request received
 - Requester: Request approved/rejected
 
@@ -856,7 +922,8 @@ PUT /api/families/join-requests/:id/reject
 **Note:** Basic per-member dietary requirements implemented in Phase 1. This section for future enhancements.
 
 **Potential Enhancements:** "Select All" option
-  - Shows member type (adult/child) and age
+
+- Shows member type (adult/child) and age
 - Update attendance marker to show member selection
 - Show participant count per family in admin view
 
@@ -869,6 +936,7 @@ PUT /api/families/join-requests/:id/reject
 **Decision Pending:** Question #6 in questions document
 
 **Backend Changes:**
+
 ```typescript
 // Option A: Restructure (complex)
 model DietaryRequirement {
@@ -876,7 +944,7 @@ model DietaryRequirement {
   attendanceId String
   memberId    String
   requirement String
-  
+
   attendance  TripAttendance @relation(fields: [attendanceId])
   member      User @relation(fields: [memberId])
 }
@@ -888,6 +956,7 @@ model DietaryRequirement {
 **Recommended:** Option B for MVP, Option A for Phase 3
 
 **Frontend Changes:**
+
 - Component: `DietaryRequirementsForm`
   - One input per participating family member
   - Auto-format to structured text
@@ -902,25 +971,28 @@ model DietaryRequirement {
 **Decision Pending:** Question #8 in questions document
 
 **Backend Changes:**
+
 ```typescript
 // Add to User model
 notificationPreferences: {
-  whatsappEnabled: boolean
-  emailEnabled: boolean
-  notifyTripUpdates: boolean
-  notifyGearUpdates: boolean
-  notifyReminders: boolean
-  notifyApprovals: boolean
+  whatsappEnabled: boolean;
+  emailEnabled: boolean;
+  notifyTripUpdates: boolean;
+  notifyGearUpdates: boolean;
+  notifyReminders: boolean;
+  notifyApprovals: boolean;
 }
 ```
 
 **API Endpoints:**
+
 ```typescript
 GET /api/users/:id/notification-preferences
 PUT /api/users/:id/notification-preferences
 ```
 
 **Frontend Changes:**
+
 - Settings page for notification preferences
 - Toggle switches for each preference type
 - Explanation of what each preference controls
@@ -936,6 +1008,7 @@ PUT /api/users/:id/notification-preferences
 **User Story:** US-X008
 
 **Backend Changes:**
+
 ```typescript
 // Add to Family model
 privacySettings: {
@@ -949,6 +1022,7 @@ privacySettings: {
 ```
 
 **Frontend Changes:**
+
 - Privacy settings page
 - Toggle switches for each privacy option
 - Preview of what others will see
@@ -963,6 +1037,7 @@ privacySettings: {
 **Requires:** Capacity limits (2.5) implemented first
 
 **Backend Changes:**
+
 ```typescript
 model TripWaitlist {
   id          String @id @default(cuid())
@@ -971,13 +1046,14 @@ model TripWaitlist {
   position    Int
   joinedAt    DateTime @default(now())
   notifiedAt  DateTime?
-  
+
   trip   Trip   @relation(fields: [tripId])
   family Family @relation(fields: [familyId])
 }
 ```
 
 **API Endpoints:**
+
 ```typescript
 POST /api/trips/:id/waitlist
 // Join waitlist when trip full
@@ -990,6 +1066,7 @@ GET /api/trips/:id/waitlist
 ```
 
 **Logic:**
+
 - When family cancels attendance, notify next family on waitlist
 - Auto-remove from waitlist after 24 hours if no response
 
@@ -1008,6 +1085,7 @@ GET /api/trips/:id/waitlist
 **User Story:** US-X010
 
 **Backend Changes:**
+
 ```typescript
 model DeletionRequest {
   id          String @id @default(cuid())
@@ -1018,7 +1096,7 @@ model DeletionRequest {
   status      DeletionStatus @default(PENDING)
   reviewedBy  String? (userId)
   reviewedAt  DateTime?
-  
+
   family Family @relation(fields: [familyId])
 }
 
@@ -1031,6 +1109,7 @@ enum DeletionStatus {
 ```
 
 **API Endpoints:**
+
 ```typescript
 POST /api/families/:id/request-deletion
 // Family member requests deletion
@@ -1052,6 +1131,7 @@ POST /api/admin/deletion-requests/:id/execute
 ```
 
 **Deletion Process:**
+
 1. User requests deletion
 2. Super-admin reviews (check active trips, etc.)
 3. Super-admin approves/rejects
@@ -1062,6 +1142,7 @@ POST /api/admin/deletion-requests/:id/execute
    - Export data before deletion (GDPR)
 
 **Frontend Changes:**
+
 - "Request Account Deletion" in family settings
 - Deletion request form with reason
 - Super-admin dashboard: Pending deletion requests
@@ -1076,6 +1157,7 @@ POST /api/admin/deletion-requests/:id/execute
 **User Story:** US-X009
 
 **Backend Changes:**
+
 ```typescript
 // Create export service
 dataExportService.ts
@@ -1084,6 +1166,7 @@ dataExportService.ts
 ```
 
 **API Endpoints:**
+
 ```typescript
 POST /api/families/:id/export
 // Generate data export
@@ -1094,6 +1177,7 @@ GET /api/exports/:token
 ```
 
 **Export Contents:**
+
 - Family information
 - All family members
 - Trip participation history
@@ -1102,6 +1186,7 @@ GET /api/exports/:token
 - Activity log for family
 
 **Frontend Changes:**
+
 - "Export My Data" button in settings
 - Shows export progress
 - Downloads JSON/PDF file
@@ -1117,6 +1202,7 @@ GET /api/exports/:token
 **Enhancement:** More detailed and user-facing
 
 **Backend Changes:**
+
 ```typescript
 // Enhance log service
 - Log more details in changes field
@@ -1126,6 +1212,7 @@ GET /api/exports/:token
 ```
 
 **Frontend Changes:**
+
 ```typescript
 // Component: UserActivityLog
 - Show user's own actions
@@ -1160,10 +1247,10 @@ model FamilyJoinRequest {
   requestedAt       DateTime @default(now())
   respondedAt       DateTime?
   respondedBy       String?
-  
+
   requestingUser    User   @relation("JoinRequestUser", fields: [requestingUserId])
   targetFamily      Family @relation("JoinRequestFamily", fields: [targetFamilyId])
-  
+
   @@index([targetFamilyId])
   @@index([requestingUserId])
 }
@@ -1175,10 +1262,10 @@ model TripWaitlist {
   position    Int
   joinedAt    DateTime @default(now())
   notifiedAt  DateTime?
-  
+
   trip   Trip   @relation(fields: [tripId])
   family Family @relation(fields: [familyId])
-  
+
   @@unique([tripId, familyId])
   @@index([tripId, position])
 }
@@ -1192,11 +1279,11 @@ model DeletionRequest {
   status      DeletionStatus @default(PENDING)
   reviewedBy  String?
   reviewedAt  DateTime?
-  
+
   family      Family @relation(fields: [familyId])
   requester   User   @relation("DeletionRequester", fields: [requestedBy])
   reviewer    User?  @relation("DeletionReviewer", fields: [reviewedBy])
-  
+
   @@index([familyId])
   @@index([status])
 }
@@ -1221,10 +1308,10 @@ enum DeletionStatus {
 model Family {
   // Change
   status  FamilyStatus @default(PENDING)  // Instead of isActive boolean
-  
+
   // Add
   privacySettings Json? @default("{\"showProfilePhotos\":true,\"showExactChildAges\":true,\"showContactInfo\":true}")
-  
+
   // Relations
   joinRequests    FamilyJoinRequest[] @relation("JoinRequestFamily")
   waitlists       TripWaitlist[]
@@ -1246,7 +1333,7 @@ model User {
   resetPasswordToken      String?
   resetPasswordExpiry     DateTime?
   notificationPreferences Json? @default("{\"whatsappEnabled\":true,\"emailEnabled\":true,\"notifyTripUpdates\":true,\"notifyGearUpdates\":true,\"notifyReminders\":true,\"notifyApprovals\":true}")
-  
+
   // Relations
   joinRequests            FamilyJoinRequest[] @relation("JoinRequestUser")
   deletionRequestsMade    DeletionRequest[] @relation("DeletionRequester")
@@ -1265,7 +1352,7 @@ model Trip {
   publishedBy                 String?
   unpublishedAt               DateTime?
   lastModifiedBy              String?
-  
+
   // Relations
   waitlist                    TripWaitlist[]
 }
@@ -1359,52 +1446,52 @@ PUT    /api/users/:id/privacy-settings
 
 ```typescript
 // Phase 1
-TripCancelDialog            // Cancel trip with reason
-TripStatusBadge            // Enhanced with cancelled status
-AdminNotesEditor           // Edit notes for family attendance
+TripCancelDialog; // Cancel trip with reason
+TripStatusBadge; // Enhanced with cancelled status
+AdminNotesEditor; // Edit notes for family attendance
 
 // Phase 2
-ParticipationRequestsList   // Admin view of pending requests
-ParticipationRequestCard    // Single request with approve/reject
-ParticipationStatusBadge   // Show pending/approved/rejected
-EmailVerificationBanner    // Prompt user to verify email
-ForgotPasswordPage         // Password reset request
-ResetPasswordPage          // New password form
-TripCapacityIndicator      // Show X/Y participants
+ParticipationRequestsList; // Admin view of pending requests
+ParticipationRequestCard; // Single request with approve/reject
+ParticipationStatusBadge; // Show pending/approved/rejected
+EmailVerificationBanner; // Prompt user to verify email
+ForgotPasswordPage; // Password reset request
+ResetPasswordPage; // New password form
+TripCapacityIndicator; // Show X/Y participants
 
 // Phase 3
-FamilyJoinRequestForm      // Simplified registration
-PendingJoinRequestsList    // Family view of join requests
-JoinRequestCard            // Single request with approve/reject
-ParticipatingMembersSelector // Checkbox list for member selection
-DietaryRequirementsForm    // Per-member dietary inputs
-NotificationPreferences    // Settings page for notifications
-PrivacySettings            // Settings page for privacy
-TripWaitlistView           // Show waitlist for full trips
-WaitlistJoinButton         // Join waitlist button
+FamilyJoinRequestForm; // Simplified registration
+PendingJoinRequestsList; // Family view of join requests
+JoinRequestCard; // Single request with approve/reject
+ParticipatingMembersSelector; // Checkbox list for member selection
+DietaryRequirementsForm; // Per-member dietary inputs
+NotificationPreferences; // Settings page for notifications
+PrivacySettings; // Settings page for privacy
+TripWaitlistView; // Show waitlist for full trips
+WaitlistJoinButton; // Join waitlist button
 
 // Phase 4
-AccountDeletionRequest     // Request deletion form
-DeletionRequestsList       // Super-admin view of requests
-DeletionRequestCard        // Single request review
-DataExportButton           // Trigger data export
-ExportDownloadPage         // Download exported data
-UserActivityLog            // User's own activity history
-FamilyActivityLog          // Family's activity history
+AccountDeletionRequest; // Request deletion form
+DeletionRequestsList; // Super-admin view of requests
+DeletionRequestCard; // Single request review
+DataExportButton; // Trigger data export
+ExportDownloadPage; // Download exported data
+UserActivityLog; // User's own activity history
+FamilyActivityLog; // Family's activity history
 ```
 
 ### Modified Components
 
 ```typescript
 // Update to support new features
-TripForm                   // Add requireApproval, maxParticipants, cancellation
-TripList                   // Filter cancelled trips, show capacity
-TripDetailPage             // Show participation status, waitlist
-AttendanceMarker           // Show pending status, member selection
-TripAdminManager           // Show publish requests
-SuperAdminPanel            // Add deletion requests tab
-FamilyDashboard            // Show join requests, deletion option
-FamilyRegistrationForm     // Add "join family" option
+TripForm; // Add requireApproval, maxParticipants, cancellation
+TripList; // Filter cancelled trips, show capacity
+TripDetailPage; // Show participation status, waitlist
+AttendanceMarker; // Show pending status, member selection
+TripAdminManager; // Show publish requests
+SuperAdminPanel; // Add deletion requests tab
+FamilyDashboard; // Show join requests, deletion option
+FamilyRegistrationForm; // Add "join family" option
 ```
 
 ---
@@ -1415,33 +1502,33 @@ FamilyRegistrationForm     // Add "join family" option
 
 ```typescript
 // Backend Services
-familyJoinRequest.service.test.ts     // Create, approve, reject requests
-tripApproval.service.test.ts          // Participation approval workflow
-emailVerification.service.test.ts     // Email verification logic
-passwordReset.service.test.ts         // Password reset logic
-tripCancellation.service.test.ts      // Cancel and restore trips
-waitlist.service.test.ts              // Waitlist management
-deletion.service.test.ts              // Account deletion workflow
-dataExport.service.test.ts            // Data export generation
+familyJoinRequest.service.test.ts; // Create, approve, reject requests
+tripApproval.service.test.ts; // Participation approval workflow
+emailVerification.service.test.ts; // Email verification logic
+passwordReset.service.test.ts; // Password reset logic
+tripCancellation.service.test.ts; // Cancel and restore trips
+waitlist.service.test.ts; // Waitlist management
+deletion.service.test.ts; // Account deletion workflow
+dataExport.service.test.ts; // Data export generation
 
 // Frontend Components
-ParticipationRequestsList.test.tsx    // Request list rendering
-TripCancelDialog.test.tsx             // Cancellation dialog
-EmailVerificationBanner.test.tsx      // Verification prompt
-ParticipatingMembersSelector.test.tsx // Member selection
-NotificationPreferences.test.tsx      // Preference toggles
+ParticipationRequestsList.test.tsx; // Request list rendering
+TripCancelDialog.test.tsx; // Cancellation dialog
+EmailVerificationBanner.test.tsx; // Verification prompt
+ParticipatingMembersSelector.test.tsx; // Member selection
+NotificationPreferences.test.tsx; // Preference toggles
 ```
 
 ### Integration Tests Required
 
 ```typescript
 // API Integration
-familyJoinRequest.integration.test.ts // Full join request flow
-tripApproval.integration.test.ts      // Full approval flow
-emailVerification.integration.test.ts // Email verification flow
-passwordReset.integration.test.ts     // Password reset flow
-waitlist.integration.test.ts          // Waitlist operation flow
-deletion.integration.test.ts          // Account deletion flow
+familyJoinRequest.integration.test.ts; // Full join request flow
+tripApproval.integration.test.ts; // Full approval flow
+emailVerification.integration.test.ts; // Email verification flow
+passwordReset.integration.test.ts; // Password reset flow
+waitlist.integration.test.ts; // Waitlist operation flow
+deletion.integration.test.ts; // Account deletion flow
 ```
 
 ### E2E Tests Required
@@ -1460,6 +1547,7 @@ account-deletion.e2e.ts                // Request → Admin review → Execute
 ## Effort Estimation Summary
 
 ### Phase 1: Critical Fixes (P0)
+
 - 1.1 Trip Deletion: 1 day
 - 1.2 Publishing Workflow: 1.5 days
 - 1.3 Participation Notes: 0.5 days
@@ -1467,6 +1555,7 @@ account-deletion.e2e.ts                // Request → Admin review → Execute
 - **Total: 4 days**
 
 ### Phase 2: Core Features (P1)
+
 - 2.1 Participation Approval: 3 days
 - 2.2 Email Verification: 2 days
 - 2.3 Password Reset: 1.5 days
@@ -1475,6 +1564,7 @@ account-deletion.e2e.ts                // Request → Admin review → Execute
 - **Total: 9 days**
 
 ### Phase 3: Enhanced Features (P2)
+
 - 3.1 Family Join Requests: 2.5 days
 - 3.2 Per-Member Participation: 2 days
 - 3.3 Per-Member Dietary: 1.5 days
@@ -1484,12 +1574,14 @@ account-deletion.e2e.ts                // Request → Admin review → Execute
 - **Total: 12 days**
 
 ### Phase 4: Compliance (P2)
+
 - 4.1 Account Deletion: 3 days
 - 4.2 Data Export: 2 days
 - 4.3 Activity Log Enhancement: 2 days
 - **Total: 7 days**
 
 ### Grand Total
+
 **32 days** of development (excluding testing time)
 
 **With Testing (estimated +30%):** ~42 days
@@ -1499,16 +1591,19 @@ account-deletion.e2e.ts                // Request → Admin review → Execute
 ## Dependencies & Risks
 
 ### External Dependencies
+
 - Email service (SendGrid, AWS SES, etc.) - Required for Phase 2
 - WhatsApp Business API - Future enhancement, not critical
 
 ### Technical Risks
+
 1. **Database Migrations:** Complex schema changes may require careful migration strategy
 2. **Data Integrity:** Status changes must preserve historical data
 3. **Performance:** Waitlist notifications could be resource-intensive
 4. **Email Deliverability:** Verification emails may be filtered as spam
 
 ### Mitigation Strategies
+
 1. **Staged Rollout:** Deploy phases incrementally with feature flags
 2. **Backup Strategy:** Full database backup before each migration
 3. **Testing:** Comprehensive test coverage before production

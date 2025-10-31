@@ -74,6 +74,7 @@ yarn dev
 
 2. **Install dependencies:**
    This project uses Yarn workspaces. Install all dependencies from the root directory.
+
    ```bash
    yarn install
    ```
@@ -83,7 +84,6 @@ yarn dev
    - Create a database
    - Copy `packages/backend/.env.example` to `packages/backend/.env`
    - Update `DATABASE_URL` in `.env` with your database credentials
-   
 4. **Run migrations and seed:**
    ```bash
    cd packages/backend
@@ -105,6 +105,7 @@ yarn dev
 ```
 
 In a new terminal:
+
 ```bash
 # Start the frontend
 cd packages/frontend
@@ -112,6 +113,7 @@ yarn dev
 ```
 
 **Access Points:**
+
 - Frontend: `http://localhost:5173`
 - Backend API: `http://localhost:3001`
 - Prisma Studio: `npx prisma studio` (http://localhost:5555)
@@ -147,6 +149,7 @@ The frontend development server will start on `http://localhost:5173`.
 ### Backend (`packages/backend`)
 
 #### Development
+
 - `yarn dev`: Starts the development server with `nodemon`.
 - `yarn db:dev:start`: Start PostgreSQL with Docker
 - `yarn db:dev:stop`: Stop PostgreSQL
@@ -154,13 +157,16 @@ The frontend development server will start on `http://localhost:5173`.
 - `yarn db:reset`: Reset and reseed database
 
 #### Build & Deploy
+
 - `yarn build`: Compiles the TypeScript code.
 - `yarn start`: Runs the compiled code from the `dist` directory.
 
 #### Testing
+
 - `yarn test`: Runs API tests using Vitest.
 
 #### Code Quality
+
 - `yarn lint`: Lints the code using ESLint.
 - `yarn format`: Formats the code with Prettier.
 
@@ -169,13 +175,16 @@ The frontend development server will start on `http://localhost:5173`.
 ### Frontend (`packages/frontend`)
 
 #### Development
+
 - `yarn dev`: Starts the Vite development server.
 - `yarn preview`: Previews the production build locally.
 
 #### Build & Deploy
+
 - `yarn build`: Builds the frontend application for production.
 
 #### Code Quality
+
 - `yarn lint`: Lints the code using ESLint.
 - `yarn format`: Formats the code with Prettier.
 
@@ -215,6 +224,7 @@ The frontend development server will start on `http://localhost:5173`.
    - See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for complete list
 
 3. **Deploy**:
+
    ```bash
    npm install -g vercel
    vercel --prod
@@ -286,6 +296,7 @@ Production optimizations include:
 - Static asset caching
 
 **Target Metrics**:
+
 - First Contentful Paint: < 1.5s
 - Time to Interactive: < 3.5s
 - API Response Time: < 200ms

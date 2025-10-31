@@ -29,11 +29,13 @@
 ### Authentication & Registration
 
 #### US-F001: Sign Up with Full Family Details
+
 **As a** new user  
 **I want to** register my family with all details (adults and children)  
 **So that** I can participate in community trips
 
 **Acceptance Criteria:**
+
 - User provides family name (optional)
 - User adds at least one adult (name, email, password)
 - User can add additional adults with unique emails
@@ -49,11 +51,13 @@
 ---
 
 #### US-F002: Join Existing Family via Request [PHASE 3]
+
 **As a** new user who is part of an existing registered family  
 **I want to** request to join that family using an adult member's email  
 **So that** I don't need to create duplicate family information
 
 **Acceptance Criteria:**
+
 - User can choose "Join Existing Family" during registration
 - User provides: their name, email, password, and target family adult's email
 - User can include optional message explaining request
@@ -71,11 +75,13 @@
 ---
 
 #### US-F003: Sign In to Existing Account
+
 **As a** registered family member  
 **I want to** sign in with my credentials  
 **So that** I can access the system
 
 **Acceptance Criteria:**
+
 - User can sign in with email/password
 - User can sign in with Google OAuth
 - User can sign in with Facebook OAuth (optional)
@@ -91,11 +97,13 @@
 ### Family Management
 
 #### US-F004: View Family Profile
+
 **As a** family member  
 **I want to** view my family's profile  
 **So that** I can see all family members and their details
 
 **Acceptance Criteria:**
+
 - User sees family name
 - User sees list of all adult members (name, email, photo)
 - User sees list of all child members (name, age)
@@ -107,11 +115,13 @@
 ---
 
 #### US-F005: Edit Family Details
+
 **As a** family member  
 **I want to** edit family member information  
 **So that** I can keep family data up to date
 
 **Acceptance Criteria:**
+
 - User can edit family name
 - User can edit adult member details (name, email, photo)
 - User can edit child member details (name, age)
@@ -127,11 +137,13 @@
 ---
 
 #### US-F006: Accept/Reject Family Join Requests [PHASE 3]
+
 **As an** adult family member  
 **I want to** review and respond to requests from others wanting to join my family  
 **So that** I can control who is part of my family account
 
 **Acceptance Criteria:**
+
 - Any adult family member can approve/reject requests (not just one)
 - User sees notification badge for pending requests
 - User can view list of pending join requests
@@ -151,11 +163,13 @@
 ### Trip Discovery & Participation
 
 #### US-F007: View Trip List
+
 **As a** family member  
 **I want to** see a categorized list of trips  
 **So that** I can discover and manage trip participation
 
 **Acceptance Criteria:**
+
 - User sees tabs/filters for:
   - "Available to Join" - published future trips not attending
   - "My Trips" - trips family is attending or pending approval
@@ -171,11 +185,13 @@
 ---
 
 #### US-F008: Request to Join Trip with Member Selection
+
 **As a** family member  
 **I want to** request participation for specific family members  
 **So that** my family can join community activities
 
 **Acceptance Criteria:**
+
 - User clicks "Request to Join" on trips requiring approval
 - User selects which family members will attend (checkboxes)
 - Shows member names, type (adult/child), and ages
@@ -197,11 +213,13 @@
 ---
 
 #### US-F009: Mark Trip Attendance with Member Selection
+
 **As a** family member  
 **I want to** mark which family members are attending a trip  
 **So that** organizers know exactly who is participating
 
 **Acceptance Criteria:**
+
 - Only available for trips with `requireParticipationApproval = false`
 - User sees attendance interface on trip detail page
 - User can select which family members will attend (checkboxes)
@@ -222,11 +240,13 @@
 ---
 
 #### US-F010: View Past Trip Details
+
 **As a** family member  
 **I want to** view details of trips my family attended  
 **So that** I can review memories and information
 
 **Acceptance Criteria:**
+
 - User can only see past trips they attended
 - User sees trip name, location, dates, description
 - User sees trip schedule/itinerary
@@ -242,11 +262,13 @@
 ---
 
 #### US-F011: View Available Trip Details (Before Joining)
+
 **As a** family member  
 **I want to** view details of available trips before requesting to join  
 **So that** I can decide if my family wants to participate
 
 **Acceptance Criteria:**
+
 - User sees trip name, location, dates, description
 - User sees trip schedule/itinerary with times and activities
 - User sees basic participant list: family names and participant count only
@@ -266,11 +288,13 @@
 ---
 
 #### US-F012: View Current/Future Trip Details (Participating)
+
 **As a** family member  
 **I want to** view full details of trips my family is attending  
 **So that** I can prepare and manage our participation
 
 **Acceptance Criteria:**
+
 - User sees all information from US-F010 (past trips)
 - User can edit dietary requirements before trip starts
 - User can volunteer for gear items
@@ -285,11 +309,13 @@
 ---
 
 #### US-F013: Update Dietary Requirements Per Member
+
 **As a** family member attending a trip  
 **I want to** specify dietary requirements for each participating family member  
 **So that** trip organizers can plan meals accordingly
 
 **Acceptance Criteria:**
+
 - User sees dietary requirements section for each participating member
 - Each member has individual text field for dietary info (free text)
 - Shows member name and type (adult/child) next to each field
@@ -310,11 +336,13 @@
 ### Gear Management
 
 #### US-F014: Volunteer for Trip Gear
+
 **As a** family member attending a trip  
 **I want to** volunteer to bring specific gear items  
 **So that** I can contribute to shared trip equipment
 
 **Acceptance Criteria:**
+
 - User sees list of gear items needed for trip
 - Each gear item shows: name, total needed, already committed
 - User can click "Volunteer" on gear items
@@ -329,11 +357,13 @@
 ---
 
 #### US-F015: View Gear Distribution
+
 **As a** family member attending a trip  
 **I want to** see which families are bringing which gear  
 **So that** I know what's covered and what's still needed
 
 **Acceptance Criteria:**
+
 - User sees complete gear list for trip
 - Each item shows total needed vs. committed
 - Each item shows list of families bringing it with quantities
@@ -349,11 +379,13 @@
 ### Trip Creation
 
 #### US-F016: Create New Trip (Become Trip Admin)
+
 **As a** family member  
 **I want to** create a new trip  
 **So that** I can organize community activities and become its admin
 
 **Acceptance Criteria:**
+
 - User can access "Create Trip" option
 - User provides: name, location, description, dates
 - User can specify attendance cutoff date
@@ -374,11 +406,13 @@
 ### Trip Management
 
 #### US-T001: View All Trips I Manage
+
 **As a** trip admin  
 **I want to** see a list of trips I'm managing  
 **So that** I can access and manage them efficiently
 
 **Acceptance Criteria:**
+
 - User sees dedicated admin dashboard
 - User sees only trips where they're assigned as admin
 - User sees trip status: draft, published, active, completed
@@ -391,11 +425,13 @@
 ---
 
 #### US-T002: Edit Trip Details
+
 **As a** trip admin  
 **I want to** edit trip information at any time  
 **So that** I can update details as plans change
 
 **Acceptance Criteria:**
+
 - User can edit: name, location, description
 - User can edit: start date, end date, cutoff date
 - User can update photo album URL
@@ -411,11 +447,13 @@
 ---
 
 #### US-T003: Manage Trip Schedule
+
 **As a** trip admin  
 **I want to** create and edit the trip schedule  
 **So that** participants know the itinerary
 
 **Acceptance Criteria:**
+
 - User can add schedule items with: day, start time, end time, title, description, location
 - User can edit existing schedule items
 - User can delete schedule items
@@ -430,11 +468,13 @@
 ---
 
 #### US-T004: View Participation Requests
+
 **As a** trip admin  
 **I want to** see all families that requested to join my trip  
 **So that** I can review and approve/reject them
 
 **Acceptance Criteria:**
+
 - User sees "Participation Requests" section in trip management
 - Shows count of pending requests as badge
 - Each pending request shows:
@@ -454,11 +494,13 @@
 ---
 
 #### US-T005: Approve/Reject Participation Requests
+
 **As a** trip admin  
 **I want to** approve or reject family participation requests  
 **So that** I can control trip attendance
 
 **Acceptance Criteria:**
+
 - User clicks "Approve" to accept family into trip
 - Approved family's TripAttendance status changes to APPROVED
 - Approved families immediately gain access to:
@@ -479,11 +521,13 @@
 ---
 
 #### US-T006: View All Participating Families and Members
+
 **As a** trip admin  
 **I want to** see detailed attendance breakdown by family and member  
 **So that** I can manage participation and contact families if needed
 
 **Acceptance Criteria:**
+
 - User sees complete list of attending families
 - Each family shows:
   - Family name
@@ -506,11 +550,13 @@
 ---
 
 #### US-T007: Edit Family Participation Details
+
 **As a** trip admin  
 **I want to** edit participation details and add coordination notes for attending families  
 **So that** I can manage special cases, updates, and track important information
 
 **Acceptance Criteria:**
+
 - User can add/edit admin-only notes for specific family's trip participation
 - Notes field: free text, up to 500-1000 characters
 - Use cases: "Arriving late on Friday", "Special accessibility needs", "Confirmed by phone"
@@ -530,11 +576,13 @@
 ### Gear Management
 
 #### US-T008: Create Gear List for Trip
+
 **As a** trip admin  
 **I want to** define what gear items are needed for the trip  
 **So that** families know what to bring
 
 **Acceptance Criteria:**
+
 - User can add gear items with: name, quantity needed
 - User can edit gear item details
 - User can delete gear items (if no commitments)
@@ -547,11 +595,13 @@
 ---
 
 #### US-T009: Assign Gear to Families
+
 **As a** trip admin  
 **I want to** manually assign gear items to specific families  
 **So that** I can ensure even distribution and confirm commitments
 
 **Acceptance Criteria:**
+
 - User can assign gear item to family with quantity
 - User can edit existing assignments
 - User can remove assignments
@@ -567,11 +617,13 @@
 ### Communication
 
 #### US-T010: Generate WhatsApp Messages
+
 **As a** trip admin  
 **I want to** generate WhatsApp message templates  
 **So that** I can communicate with participants efficiently
 
 **Acceptance Criteria:**
+
 - User can select message type: trip announcement, reminder, gear update, attendance update
 - System generates message with trip details pre-filled
 - User can customize message before copying
@@ -585,11 +637,13 @@
 ---
 
 #### US-T011: Send Trip Reminders
+
 **As a** trip admin  
 **I want to** manually trigger reminder messages  
 **So that** I can keep participants informed
 
 **Acceptance Criteria:**
+
 - User can send "X days until trip" reminders
 - User can send "cutoff date approaching" reminders
 - User can send "gear reminder" messages
@@ -604,11 +658,13 @@
 ### Administrative Actions
 
 #### US-T012: Manage Co-Admins for Trip
+
 **As a** trip admin, trip creator, or super-admin  
 **I want to** add or remove trip admins  
 **So that** we can share management responsibilities
 
 **Acceptance Criteria:**
+
 - Trip creators, existing trip admins, and super-admins can assign admins
 - User sees list of current trip admins
 - User can add new admin from list of family members
@@ -625,11 +681,13 @@
 ---
 
 #### US-T013: Cancel Trip
+
 **As a** trip admin  
 **I want to** cancel a trip I'm managing  
 **So that** I can mark trips as cancelled when plans change
 
 **Acceptance Criteria:**
+
 - User sees "Cancel Trip" option with warning
 - User must provide cancellation reason (required text field)
 - User must confirm cancellation
@@ -646,11 +704,13 @@
 ---
 
 #### US-T014: Request Trip Publishing
+
 **As a** trip admin  
 **I want to** request my draft trip to be published  
 **So that** families can discover and join it
 
 **Acceptance Criteria:**
+
 - User sees "Request Publish" button on draft trips
 - User must complete required fields before requesting
 - System validates trip has: name, location, dates, at least one admin
@@ -671,11 +731,13 @@
 ### Family Management
 
 #### US-SA001: View All Families
+
 **As a** super-admin  
 **I want to** see a list of all families in the system  
 **So that** I can manage and oversee family accounts
 
 **Acceptance Criteria:**
+
 - User sees complete list of all families
 - List shows: family name, status, member count, join date
 - User can filter by status: pending, approved, inactive
@@ -688,11 +750,13 @@
 ---
 
 #### US-SA002: Approve New Family Registrations
+
 **As a** super-admin  
 **I want to** approve or reject new family registrations  
 **So that** I can control who joins the community
 
 **Acceptance Criteria:**
+
 - User sees list of families with PENDING status
 - User can view family details before approving
 - User clicks "Approve" to activate family
@@ -707,11 +771,13 @@
 ---
 
 #### US-SA003: Edit Any Family's Details
+
 **As a** super-admin  
 **I want to** edit details of any family  
 **So that** I can fix errors or update information
 
 **Acceptance Criteria:**
+
 - User can edit family name
 - User can edit family member details
 - User can add/remove family members
@@ -725,11 +791,13 @@
 ---
 
 #### US-SA004: Deactivate/Reactivate Families
+
 **As a** super-admin  
 **I want to** deactivate or reactivate family accounts  
 **So that** I can manage problematic accounts without deletion
 
 **Acceptance Criteria:**
+
 - User can deactivate active families
 - Deactivated families cannot sign in
 - Deactivated families removed from future trips
@@ -744,11 +812,13 @@
 ---
 
 #### US-SA005: Delete Families Permanently
+
 **As a** super-admin  
 **I want to** permanently delete family accounts  
 **So that** I can remove families from the system
 
 **Acceptance Criteria:**
+
 - User sees "Delete Permanently" option with strong warning
 - User must confirm deletion twice
 - System lists all associated data that will be deleted
@@ -764,11 +834,13 @@
 ### User Management
 
 #### US-SA006: View All Users
+
 **As a** super-admin  
 **I want to** see a list of all individual users  
 **So that** I can manage user accounts and roles
 
 **Acceptance Criteria:**
+
 - User sees list of all users (adults only, as children don't have accounts)
 - List shows: name, email, family, role, status
 - User can filter by role: FAMILY, TRIP_ADMIN, SUPER_ADMIN
@@ -781,11 +853,13 @@
 ---
 
 #### US-SA007: Edit User Details
+
 **As a** super-admin  
 **I want to** edit any user's details  
 **So that** I can fix errors or update information
 
 **Acceptance Criteria:**
+
 - User can edit user name
 - User can edit user email
 - User can change user's family association
@@ -799,11 +873,13 @@
 ---
 
 #### US-SA008: Manage User Roles
+
 **As a** super-admin  
 **I want to** assign or remove roles from users  
 **So that** I can control access permissions
 
 **Acceptance Criteria:**
+
 - User can promote FAMILY to TRIP_ADMIN
 - User can promote TRIP_ADMIN to SUPER_ADMIN
 - User can demote SUPER_ADMIN to TRIP_ADMIN
@@ -820,11 +896,13 @@
 ### Trip Management
 
 #### US-SA009: View All Trips
+
 **As a** super-admin  
 **I want to** see all trips in the system  
 **So that** I can oversee trip management
 
 **Acceptance Criteria:**
+
 - User sees complete list of all trips
 - List shows: name, dates, status, admins, participant count
 - User can filter by status: draft, published, completed
@@ -837,11 +915,13 @@
 ---
 
 #### US-SA010: Publish Draft Trips
+
 **As a** super-admin  
 **I want to** review and publish draft trips  
 **So that** I can control which trips are available to families
 
 **Acceptance Criteria:**
+
 - User sees list of draft trips awaiting approval
 - User can review trip details before publishing
 - User must assign at least one trip admin before publishing
@@ -855,11 +935,13 @@
 ---
 
 #### US-SA011: Assign Trip Admins to Any Trip
+
 **As a** super-admin  
 **I want to** assign or remove trip admins for any trip  
 **So that** I can ensure proper trip management
 
 **Acceptance Criteria:**
+
 - User can add trip admin to any trip
 - User can remove trip admin from any trip
 - System prevents removing last admin
@@ -873,11 +955,13 @@
 ---
 
 #### US-SA012: Delete Any Trip
+
 **As a** super-admin  
 **I want to** delete any trip from the system  
 **So that** I can remove inappropriate or problematic trips
 
 **Acceptance Criteria:**
+
 - User can delete any trip regardless of status
 - User must confirm deletion
 - System warns if families are participating
@@ -893,11 +977,13 @@
 ### System Analytics & Reporting
 
 #### US-SA013: View System Dashboard
+
 **As a** super-admin  
 **I want to** see system-wide statistics  
 **So that** I can monitor community health and engagement
 
 **Acceptance Criteria:**
+
 - Dashboard shows total families (by status)
 - Dashboard shows total users (adults/children)
 - Dashboard shows total trips (by status)
@@ -912,11 +998,13 @@
 ---
 
 #### US-SA014: Generate System Reports
+
 **As a** super-admin  
 **I want to** generate reports on trip and family activity  
 **So that** I can analyze community engagement
 
 **Acceptance Criteria:**
+
 - User can generate report: families registered over time
 - User can generate report: trip participation rates
 - User can generate report: most active families
@@ -929,11 +1017,13 @@
 ---
 
 #### US-SA015: Permanently Delete Trip
+
 **As a** super-admin  
 **I want to** permanently delete trips from the system  
 **So that** I can remove erroneous or inappropriate trips completely
 
 **Acceptance Criteria:**
+
 - User can access cancelled trips list
 - User sees "Permanently Delete" option on cancelled trips
 - User must confirm deletion with extra warning
@@ -948,11 +1038,13 @@
 ---
 
 #### US-SA015: Export System Data
+
 **As a** super-admin  
 **I want to** export various data reports  
 **So that** I can analyze data externally or comply with regulations
 
 **Acceptance Criteria:**
+
 - User can export family list with details
 - User can export trip attendance reports
 - User can export gear statistics
@@ -970,11 +1062,13 @@
 ### Error Handling
 
 #### US-X001: Graceful Error Messages
+
 **As a** user  
 **I want to** see clear, helpful error messages  
 **So that** I understand what went wrong and how to fix it
 
 **Acceptance Criteria:**
+
 - All errors display in Hebrew (RTL)
 - Network errors show "Connection problem, please try again"
 - Validation errors show specific field issues
@@ -987,11 +1081,13 @@
 ---
 
 #### US-X002: Loading States
+
 **As a** user  
 **I want to** see loading indicators during operations  
 **So that** I know the system is working
 
 **Acceptance Criteria:**
+
 - All data fetches show loading spinner
 - Button clicks show loading state during processing
 - Long operations show progress indicators
@@ -1005,11 +1101,13 @@
 ### Notifications
 
 #### US-X003: In-App Notifications
+
 **As a** user  
 **I want to** receive notifications for important events  
 **So that** I stay informed about changes
 
 **Acceptance Criteria:**
+
 - User sees notification badge for unread items
 - User can view notification list
 - Notifications include: trip changes, approval decisions, gear assignments
@@ -1022,11 +1120,13 @@
 ---
 
 #### US-X004: WhatsApp Notification Preferences
+
 **As a** user  
 **I want to** control which WhatsApp notifications I receive  
 **So that** I'm not overwhelmed with messages
 
 **Acceptance Criteria:**
+
 - User can enable/disable WhatsApp notifications
 - User can choose notification types: trip updates, reminders, gear changes
 - User can set notification frequency: immediate, daily digest, weekly
@@ -1040,11 +1140,13 @@
 ### Accessibility & UX
 
 #### US-X005: Mobile Responsive Design
+
 **As a** mobile user  
 **I want to** use all features on my phone  
 **So that** I can manage trips on the go
 
 **Acceptance Criteria:**
+
 - All pages responsive on mobile devices
 - Touch-friendly buttons and controls
 - Readable text sizes on small screens
@@ -1057,11 +1159,13 @@
 ---
 
 #### US-X006: Hebrew RTL Support
+
 **As a** Hebrew-speaking user  
 **I want to** see proper RTL layout  
 **So that** the interface is natural to read
 
 **Acceptance Criteria:**
+
 - All text displays right-to-left
 - Form fields aligned to right
 - Navigation flows right-to-left
@@ -1074,11 +1178,13 @@
 ---
 
 #### US-X007: Keyboard Navigation
+
 **As a** user preferring keyboard navigation  
 **I want to** access all features via keyboard  
 **So that** I can use the app without a mouse
 
 **Acceptance Criteria:**
+
 - All interactive elements keyboard accessible
 - Tab order is logical (RTL appropriate)
 - Form submission works with Enter key
@@ -1093,11 +1199,13 @@
 ### Data & Privacy
 
 #### US-X008: Data Privacy Controls
+
 **As a** user  
 **I want to** control my family's data visibility  
 **So that** I can maintain privacy
 
 **Acceptance Criteria:**
+
 - User can hide profile photos from other families
 - User can hide children's exact ages (show age ranges)
 - User can control who sees contact information
@@ -1109,11 +1217,13 @@
 ---
 
 #### US-X009: Data Export (GDPR)
+
 **As a** user  
 **I want to** export my family's data  
 **So that** I can have a copy for my records or transfer
 
 **Acceptance Criteria:**
+
 - User can request data export
 - Export includes all family information
 - Export includes trip participation history
@@ -1126,11 +1236,13 @@
 ---
 
 #### US-X010: Account Deletion Request
+
 **As a** user  
 **I want to** request my family account be deleted  
 **So that** I can remove our data from the system
 
 **Acceptance Criteria:**
+
 - User can request account deletion
 - System explains what will be deleted vs. archived
 - User must confirm deletion request
@@ -1166,6 +1278,7 @@
 ---
 
 **Next Steps:**
+
 1. Review and validate these user stories
 2. Resolve conflicts and answer questions
 3. Create implementation plan for gaps

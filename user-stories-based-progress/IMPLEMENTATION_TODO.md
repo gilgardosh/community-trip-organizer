@@ -10,6 +10,7 @@
 ## Progress Overview
 
 ### Overall Progress
+
 - [ ] **Iteration 1:** Foundation & Infrastructure (0/2 steps)
 - [ ] **Iteration 2:** Trip Cancellation/Deletion (0/6 steps)
 - [ ] **Iteration 3:** Trip Publishing Workflow (0/6 steps)
@@ -22,9 +23,10 @@
 **Total:** 0/48 steps completed (0%)
 
 ### Time Tracking
+
 - **Estimated Total:** 140-168 hours
-- **Time Spent:** ___ hours
-- **Remaining:** ___ hours
+- **Time Spent:** \_\_\_ hours
+- **Remaining:** \_\_\_ hours
 
 ---
 
@@ -32,13 +34,15 @@
 
 **Goal:** Establish error handling and migration framework  
 **Estimated:** 6-8 hours  
-**Actual:** ___ hours  
+**Actual:** \_\_\_ hours  
 **Status:** ⬜ Not Started
 
 ### Step 1.1: Enhanced Error Handling System
-**Estimated:** 3-4 hours | **Actual:** ___ hours
+
+**Estimated:** 3-4 hours | **Actual:** \_\_\_ hours
 
 #### Backend Tasks
+
 - [ ] Create `packages/backend/src/types/errors.ts`
   - [ ] Define `ErrorCode` enum (VALIDATION_ERROR, UNAUTHORIZED, etc.)
   - [ ] Create `ApiError` class extending Error
@@ -57,6 +61,7 @@
   - [ ] Add as last middleware (after all routes)
 
 #### Testing
+
 - [ ] Create `packages/backend/tests/errorHandler.test.ts`
   - [ ] Test ApiError creation with factory functions
   - [ ] Test error middleware catches errors
@@ -70,6 +75,7 @@
 - [ ] Fix any failing tests
 
 #### Verification
+
 - [ ] All tests passing
 - [ ] No TypeScript errors
 - [ ] Hebrew error messages display correctly
@@ -77,16 +83,19 @@
 - [ ] No breaking changes to existing code
 
 #### Completion
+
 - [ ] Code reviewed
 - [ ] Committed with message: "feat: add comprehensive error handling system"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 1.2: Migration Framework Enhancement
-**Estimated:** 2-3 hours | **Actual:** ___ hours
+
+**Estimated:** 2-3 hours | **Actual:** \_\_\_ hours
 
 #### Script Creation
+
 - [ ] Create `packages/backend/scripts/create-migration.sh`
   - [ ] Add shebang and make executable
   - [ ] Validate migration name provided
@@ -113,6 +122,7 @@
   - [ ] Exit with appropriate status code
 
 #### Documentation
+
 - [ ] Create `packages/backend/prisma/MIGRATION_GUIDE.md`
   - [ ] Creating Migrations section
   - [ ] Testing Migrations section
@@ -127,6 +137,7 @@
   - [ ] Add to development workflow
 
 #### Testing
+
 - [ ] Test each script manually
   - [ ] create-migration.sh with valid name
   - [ ] run-migrations.sh with pending migrations
@@ -136,6 +147,7 @@
 - [ ] Test on macOS and/or Linux
 
 #### Verification
+
 - [ ] All scripts executable and working
 - [ ] Scripts include error handling
 - [ ] Documentation complete and clear
@@ -143,9 +155,10 @@
 - [ ] Scripts work on target OS
 
 #### Completion
+
 - [ ] Code reviewed
 - [ ] Committed with message: "feat: enhance database migration framework"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
@@ -153,13 +166,15 @@
 
 **Goal:** Implement soft-delete and hard-delete for trips  
 **Estimated:** 18-22 hours  
-**Actual:** ___ hours  
+**Actual:** \_\_\_ hours  
 **Status:** ⬜ Not Started
 
 ### Step 2.1: Database Schema for Trip Cancellation
-**Estimated:** 2 hours | **Actual:** ___ hours
+
+**Estimated:** 2 hours | **Actual:** \_\_\_ hours
 
 #### Schema Changes
+
 - [ ] Update `packages/backend/prisma/schema.prisma`
   - [ ] Add `deleted: Boolean @default(false)` to Trip model
   - [ ] Add `deletedAt: DateTime?` to Trip model
@@ -168,12 +183,14 @@
   - [ ] Add `@@index([deleted])` to Trip model
 
 #### Migration
+
 - [ ] Generate migration: `npx prisma migrate dev --name add_trip_soft_delete`
 - [ ] Review generated SQL
 - [ ] Verify backward compatibility
 - [ ] Test migration applies successfully
 
 #### Seed Data
+
 - [ ] Update `packages/backend/prisma/seed.ts`
   - [ ] Ensure existing trips have `deleted: false`
   - [ ] Add one sample cancelled trip for testing
@@ -181,6 +198,7 @@
 - [ ] Verify seed data
 
 #### Testing
+
 - [ ] Create `packages/backend/tests/migrations/trip-soft-delete.test.ts`
   - [ ] Test migration applies successfully
   - [ ] Test existing trips have deleted=false
@@ -191,6 +209,7 @@
 - [ ] Run tests: `yarn test trip-soft-delete`
 
 #### Verification
+
 - [ ] Migration applies without errors
 - [ ] Existing trips have deleted=false
 - [ ] All tests passing
@@ -198,16 +217,19 @@
 - [ ] Seed script runs successfully
 
 #### Completion
+
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(db): add soft-delete fields to Trip model"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 2.2: Trip Cancellation Service Layer
-**Estimated:** 4-5 hours | **Actual:** ___ hours
+
+**Estimated:** 4-5 hours | **Actual:** \_\_\_ hours
 
 #### Service Implementation
+
 - [ ] Create `packages/backend/src/services/tripCancellation.service.ts`
   - [ ] Define `CancelTripParams` and `RestoreTripParams` interfaces
   - [ ] Implement `cancelTrip(params)` function
@@ -229,6 +251,7 @@
   - [ ] Implement `canRestoreTrip(tripId, userId)` function
 
 #### Testing
+
 - [ ] Create `packages/backend/tests/services/tripCancellation.service.test.ts`
   - [ ] Test cancelTrip by trip admin (success)
   - [ ] Test cancelTrip by super-admin (success)
@@ -245,6 +268,7 @@
 - [ ] Run tests: `yarn test tripCancellation.service`
 
 #### Verification
+
 - [ ] All tests passing
 - [ ] No TypeScript errors
 - [ ] Uses ApiError from Step 1.1
@@ -252,16 +276,19 @@
 - [ ] Activity log integration (if available)
 
 #### Completion
+
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(service): add trip cancellation service layer"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 2.3: Trip Cancellation API Endpoints
-**Estimated:** 3-4 hours | **Actual:** ___ hours
+
+**Estimated:** 3-4 hours | **Actual:** \_\_\_ hours
 
 #### Controller Implementation
+
 - [ ] Create `packages/backend/src/controllers/tripCancellation.controller.ts`
   - [ ] Implement `cancelTrip(req, res)` controller
     - [ ] Extract tripId, userId, reason
@@ -274,6 +301,7 @@
     - [ ] Return 200 with updated trip
 
 #### Routes
+
 - [ ] Update `packages/backend/src/routes/trips.routes.ts`
   - [ ] Add `POST /trips/:id/cancel` route
   - [ ] Add `POST /trips/:id/restore` route
@@ -281,11 +309,13 @@
   - [ ] Import and use controllers
 
 #### Optional: Validation Middleware
+
 - [ ] Create `packages/backend/src/middleware/validateCancellation.ts` (optional)
   - [ ] Implement reason validation middleware
   - [ ] Add to cancel route
 
 #### Testing
+
 - [ ] Create `packages/backend/tests/api/tripCancellation.test.ts`
   - [ ] Test POST /trips/:id/cancel as trip admin (200)
   - [ ] Test POST /trips/:id/cancel as super-admin (200)
@@ -302,6 +332,7 @@
 - [ ] Run tests: `yarn test tripCancellation`
 
 #### Verification
+
 - [ ] All API tests passing
 - [ ] Proper HTTP status codes
 - [ ] Authorization enforced
@@ -309,16 +340,19 @@
 - [ ] No TypeScript errors
 
 #### Completion
+
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(api): add trip cancellation endpoints"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 2.4: Update Trip Queries for Filtering
-**Estimated:** 3-4 hours | **Actual:** ___ hours
+
+**Estimated:** 3-4 hours | **Actual:** \_\_\_ hours
 
 #### Service Updates
+
 - [ ] Update `packages/backend/src/services/trip.service.ts`
   - [ ] Define `GetTripsParams` interface with userId, userRole, includeDeleted
   - [ ] Update `getTrips(params)` function signature
@@ -331,6 +365,7 @@
     - [ ] Allow admins to view deleted trips
 
 #### Controller Updates
+
 - [ ] Update `packages/backend/src/controllers/trip.controller.ts`
   - [ ] Update `getTrips` controller to use new params
   - [ ] Extract includeDeleted from query params
@@ -338,10 +373,12 @@
   - [ ] Update `getTripById` controller to use new signature
 
 #### Route Updates
+
 - [ ] Update `packages/backend/src/routes/trips.routes.ts`
   - [ ] Ensure routes support ?includeDeleted=true query param
 
 #### Testing - Service
+
 - [ ] Create `packages/backend/tests/services/tripFilter.test.ts`
   - [ ] Test FAMILY never sees deleted trips
   - [ ] Test FAMILY with includeDeleted=true still hides deleted
@@ -355,6 +392,7 @@
 - [ ] Run tests: `yarn test tripFilter`
 
 #### Testing - API
+
 - [ ] Create `packages/backend/tests/api/tripFilter.test.ts`
   - [ ] Test GET /trips as FAMILY (no deleted)
   - [ ] Test GET /trips as TRIP_ADMIN (no deleted by default)
@@ -366,6 +404,7 @@
 - [ ] Run tests: `yarn test api/tripFilter`
 
 #### Verification
+
 - [ ] All tests passing
 - [ ] Families never see deleted trips
 - [ ] Admins can optionally view deleted trips
@@ -373,16 +412,19 @@
 - [ ] No breaking changes to existing behavior
 
 #### Completion
+
 - [ ] Code reviewed
 - [ ] Committed with message: "feat: add role-based filtering for deleted trips"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 2.5: Trip Cancellation Frontend UI
-**Estimated:** 4-5 hours | **Actual:** ___ hours
+
+**Estimated:** 4-5 hours | **Actual:** \_\_\_ hours
 
 #### Component - Cancel Dialog
+
 - [ ] Create `packages/frontend/components/trips/TripCancelDialog.tsx`
   - [ ] Define `TripCancelDialogProps` interface
   - [ ] Use Shadcn Dialog component
@@ -401,6 +443,7 @@
   - [ ] Handle error display
 
 #### Component - Status Badge
+
 - [ ] Create `packages/frontend/components/trips/TripStatusBadge.tsx`
   - [ ] Define `TripStatusBadgeProps` interface
   - [ ] Show "מבוטל" badge if trip.deleted
@@ -409,6 +452,7 @@
   - [ ] Add tooltip with reason (admin only)
 
 #### Integration - Admin Pages
+
 - [ ] Add cancel button to trip admin page
   - [ ] "בטל טיול" button
   - [ ] Red/destructive styling
@@ -417,6 +461,7 @@
   - [ ] Pass trip data to dialog
 
 #### Dashboard Updates
+
 - [ ] Add cancelled trips section to admin dashboard
   - [ ] Tab/filter: "טיולים מבוטלים"
   - [ ] List cancelled trips
@@ -424,6 +469,7 @@
   - [ ] For SUPER_ADMIN: Add "שחזר טיול" (Restore) button
 
 #### Testing
+
 - [ ] Create `packages/frontend/__tests__/components/TripCancelDialog.test.tsx`
   - [ ] Test renders when open
   - [ ] Test does not render when closed
@@ -445,6 +491,7 @@
 - [ ] Run tests: `yarn test TripCancelDialog`
 
 #### Verification
+
 - [ ] All tests passing
 - [ ] Dialog functional and styled
 - [ ] Form validation works
@@ -454,16 +501,19 @@
 - [ ] Accessible (keyboard, screen reader)
 
 #### Completion
+
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(ui): add trip cancellation dialog and status badge"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 2.6: Permanent Deletion (Super-Admin Only)
-**Estimated:** 3-4 hours | **Actual:** ___ hours
+
+**Estimated:** 3-4 hours | **Actual:** \_\_\_ hours
 
 #### Backend - Service
+
 - [ ] Create `packages/backend/src/services/tripDeletion.service.ts`
   - [ ] Define `DeleteTripParams` interface
   - [ ] Implement `permanentlyDeleteTrip(params)` function
@@ -478,6 +528,7 @@
   - [ ] Implement `canPermanentlyDelete(tripId, userId)` function
 
 #### Backend - Controller & Routes
+
 - [ ] Create `packages/backend/src/controllers/tripDeletion.controller.ts`
   - [ ] Implement `permanentlyDeleteTrip(req, res)` controller
   - [ ] Return 204 No Content on success
@@ -486,6 +537,7 @@
   - [ ] Apply authenticate middleware
 
 #### Backend - Testing
+
 - [ ] Create `packages/backend/tests/services/tripDeletion.service.test.ts`
   - [ ] Test successful deletion by super-admin
   - [ ] Test FORBIDDEN when not super-admin
@@ -498,6 +550,7 @@
 - [ ] Run tests: `yarn test tripDeletion`
 
 #### Frontend - Delete Dialog
+
 - [ ] Create `packages/frontend/components/trips/TripDeleteDialog.tsx`
   - [ ] Define `TripDeleteDialogProps` interface
   - [ ] Implement Step 1: Warning screen
@@ -523,6 +576,7 @@
   - [ ] Handle errors
 
 #### Frontend - Integration
+
 - [ ] Update super-admin cancelled trips view
   - [ ] Add "מחק לצמיתות" button
   - [ ] Red/destructive styling
@@ -531,6 +585,7 @@
   - [ ] Opens TripDeleteDialog
 
 #### Frontend - Testing
+
 - [ ] Create `packages/frontend/__tests__/components/TripDeleteDialog.test.tsx`
   - [ ] Test starts on step 1
   - [ ] Test step 1: continue disabled until checkbox
@@ -546,6 +601,7 @@
 - [ ] Run tests: `yarn test TripDeleteDialog`
 
 #### Documentation
+
 - [ ] Create `packages/backend/TRIP_DELETION.md`
   - [ ] When to Use section
   - [ ] Safety Procedures section
@@ -554,6 +610,7 @@
   - [ ] Recovery Procedures section
 
 #### Verification
+
 - [ ] All tests pass (>90% coverage)
 - [ ] Only super-admins can delete
 - [ ] Only cancelled trips can be deleted
@@ -564,10 +621,11 @@
 - [ ] Documentation complete
 
 #### Completion
+
 - [ ] Code reviewed (extra scrutiny - HIGH RISK)
 - [ ] Tested in staging environment
 - [ ] Committed with message: "feat: add permanent deletion for super-admins (high-risk)"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
@@ -575,13 +633,15 @@
 
 **Goal:** Implement request-based publishing system  
 **Estimated:** 20-24 hours  
-**Actual:** ___ hours  
+**Actual:** \_\_\_ hours  
 **Status:** ⬜ Not Started
 
 ### Step 3.1: Database Schema for Publishing
-**Estimated:** 2 hours | **Actual:** ___ hours
+
+**Estimated:** 2 hours | **Actual:** \_\_\_ hours
 
 #### Schema Changes
+
 - [ ] Update `packages/backend/prisma/schema.prisma`
   - [ ] Add `publishRequested: Boolean @default(false)` to Trip
   - [ ] Add `publishRequestedAt: DateTime?` to Trip
@@ -594,12 +654,14 @@
   - [ ] Add `@@index([draft])` to Trip
 
 #### Migration & Data Update
+
 - [ ] Generate migration: `npx prisma migrate dev --name add_trip_publishing_workflow`
 - [ ] Update migration to set publishedAt for existing published trips
 - [ ] Review SQL carefully
 - [ ] Test migration applies
 
 #### Seed Data
+
 - [ ] Update `packages/backend/prisma/seed.ts`
   - [ ] Add published trips with publishedAt
   - [ ] Add draft trip requesting publish
@@ -607,6 +669,7 @@
 - [ ] Run seed: `npx prisma db seed`
 
 #### Testing
+
 - [ ] Create `packages/backend/tests/migrations/trip-publishing.test.ts`
   - [ ] Test migration applies successfully
   - [ ] Test existing published trips have publishedAt
@@ -617,22 +680,26 @@
 - [ ] Run tests: `yarn test trip-publishing`
 
 #### Verification
+
 - [ ] Migration applies without errors
 - [ ] Existing trips updated correctly
 - [ ] All tests passing
 - [ ] Documentation of field purposes
 
 #### Completion
+
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(db): add publishing workflow fields to Trip"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 3.2: Publishing Service Layer
-**Estimated:** 4-5 hours | **Actual:** ___ hours
+
+**Estimated:** 4-5 hours | **Actual:** \_\_\_ hours
 
 #### Service Implementation
+
 - [ ] Create `packages/backend/src/services/tripPublishing.service.ts`
   - [ ] Define interfaces (RequestPublishParams, PublishTripParams, etc.)
   - [ ] Implement `requestPublish(params)` function
@@ -641,6 +708,7 @@
   - [ ] Implement `getPendingPublishRequests()` function
 
 #### Testing
+
 - [ ] Create `packages/backend/tests/services/tripPublishing.service.test.ts`
   - [ ] Test all functions with various scenarios
   - [ ] Test permission checks
@@ -650,43 +718,51 @@
 - [ ] Run tests: `yarn test tripPublishing.service`
 
 #### Verification
+
 - [ ] All tests passing
 - [ ] Permissions enforced
 - [ ] Notifications sent
 - [ ] Activity logged
 
 #### Completion
+
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(service): add trip publishing service layer"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 3.3: Publishing API Endpoints
-**Estimated:** 3-4 hours | **Actual:** ___ hours
+
+**Estimated:** 3-4 hours | **Actual:** \_\_\_ hours
 
 #### Implementation
+
 - [ ] Create `packages/backend/src/controllers/tripPublishing.controller.ts`
 - [ ] Update `packages/backend/src/routes/trips.routes.ts` with new routes
 - [ ] Create `packages/backend/tests/api/tripPublishing.test.ts`
 - [ ] Run tests: `yarn test api/tripPublishing`
 
 #### Verification
+
 - [ ] All API tests passing
 - [ ] Authorization enforced
 - [ ] Hebrew error messages
 
 #### Completion
+
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(api): add trip publishing endpoints"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 3.4: Trip Admin Publishing UI
-**Estimated:** 3-4 hours | **Actual:** ___ hours
+
+**Estimated:** 3-4 hours | **Actual:** \_\_\_ hours
 
 #### Implementation
+
 - [ ] Update `packages/frontend/components/trips/TripForm.tsx`
 - [ ] Add publish request button and badges
 - [ ] Add validation before allowing publish request
@@ -694,21 +770,25 @@
 - [ ] Run tests: `yarn test TripPublishRequest`
 
 #### Verification
+
 - [ ] Tests passing
 - [ ] Validation works
 - [ ] UI properly styled (RTL)
 
 #### Completion
+
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(ui): add request publish button for trip admins"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 3.5: Super-Admin Publishing Dashboard
-**Estimated:** 5-6 hours | **Actual:** ___ hours
+
+**Estimated:** 5-6 hours | **Actual:** \_\_\_ hours
 
 #### Implementation
+
 - [ ] Create `packages/frontend/components/admin/PendingPublishRequests.tsx`
 - [ ] Update super-admin dashboard
 - [ ] Add publish/unpublish actions
@@ -717,34 +797,40 @@
 - [ ] Run tests: `yarn test PendingPublishRequests`
 
 #### Verification
+
 - [ ] Tests passing
 - [ ] Super-admin only
 - [ ] Fully functional
 
 #### Completion
+
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(ui): add super-admin publishing dashboard"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 3.6: Admin Assignment Feature
-**Estimated:** 3-4 hours | **Actual:** ___ hours
+
+**Estimated:** 3-4 hours | **Actual:** \_\_\_ hours
 
 #### Implementation
+
 - [ ] Create admin assignment service
 - [ ] Add API endpoint
 - [ ] Create UI component
 - [ ] Write tests
 
 #### Verification
+
 - [ ] Tests passing
 - [ ] Permissions work correctly
 
 #### Completion
+
 - [ ] Code reviewed
 - [ ] Committed with message: "feat: add trip admin assignment feature"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
@@ -752,11 +838,12 @@
 
 **Goal:** Enable individual family member selection for trips  
 **Estimated:** 28-32 hours  
-**Actual:** ___ hours  
+**Actual:** \_\_\_ hours  
 **Status:** ⬜ Not Started
 
 ### Step 4.1: Database Schema for Per-Member Participation
-**Estimated:** 3 hours | **Actual:** ___ hours
+
+**Estimated:** 3 hours | **Actual:** \_\_\_ hours
 
 - [ ] Update Prisma schema
 - [ ] Add `participatingMemberIds` to TripAttendance
@@ -766,12 +853,13 @@
 - [ ] Create and run tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(db): add per-member participation schema"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 4.2: Member Participation Service Layer
-**Estimated:** 6-7 hours | **Actual:** ___ hours
+
+**Estimated:** 6-7 hours | **Actual:** \_\_\_ hours
 
 - [ ] Create service
 - [ ] Implement member selection validation
@@ -780,12 +868,13 @@
 - [ ] Write comprehensive tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(service): add member participation service"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 4.3: Update Attendance API for Member Selection
-**Estimated:** 4-5 hours | **Actual:** ___ hours
+
+**Estimated:** 4-5 hours | **Actual:** \_\_\_ hours
 
 - [ ] Update attendance endpoint
 - [ ] Add dietary requirements endpoints
@@ -793,12 +882,13 @@
 - [ ] Write integration tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(api): update attendance API for member selection"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 4.4: Member Selection UI Component
-**Estimated:** 4-5 hours | **Actual:** ___ hours
+
+**Estimated:** 4-5 hours | **Actual:** \_\_\_ hours
 
 - [ ] Create `MemberSelectionForm` component
 - [ ] Add checkbox list with member details
@@ -806,12 +896,13 @@
 - [ ] Write component tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(ui): add member selection component"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 4.5: Per-Member Dietary Requirements UI
-**Estimated:** 4-5 hours | **Actual:** ___ hours
+
+**Estimated:** 4-5 hours | **Actual:** \_\_\_ hours
 
 - [ ] Create `PerMemberDietaryRequirements` component
 - [ ] Add text input per selected member
@@ -819,12 +910,13 @@
 - [ ] Write component tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(ui): add per-member dietary requirements"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 4.6: Attendance Flow Integration
-**Estimated:** 4-5 hours | **Actual:** ___ hours
+
+**Estimated:** 4-5 hours | **Actual:** \_\_\_ hours
 
 - [ ] Update `AttendanceMarker` component
 - [ ] Add member selection step
@@ -833,12 +925,13 @@
 - [ ] Write E2E tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(ui): integrate member selection into attendance flow"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 4.7: Admin View for Member Participation
-**Estimated:** 3-4 hours | **Actual:** ___ hours
+
+**Estimated:** 3-4 hours | **Actual:** \_\_\_ hours
 
 - [ ] Update attendance summary component
 - [ ] Show per-member details
@@ -847,7 +940,7 @@
 - [ ] Write component tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(ui): update admin views for member participation"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
@@ -855,23 +948,25 @@
 
 **Goal:** Add coordination notes for trip admins  
 **Estimated:** 8-10 hours  
-**Actual:** ___ hours  
+**Actual:** \_\_\_ hours  
 **Status:** ⬜ Not Started
 
 ### Step 5.1: Database Schema for Admin Notes
-**Estimated:** 1 hour | **Actual:** ___ hours
+
+**Estimated:** 1 hour | **Actual:** \_\_\_ hours
 
 - [ ] Add admin notes fields to TripAttendance
 - [ ] Generate migration
 - [ ] Test migration
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(db): add admin notes to TripAttendance"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 5.2: Admin Notes Service Layer
-**Estimated:** 2-3 hours | **Actual:** ___ hours
+
+**Estimated:** 2-3 hours | **Actual:** \_\_\_ hours
 
 - [ ] Create notes service
 - [ ] Implement update logic
@@ -879,24 +974,26 @@
 - [ ] Write tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(service): add admin notes service"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 5.3: Admin Notes API Endpoint
-**Estimated:** 2 hours | **Actual:** ___ hours
+
+**Estimated:** 2 hours | **Actual:** \_\_\_ hours
 
 - [ ] Add PUT endpoint for notes
 - [ ] Add authorization
 - [ ] Write integration tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(api): add admin notes endpoint"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 5.4: Admin Notes UI Component
-**Estimated:** 3-4 hours | **Actual:** ___ hours
+
+**Estimated:** 3-4 hours | **Actual:** \_\_\_ hours
 
 - [ ] Create `AdminNotesEditor` component
 - [ ] Add to attendance summary
@@ -904,7 +1001,7 @@
 - [ ] Write component tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(ui): add admin notes editor"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
@@ -912,11 +1009,12 @@
 
 **Goal:** Implement configurable approval workflow  
 **Estimated:** 26-30 hours  
-**Actual:** ___ hours  
+**Actual:** \_\_\_ hours  
 **Status:** ⬜ Not Started
 
 ### Step 6.1: Database Schema for Approval
-**Estimated:** 2 hours | **Actual:** ___ hours
+
+**Estimated:** 2 hours | **Actual:** \_\_\_ hours
 
 - [ ] Add status enum to TripAttendance
 - [ ] Add approval flag to Trip model
@@ -924,12 +1022,13 @@
 - [ ] Test migration
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(db): add participation approval schema"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 6.2: Approval Service Layer
-**Estimated:** 6-7 hours | **Actual:** ___ hours
+
+**Estimated:** 6-7 hours | **Actual:** \_\_\_ hours
 
 - [ ] Create approval service
 - [ ] Implement request creation logic
@@ -938,12 +1037,13 @@
 - [ ] Write comprehensive tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(service): add participation approval service"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 6.3: Approval API Endpoints
-**Estimated:** 4-5 hours | **Actual:** ___ hours
+
+**Estimated:** 4-5 hours | **Actual:** \_\_\_ hours
 
 - [ ] Update attendance endpoint
 - [ ] Add GET requests endpoint
@@ -951,24 +1051,26 @@
 - [ ] Write integration tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(api): add participation approval endpoints"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 6.4: Trip Settings for Approval Toggle
-**Estimated:** 2-3 hours | **Actual:** ___ hours
+
+**Estimated:** 2-3 hours | **Actual:** \_\_\_ hours
 
 - [ ] Add toggle to trip form
 - [ ] Update trip creation/edit
 - [ ] Write component tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(ui): add approval requirement toggle"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 6.5: Family Request to Join UI
-**Estimated:** 4-5 hours | **Actual:** ___ hours
+
+**Estimated:** 4-5 hours | **Actual:** \_\_\_ hours
 
 - [ ] Update attendance marker for requests
 - [ ] Add pending state UI
@@ -976,12 +1078,13 @@
 - [ ] Write component tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(ui): add family request to join UI"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 6.6: Admin Approval Dashboard
-**Estimated:** 6-7 hours | **Actual:** ___ hours
+
+**Estimated:** 6-7 hours | **Actual:** \_\_\_ hours
 
 - [ ] Create `ParticipationRequestsList` component
 - [ ] Add approve/reject actions
@@ -990,12 +1093,13 @@
 - [ ] Write E2E tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(ui): add admin approval dashboard"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 6.7: Limited Info for Pending Users
-**Estimated:** 3-4 hours | **Actual:** ___ hours
+
+**Estimated:** 3-4 hours | **Actual:** \_\_\_ hours
 
 - [ ] Update trip detail API endpoint
 - [ ] Filter data based on status
@@ -1003,7 +1107,7 @@
 - [ ] Test access control thoroughly
 - [ ] Code reviewed
 - [ ] Committed with message: "feat: limit trip info for pending approval users"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
@@ -1011,23 +1115,25 @@
 
 **Goal:** Add email verification for new users  
 **Estimated:** 20-24 hours  
-**Actual:** ___ hours  
+**Actual:** \_\_\_ hours  
 **Status:** ⬜ Not Started
 
 ### Step 7.1: Database Schema for Email Verification
-**Estimated:** 1 hour | **Actual:** ___ hours
+
+**Estimated:** 1 hour | **Actual:** \_\_\_ hours
 
 - [ ] Add verification fields to User model
 - [ ] Generate migration
 - [ ] Test migration
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(db): add email verification fields"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 7.2: Email Service Infrastructure
-**Estimated:** 5-6 hours | **Actual:** ___ hours
+
+**Estimated:** 5-6 hours | **Actual:** \_\_\_ hours
 
 - [ ] Set up email provider (SendGrid/AWS SES)
 - [ ] Create email service
@@ -1036,12 +1142,13 @@
 - [ ] Write tests (with mocks)
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(service): add email service infrastructure"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 7.3: Email Verification Logic
-**Estimated:** 3-4 hours | **Actual:** ___ hours
+
+**Estimated:** 3-4 hours | **Actual:** \_\_\_ hours
 
 - [ ] Create verification service
 - [ ] Implement token generation
@@ -1050,24 +1157,26 @@
 - [ ] Write tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(service): add email verification logic"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 7.4: Email Verification API Endpoints
-**Estimated:** 2-3 hours | **Actual:** ___ hours
+
+**Estimated:** 2-3 hours | **Actual:** \_\_\_ hours
 
 - [ ] Add POST /auth/verify-email endpoint
 - [ ] Add POST /auth/resend-verification endpoint
 - [ ] Write integration tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(api): add email verification endpoints"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 7.5: Email Verification Frontend Flow
-**Estimated:** 4-5 hours | **Actual:** ___ hours
+
+**Estimated:** 4-5 hours | **Actual:** \_\_\_ hours
 
 - [ ] Create verification banner
 - [ ] Create verification success page
@@ -1075,12 +1184,13 @@
 - [ ] Write component tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(ui): add email verification UI"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 7.6: Registration Integration
-**Estimated:** 4-5 hours | **Actual:** ___ hours
+
+**Estimated:** 4-5 hours | **Actual:** \_\_\_ hours
 
 - [ ] Update registration flow
 - [ ] Send verification email on signup
@@ -1089,7 +1199,7 @@
 - [ ] Write E2E tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat: integrate email verification into registration"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
@@ -1097,23 +1207,25 @@
 
 **Goal:** Enable self-service password reset  
 **Estimated:** 14-18 hours  
-**Actual:** ___ hours  
+**Actual:** \_\_\_ hours  
 **Status:** ⬜ Not Started
 
 ### Step 8.1: Database Schema for Password Reset
-**Estimated:** 1 hour | **Actual:** ___ hours
+
+**Estimated:** 1 hour | **Actual:** \_\_\_ hours
 
 - [ ] Add reset token fields to User model
 - [ ] Generate migration
 - [ ] Test migration
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(db): add password reset fields"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 8.2: Password Reset Service Layer
-**Estimated:** 3-4 hours | **Actual:** ___ hours
+
+**Estimated:** 3-4 hours | **Actual:** \_\_\_ hours
 
 - [ ] Create password reset service
 - [ ] Implement token generation
@@ -1122,24 +1234,26 @@
 - [ ] Write tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(service): add password reset service"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 8.3: Password Reset API Endpoints
-**Estimated:** 2-3 hours | **Actual:** ___ hours
+
+**Estimated:** 2-3 hours | **Actual:** \_\_\_ hours
 
 - [ ] Add POST /auth/forgot-password endpoint
 - [ ] Add POST /auth/reset-password endpoint
 - [ ] Write integration tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(api): add password reset endpoints"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 8.4: Password Reset Frontend Flow
-**Estimated:** 4-5 hours | **Actual:** ___ hours
+
+**Estimated:** 4-5 hours | **Actual:** \_\_\_ hours
 
 - [ ] Create forgot password page
 - [ ] Create reset password page
@@ -1147,12 +1261,13 @@
 - [ ] Write component tests
 - [ ] Code reviewed
 - [ ] Committed with message: "feat(ui): add password reset UI"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ### Step 8.5: Integration & E2E Testing
-**Estimated:** 4-5 hours | **Actual:** ___ hours
+
+**Estimated:** 4-5 hours | **Actual:** \_\_\_ hours
 
 - [ ] Write E2E tests
 - [ ] Test email delivery
@@ -1161,13 +1276,14 @@
 - [ ] Create documentation
 - [ ] Code reviewed
 - [ ] Committed with message: "test: add E2E tests for password reset"
-- [ ] Step marked complete: **Date:** ___
+- [ ] Step marked complete: **Date:** \_\_\_
 
 ---
 
 ## FINAL CHECKLIST
 
 ### Pre-Production
+
 - [ ] All 48 steps completed
 - [ ] All tests passing (backend + frontend)
 - [ ] No TypeScript errors
@@ -1178,6 +1294,7 @@
 - [ ] CHANGELOG.md created/updated
 
 ### Testing
+
 - [ ] Manual testing in dev environment
 - [ ] Staging deployment successful
 - [ ] Staging testing complete
@@ -1186,18 +1303,21 @@
 - [ ] Accessibility testing done
 
 ### Database
+
 - [ ] All migrations tested
 - [ ] Migration rollback procedures tested
 - [ ] Database backup before production deployment
 - [ ] Migration plan documented
 
 ### Documentation
+
 - [ ] User manual updated
 - [ ] API documentation updated
 - [ ] Admin guides created
 - [ ] Deployment guide updated
 
 ### Deployment
+
 - [ ] Production deployment plan ready
 - [ ] Rollback plan documented
 - [ ] Monitoring and alerting configured
@@ -1209,16 +1329,19 @@
 ## Notes & Issues
 
 ### Blockers
+
 _Document any blockers here_
 
 ### Issues Encountered
+
 _Document issues and resolutions_
 
 ### Deviations from Plan
+
 _Document any changes to the original plan_
 
 ---
 
 **Last Updated:** October 18, 2025  
-**Completed By:** ___  
-**Total Time:** ___ hours
+**Completed By:** **_  
+**Total Time:** _** hours

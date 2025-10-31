@@ -20,12 +20,12 @@ This document outlines the procedures for recovering from various disaster scena
 
 ### Emergency Contacts
 
-| Role | Name | Contact | Availability |
-|------|------|---------|--------------|
-| Lead Developer | TBD | TBD | 24/7 |
-| Database Admin | TBD | TBD | Business hours |
-| DevOps | TBD | TBD | 24/7 |
-| Project Manager | TBD | TBD | Business hours |
+| Role            | Name | Contact | Availability   |
+| --------------- | ---- | ------- | -------------- |
+| Lead Developer  | TBD  | TBD     | 24/7           |
+| Database Admin  | TBD  | TBD     | Business hours |
+| DevOps          | TBD  | TBD     | 24/7           |
+| Project Manager | TBD  | TBD     | Business hours |
 
 ### Critical Resources
 
@@ -44,11 +44,13 @@ This document outlines the procedures for recovering from various disaster scena
 Automated backups run **daily at 2:00 AM UTC** via GitHub Actions.
 
 **Retention Policy**:
+
 - Daily backups: 30 days
 - Weekly backups: 90 days
 - Monthly backups: 1 year
 
 **Backup Contents**:
+
 - ✅ Complete database dump
 - ✅ Schema migrations
 - ✅ Application configuration
@@ -89,6 +91,7 @@ gunzip -t ./backups/backup_20251016_120000.sql.gz
 ### Scenario 1: Database Corruption
 
 **Symptoms**:
+
 - Database connection errors
 - Data integrity violations
 - Query failures
@@ -96,6 +99,7 @@ gunzip -t ./backups/backup_20251016_120000.sql.gz
 **Recovery Steps**:
 
 1. **Identify Issue**:
+
    ```bash
    cd packages/backend
    npm run db:health:check
@@ -105,6 +109,7 @@ gunzip -t ./backups/backup_20251016_120000.sql.gz
    - In Vercel Dashboard: Disable deployment
 
 3. **Restore from Backup**:
+
    ```bash
    # Download latest backup
    # Run restore script
@@ -113,6 +118,7 @@ gunzip -t ./backups/backup_20251016_120000.sql.gz
    ```
 
 4. **Verify Recovery**:
+
    ```bash
    npm run db:health:check
    npx prisma migrate status
@@ -128,6 +134,7 @@ gunzip -t ./backups/backup_20251016_120000.sql.gz
 ### Scenario 2: Deployment Failure
 
 **Symptoms**:
+
 - Build errors in Vercel
 - Application not accessible
 - 500 errors
@@ -139,11 +146,12 @@ gunzip -t ./backups/backup_20251016_120000.sql.gz
    - Review error logs
 
 2. **Rollback to Previous Version**:
+
    ```bash
    # Method 1: Via Vercel Dashboard
    # - Find last successful deployment
    # - Click "Promote to Production"
-   
+
    # Method 2: Via Git
    git revert HEAD
    git push origin main
@@ -161,6 +169,7 @@ gunzip -t ./backups/backup_20251016_120000.sql.gz
 ### Scenario 3: Data Loss
 
 **Symptoms**:
+
 - Missing records
 - Deleted data
 - User reports data loss
@@ -172,24 +181,27 @@ gunzip -t ./backups/backup_20251016_120000.sql.gz
    - Determine timeframe
 
 2. **Locate Backup**:
+
    ```bash
    # Find backup before data loss
    ls -lh ./backups/ | grep "202510"
    ```
 
 3. **Extract Specific Data**:
+
    ```bash
    # Restore to temporary database
    createdb temp_recovery
-   
+
    # Load backup
    gunzip -c backup.sql.gz | psql temp_recovery
-   
+
    # Export specific data
    psql temp_recovery -c "COPY (SELECT * FROM trips WHERE ...) TO '/tmp/recovery.csv' CSV HEADER"
    ```
 
 4. **Import to Production**:
+
    ```bash
    # Import recovered data
    psql "$DATABASE_URL" -c "\COPY trips FROM '/tmp/recovery.csv' CSV HEADER"
@@ -206,6 +218,7 @@ gunzip -t ./backups/backup_20251016_120000.sql.gz
 ### Scenario 4: Complete System Failure
 
 **Symptoms**:
+
 - Vercel platform unavailable
 - Database unreachable
 - Multiple component failures
@@ -223,20 +236,23 @@ gunzip -t ./backups/backup_20251016_120000.sql.gz
    - Set expectations
 
 3. **Restore from Backup**:
-   
+
    a. **Setup New Database**:
+
    ```bash
    # Create new database instance
    # Update DATABASE_URL
    ```
-   
+
    b. **Restore Data**:
+
    ```bash
    DATABASE_URL="new-database-url" \
    ./scripts/restore-database.sh ./backups/latest.sql.gz
    ```
-   
+
    c. **Redeploy Application**:
+
    ```bash
    # Update environment variables
    # Redeploy on Vercel
@@ -256,6 +272,7 @@ gunzip -t ./backups/backup_20251016_120000.sql.gz
 ### Scenario 5: Security Breach
 
 **Symptoms**:
+
 - Unauthorized access
 - Data breach
 - Compromised credentials
@@ -273,6 +290,7 @@ gunzip -t ./backups/backup_20251016_120000.sql.gz
    - Determine breach scope
 
 3. **Secure System**:
+
    ```bash
    # Rotate all secrets
    # Update JWT_SECRET

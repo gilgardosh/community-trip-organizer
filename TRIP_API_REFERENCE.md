@@ -1,12 +1,15 @@
 # Trip API Quick Reference
 
 ## Base URL
+
 ```
 /api/trips
 ```
 
 ## Authentication
+
 All endpoints require authentication via JWT token in the Authorization header:
+
 ```
 Authorization: Bearer <token>
 ```
@@ -14,11 +17,13 @@ Authorization: Bearer <token>
 ## Endpoints
 
 ### 1. Create Trip
+
 **POST** `/api/trips`
 
 **Access:** TRIP_ADMIN, SUPER_ADMIN
 
 **Request Body:**
+
 ```json
 {
   "name": "Summer Camp 2024",
@@ -34,6 +39,7 @@ Authorization: Bearer <token>
 **Response:** Trip object with status 201
 
 **Notes:**
+
 - Trip is created in draft mode by default
 - All dates are ISO 8601 format
 - Only `name`, `location`, `startDate`, and `endDate` are required
@@ -41,11 +47,13 @@ Authorization: Bearer <token>
 ---
 
 ### 2. Get All Trips
+
 **GET** `/api/trips`
 
 **Access:** All authenticated users
 
 **Query Parameters:**
+
 - `draft` (boolean): Filter by draft status
 - `startDateFrom` (ISO date): Filter trips starting from this date
 - `startDateTo` (ISO date): Filter trips starting before this date
@@ -54,6 +62,7 @@ Authorization: Bearer <token>
 **Response:** Array of trip objects
 
 **Role-based filtering:**
+
 - FAMILY: Only published trips
 - TRIP_ADMIN: Only trips they manage
 - SUPER_ADMIN: All trips
@@ -61,6 +70,7 @@ Authorization: Bearer <token>
 ---
 
 ### 3. Get Trip by ID
+
 **GET** `/api/trips/:id`
 
 **Access:** All authenticated users (with restrictions)
@@ -68,17 +78,20 @@ Authorization: Bearer <token>
 **Response:** Trip object with full details
 
 **Notes:**
+
 - Draft trips only visible to admins and super-admins
 - TRIP_ADMIN can only view trips they manage
 
 ---
 
 ### 4. Update Trip
+
 **PUT** `/api/trips/:id`
 
 **Access:** Trip admins of this trip, SUPER_ADMIN
 
 **Request Body:** (all fields optional)
+
 ```json
 {
   "name": "Updated Trip Name",
@@ -94,6 +107,7 @@ Authorization: Bearer <token>
 **Response:** Updated trip object
 
 **Notes:**
+
 - Cannot update past trips (except SUPER_ADMIN)
 - End date must be after start date
 - Attendance cutoff must be before start date
@@ -101,6 +115,7 @@ Authorization: Bearer <token>
 ---
 
 ### 5. Publish Trip
+
 **POST** `/api/trips/:id/publish`
 
 **Access:** SUPER_ADMIN only
@@ -108,12 +123,14 @@ Authorization: Bearer <token>
 **Response:** Published trip object
 
 **Notes:**
+
 - Trip must have at least one admin before publishing
 - Published trips become visible to all users
 
 ---
 
 ### 6. Unpublish Trip
+
 **POST** `/api/trips/:id/unpublish`
 
 **Access:** SUPER_ADMIN only
@@ -123,11 +140,13 @@ Authorization: Bearer <token>
 ---
 
 ### 7. Assign Admins (Replace All)
+
 **PUT** `/api/trips/:id/admins`
 
 **Access:** SUPER_ADMIN only
 
 **Request Body:**
+
 ```json
 {
   "adminIds": ["user-id-1", "user-id-2"]
@@ -137,12 +156,14 @@ Authorization: Bearer <token>
 **Response:** Trip with updated admins
 
 **Notes:**
+
 - Replaces all existing admins
 - At least one admin required
 
 ---
 
 ### 8. Add Admin
+
 **POST** `/api/trips/:id/admins/:adminId`
 
 **Access:** SUPER_ADMIN only
@@ -150,12 +171,14 @@ Authorization: Bearer <token>
 **Response:** Trip with updated admins
 
 **Notes:**
+
 - Adds a single admin without affecting others
 - Admin must be an adult user
 
 ---
 
 ### 9. Remove Admin
+
 **DELETE** `/api/trips/:id/admins/:adminId`
 
 **Access:** SUPER_ADMIN only
@@ -163,20 +186,24 @@ Authorization: Bearer <token>
 **Response:** Trip with updated admins
 
 **Notes:**
+
 - Cannot remove last admin from published trip
 - Can remove admins from draft trips freely
 
 ---
 
 ### 10. Mark Attendance
+
 **POST** `/api/trips/:id/attendance`
 
-**Access:** 
+**Access:**
+
 - FAMILY: Own family only
 - TRIP_ADMIN: Any family in their trips
 - SUPER_ADMIN: Any family
 
 **Request Body:**
+
 ```json
 {
   "familyId": "family-id-123",
@@ -187,6 +214,7 @@ Authorization: Bearer <token>
 **Response:** Trip with updated attendees
 
 **Notes:**
+
 - Cannot mark attendance for draft trips
 - Cannot mark after attendance cutoff date
 - Only approved, active families can attend
@@ -195,6 +223,7 @@ Authorization: Bearer <token>
 ---
 
 ### 11. Get Trip Attendees
+
 **GET** `/api/trips/:id/attendees`
 
 **Access:** All authenticated users (based on role)
@@ -204,6 +233,7 @@ Authorization: Bearer <token>
 ---
 
 ### 12. Delete Trip
+
 **DELETE** `/api/trips/:id`
 
 **Access:** SUPER_ADMIN only
@@ -211,6 +241,7 @@ Authorization: Bearer <token>
 **Response:** Success message
 
 **Notes:**
+
 - Permanently deletes the trip
 - Cascade deletes all related data (attendees, gear items, etc.)
 
@@ -219,6 +250,7 @@ Authorization: Bearer <token>
 ## Response Format
 
 ### Success Response
+
 ```json
 {
   "id": "trip-id-123",
@@ -269,6 +301,7 @@ Authorization: Bearer <token>
 ```
 
 ### Error Response
+
 ```json
 {
   "message": "Error description",

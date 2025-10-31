@@ -112,7 +112,7 @@ import { updateDietaryRequirements } from '@/lib/api';
 await updateDietaryRequirements(
   'trip-id',
   'family-id',
-  'צמחוני, אלרגיה לאגוזים'
+  'צמחוני, אלרגיה לאגוזים',
 );
 ```
 
@@ -127,7 +127,7 @@ await addScheduleItem('trip-id', {
   endTime: '09:00',
   title: 'ארוחת בוקר',
   description: 'ארוחת בוקר משפחתית',
-  location: 'מסעדת הבוקר'
+  location: 'מסעדת הבוקר',
 });
 ```
 
@@ -146,10 +146,10 @@ const schedule = await getTripSchedule('trip-id');
 ```tsx
 import { TripSchedule } from '@/components/trip';
 
-<TripSchedule 
-  scheduleItems={trip.scheduleItems} 
+<TripSchedule
+  scheduleItems={trip.scheduleItems}
   tripStartDate={trip.startDate}
-/>
+/>;
 ```
 
 ### TripLocation
@@ -157,11 +157,11 @@ import { TripSchedule } from '@/components/trip';
 ```tsx
 import { TripLocation } from '@/components/trip';
 
-<TripLocation 
+<TripLocation
   location="חוף הכרמל, חיפה"
   description="חוף משפחתי עם מתקנים"
   showMap={true}
-/>
+/>;
 ```
 
 ### AttendanceSummary
@@ -169,7 +169,7 @@ import { TripLocation } from '@/components/trip';
 ```tsx
 import { AttendanceSummary } from '@/components/trip';
 
-<AttendanceSummary attendees={trip.attendees} />
+<AttendanceSummary attendees={trip.attendees} />;
 ```
 
 ### TripFilters
@@ -179,10 +179,7 @@ import { TripFilters } from '@/components/trip';
 
 const [filters, setFilters] = useState({});
 
-<TripFilters 
-  onFilterChange={setFilters}
-  showDraftFilter={userIsAdmin}
-/>
+<TripFilters onFilterChange={setFilters} showDraftFilter={userIsAdmin} />;
 ```
 
 ## File Structure
@@ -270,16 +267,19 @@ npm test
 ## Troubleshooting
 
 ### Maps Not Showing
+
 - Verify `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` is set
 - Check API key has Maps Embed API enabled
 - Check browser console for errors
 
 ### Schedule Items Not Saving
+
 - Verify user has admin role
 - Check trip is not in draft mode (for schedule visibility)
 - Check network tab for API errors
 
 ### Dietary Requirements Not Updating
+
 - Ensure family is attending the trip
 - Verify attendance cutoff hasn't passed
 - Check user permissions
@@ -287,6 +287,7 @@ npm test
 ## Support
 
 For issues or questions:
+
 1. Check the comprehensive documentation: `TRIP_ADVANCED_FEATURES.md`
 2. Review API reference: `TRIP_API_REFERENCE.md`
 3. Check the specification: `SPEC.md`
