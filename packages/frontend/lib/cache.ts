@@ -10,7 +10,7 @@ interface CacheEntry<T> {
 }
 
 class ApiCache {
-  private cache: Map<string, CacheEntry<any>>;
+  private cache: Map<string, CacheEntry<unknown>>;
   private defaultTTL: number;
 
   constructor(defaultTTL: number = 5 * 60 * 1000) {
@@ -89,17 +89,17 @@ export const apiCache = new ApiCache();
  * Cache decorator for async functions
  */
 export function withCache<T>(
-  key: string | ((...args: any[]) => string),
+  key: string | ((...args: unknown[]) => string),
   ttl?: number,
 ) {
   return function (
-    target: any,
+    target: unknown,
     propertyKey: string,
     descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
 
-    descriptor.value = async function (...args: any[]): Promise<T> {
+    descriptor.value = async function (...args: unknown[]): Promise<T> {
       const cacheKey = typeof key === 'function' ? key(...args) : key;
 
       // Try to get from cache

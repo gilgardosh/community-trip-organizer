@@ -7,7 +7,7 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {
-    ignores: ['eslint.config.js', 'vitest.config.ts', 'dist/**'],
+    ignores: ['eslint.config.js', 'vitest.config.ts', 'dist/**', '**/tests/**/*'],
   },
   {
     languageOptions: {

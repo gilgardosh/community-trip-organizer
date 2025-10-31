@@ -11,7 +11,7 @@ import { z } from 'zod';
  */
 const envSchema = z.object({
   // API Configuration
-  NEXT_PUBLIC_API_URL: z.string().url(),
+  NEXT_PUBLIC_API_URL: z.url(),
 
   // OAuth
   NEXT_PUBLIC_GOOGLE_CLIENT_ID: z.string().min(1),
@@ -24,29 +24,29 @@ const envSchema = z.object({
   // Feature Flags
   NEXT_PUBLIC_ENABLE_REGISTRATION: z
     .string()
-    .transform((v) => v === 'true')
-    .default('true'),
+    .default('true')
+    .transform((v) => v === 'true'),
   NEXT_PUBLIC_ENABLE_FACEBOOK_AUTH: z
     .string()
-    .transform((v) => v === 'true')
-    .default('false'),
+    .default('false')
+    .transform((v) => v === 'true'),
   NEXT_PUBLIC_ENABLE_DARK_MODE: z
     .string()
-    .transform((v) => v === 'true')
-    .default('true'),
+    .default('true')
+    .transform((v) => v === 'true'),
 
   // Development Settings
   NEXT_PUBLIC_DEBUG: z
     .string()
-    .transform((v) => v === 'true')
-    .default('false'),
+    .default('false')
+    .transform((v) => v === 'true'),
   NEXT_PUBLIC_SHOW_DEV_TOOLS: z
     .string()
-    .transform((v) => v === 'true')
-    .default('false'),
+    .default('false')
+    .transform((v) => v === 'true'),
 
   // Image Configuration
-  NEXT_PUBLIC_MAX_IMAGE_SIZE: z.string().transform(Number).default('5'),
+  NEXT_PUBLIC_MAX_IMAGE_SIZE: z.string().default('5').transform(Number),
   NEXT_PUBLIC_ALLOWED_IMAGE_FORMATS: z
     .string()
     .default('image/jpeg,image/png,image/webp'),
@@ -82,7 +82,7 @@ function parseEnv(): ClientEnv {
     typeof window === 'undefined'
       ? process.env
       : Object.fromEntries(
-          Object.entries(window as any).filter(([key]) =>
+          Object.entries(window).filter(([key]) =>
             key.startsWith('NEXT_PUBLIC_'),
           ),
         );
@@ -91,7 +91,7 @@ function parseEnv(): ClientEnv {
     return envSchema.parse(envVars);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const missingVars = error.errors
+      const missingVars = error.issues
         .map((err) => `  - ${err.path.join('.')}: ${err.message}`)
         .join('\n');
 

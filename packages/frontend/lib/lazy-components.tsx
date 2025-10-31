@@ -33,7 +33,7 @@ const ErrorFallback = ({ error }: { error: Error }) => {
 /**
  * Lazy load component with loading state
  */
-export function lazyLoad<T extends ComponentType<any>>(
+export function lazyLoad<T extends ComponentType<unknown>>(
   importFunc: () => Promise<{ default: T }>,
   options?: {
     loading?: ComponentType;
@@ -48,7 +48,7 @@ export function lazyLoad<T extends ComponentType<any>>(
 
 // ===== Admin Components (Heavy) =====
 export const LazyAdminDashboard = lazyLoad(
-  () => import('@/components/admin/AdminDashboard'),
+  () => import('../components/admin/AdminDashboard'),
   { ssr: false },
 );
 
