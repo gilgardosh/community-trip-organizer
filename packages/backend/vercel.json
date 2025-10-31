@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "yarn build",
+  "buildCommand": "yarn build && yarn prisma generate",
   "installCommand": "yarn install",
   "outputDirectory": "dist",
   "build": {
