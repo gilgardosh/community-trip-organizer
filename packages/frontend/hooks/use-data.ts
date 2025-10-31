@@ -102,7 +102,7 @@ export function useData<T>(
   // Single effect for initial fetch and auto-refresh
   useEffect(() => {
     isMounted.current = true;
-    
+
     fetchData();
 
     if (autoRefresh && refreshInterval > 0) {

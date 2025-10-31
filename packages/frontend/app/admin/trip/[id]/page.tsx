@@ -154,7 +154,10 @@ export default function AdminTripDetailPage() {
                       <ul className="space-y-2">
                         {trip.attendees.map((attendee, index) => (
                           <li
-                            key={attendee.id || `attendee-${attendee.familyId}-${index}`}
+                            key={
+                              attendee.id ||
+                              `attendee-${attendee.familyId}-${index}`
+                            }
                             className="text-sm border-b pb-2"
                           >
                             {attendee.family.name || 'משפחה ללא שם'} (

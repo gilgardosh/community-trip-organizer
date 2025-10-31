@@ -30,7 +30,7 @@ export default function AdminGearPage() {
         setError(null);
         const allTrips = await getTrips();
         setTrips(allTrips);
-        
+
         // Auto-select the first trip if available
         if (allTrips.length > 0) {
           setSelectedTripId(allTrips[0].id);
@@ -104,20 +104,19 @@ export default function AdminGearPage() {
                   <SelectContent>
                     {trips.map((trip) => (
                       <SelectItem key={trip.id} value={trip.id}>
-                        {trip.name} - {new Date(trip.startDate).toLocaleDateString('he-IL')}
+                        {trip.name} -{' '}
+                        {new Date(trip.startDate).toLocaleDateString('he-IL')}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
-              
+
               {trips.length === 0 && (
                 <div className="text-center py-8 text-muted-foreground">
                   <Package className="h-12 w-12 mx-auto mb-3 opacity-50" />
                   <p>אין טיולים זמינים</p>
-                  <p className="text-sm mt-2">
-                    צור טיול חדש כדי להוסיף ציוד
-                  </p>
+                  <p className="text-sm mt-2">צור טיול חדש כדי להוסיף ציוד</p>
                 </div>
               )}
             </div>
@@ -126,9 +125,11 @@ export default function AdminGearPage() {
 
         {/* Gear List */}
         {selectedTripId && (
-          <GearList 
-            tripId={selectedTripId} 
-            canManage={user.role === 'TRIP_ADMIN' || user.role === 'SUPER_ADMIN'}
+          <GearList
+            tripId={selectedTripId}
+            canManage={
+              user.role === 'TRIP_ADMIN' || user.role === 'SUPER_ADMIN'
+            }
           />
         )}
       </div>
