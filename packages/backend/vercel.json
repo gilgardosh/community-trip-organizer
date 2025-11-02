@@ -1,8 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "buildCommand": "yarn prisma generate && yarn tsc",
-  "installCommand": "yarn install",
+  "buildCommand": "yarn prisma generate && yarn build",
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -10,7 +9,7 @@
     }
   ],
   "functions": {
-    "api/index.ts": {
+    "api/index.mjs": {
       "memory": 1024,
       "maxDuration": 10
     }

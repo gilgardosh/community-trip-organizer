@@ -5,6 +5,7 @@
   "main": "dist/src/index.js",
   "scripts": {
     "build": "tsc",
+    "vercel-build": "prisma generate",
     "db:seed": "dotenv -e .env.development -- tsx prisma/seed.ts",
     "db:reset": "prisma migrate reset --force && tsx prisma/seed.ts",
     "db:dev:start": "docker-compose up -d",

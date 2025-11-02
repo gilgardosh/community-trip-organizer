@@ -61,13 +61,17 @@ This backend uses **Vercel Serverless Functions** architecture. Follow these ste
 ```
 packages/backend/
 ├── api/
-│   └── index.ts          # ⭐ Serverless function entry point (exports Express app)
+│   ├── index.mjs         # ⭐ Serverless function entry point (imports compiled code)
+│   └── index.ts          # TypeScript source (for local development)
 ├── src/
 │   ├── app.ts            # Express app configuration
 │   ├── index.ts          # Local development server (NOT used in Vercel)
 │   ├── routes/           # API routes
 │   ├── controllers/      # Route handlers
 │   └── ...
+├── dist/                 # ← Compiled TypeScript output
+│   ├── api/
+│   └── src/
 ├── vercel.json           # Vercel serverless configuration
 └── tsconfig.json         # TypeScript config
 ```
@@ -82,11 +86,17 @@ app.listen(3001); // ❌ Doesn't work on Vercel
 ```
 
 ### Serverless Function (Vercel Production)
-```typescript
-// api/index.ts (used in Vercel)
-import app from '../src/app.js';
+```javascript
+// api/index.mjs (used in Vercel)
+import app from '../dist/src/app.js';
 export default app; // ✅ Vercel converts this to serverless function
 ```
+
+**Build Process**:
+1. Vercel runs: `prisma generate && yarn build`
+2. TypeScript compiles `src/` → `dist/src/`
+3. Vercel bundles `api/index.mjs` (which imports from `dist/`)
+4. Serverless function is deployed
 
 ### Key Differences
 - ❌ No `app.listen()` - Vercel handles server lifecycle
