@@ -61,8 +61,7 @@ This backend uses **Vercel Serverless Functions** architecture. Follow these ste
 ```
 packages/backend/
 ├── api/
-│   ├── index.mjs         # ⭐ Serverless function entry point (imports compiled code)
-│   └── index.ts          # TypeScript source (for local development)
+│   └── index.mjs         # ⭐ Serverless function entry point (imports compiled code)
 ├── src/
 │   ├── app.ts            # Express app configuration
 │   ├── index.ts          # Local development server (NOT used in Vercel)
@@ -70,11 +69,13 @@ packages/backend/
 │   ├── controllers/      # Route handlers
 │   └── ...
 ├── dist/                 # ← Compiled TypeScript output
-│   ├── api/
-│   └── src/
+│   ├── api/              # (ignored - not deployed)
+│   └── src/              # ✅ Deployed compiled code
 ├── vercel.json           # Vercel serverless configuration
 └── tsconfig.json         # TypeScript config
 ```
+
+**Important**: The `api/` folder contains ONLY `index.mjs` (JavaScript). TypeScript files in `api/` will cause conflicts.
 
 ## 🔧 How Serverless Works
 

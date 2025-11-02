@@ -27,5 +27,7 @@ eslint.config.js
 # Database initialization (not needed in production)
 init-scripts/
 
-# Source TypeScript files (we deploy compiled JS)
+# TypeScript source files (we deploy compiled dist/)
 src/
+tsconfig.json
+api/*.ts
