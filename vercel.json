@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "yarn workspace backend run build && yarn workspace frontend run build",
+  "buildCommand": "yarn workspace frontend run build",
   "installCommand": "yarn install",
   "outputDirectory": "packages/frontend/.next",
   "framework": "nextjs",

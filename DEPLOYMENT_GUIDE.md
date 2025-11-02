@@ -185,6 +185,34 @@ This creates:
 
 ## Vercel Deployment
 
+### Backend Serverless Architecture
+
+**Important:** The backend uses Vercel Serverless Functions, NOT a traditional Node.js server.
+
+**How it works:**
+1. Vercel detects the `api/index.ts` file in the backend package
+2. It automatically converts the Express app export into a serverless function
+3. All requests to `/api/*` are routed to this function
+4. The function cold-starts on first request (typically ~1-2 seconds)
+5. Subsequent requests are faster due to warm function instances
+
+**Key Differences from Traditional Servers:**
+- ❌ No `app.listen()` - Vercel handles server initialization
+- ❌ No persistent connections - each request is stateless
+- ✅ Auto-scaling - handles traffic spikes automatically
+- ✅ Pay-per-use - only charged for actual invocations
+- ✅ Global edge network - low latency worldwide
+
+**Backend Deployment Steps:**
+1. Create a **new Vercel project** specifically for the backend
+2. Set **Root Directory** to `packages/backend` in Vercel project settings
+3. Vercel will automatically detect the `api/` folder and create serverless functions
+4. All routes defined in your Express app are accessible at `/api/*`
+
+**Example:**
+- Express route: `router.get('/health', ...)`
+- Deployed URL: `https://your-backend.vercel.app/api/health`
+
 ### Method 1: GitHub Integration (Recommended)
 
 1. **Push to GitHub**:
@@ -223,12 +251,19 @@ This creates:
 - Enables Yarn 4.x via Corepack
 
 **Backend Deployment Strategy:**
-This project uses a **hybrid approach**:
+This project uses a **dual Vercel project approach**:
 
-- The **frontend** (Next.js) is deployed as the main Vercel project
-- The **backend** (Express API) should be deployed separately to its own Vercel project OR integrated into Next.js API routes
-- For separate backend deployment, create a second Vercel project pointing to `packages/backend`
-- Update `NEXT_PUBLIC_API_URL` to point to your deployed backend URL
+- The **frontend** (Next.js) is deployed as the main Vercel project from the repository root
+- The **backend** (Express API) is deployed **separately** to its own Vercel project from `packages/backend`
+- The backend uses **Vercel Serverless Functions** architecture
+- Update `NEXT_PUBLIC_API_URL` in frontend environment variables to point to your deployed backend URL
+
+**Critical Backend Setup:**
+- The backend MUST be deployed from `packages/backend` as the root directory in Vercel
+- Vercel automatically converts the Express app in `api/index.ts` to a serverless function
+- All API routes are accessible at `https://your-backend.vercel.app/api/*`
+- Do NOT use `app.listen()` - Vercel handles server initialization automatically
+- The backend requires proper `DATABASE_URL` with connection pooling for serverless
 
 ### Method 2: Vercel CLI
 
@@ -362,6 +397,50 @@ ls -la packages/frontend/.next
 ---
 
 ## Troubleshooting
+
+### Backend Serverless Issues
+
+**Issue**: Backend requests hang/timeout with no response
+**Root Cause**: Backend is using traditional server setup (`app.listen()`) which doesn't work on Vercel
+**Solution**:
+- Ensure `api/index.ts` exists and exports the Express app: `export default app;`
+- Remove any `app.listen()` calls - Vercel handles this automatically
+- Verify Root Directory in Vercel is set to `packages/backend`
+- Check that `vercel.json` includes proper `rewrites` configuration
+
+**Issue**: "Function Invocation Timeout" errors
+**Solution**:
+- Check database connection - ensure `DATABASE_URL` includes `?connection_limit=1`
+- Increase `maxDuration` in `vercel.json` (max 10s on Hobby, 60s on Pro)
+- Optimize slow database queries
+- Add indexes to frequently queried columns
+
+**Issue**: Backend returns 404 for all routes
+**Solution**:
+- Verify `rewrites` in `vercel.json` routes `/api/*` to `/api`
+- Check that Express routes are prefixed correctly
+- Ensure TypeScript is compiled: run `yarn build` locally to verify
+
+**Issue**: "Module not found" errors in production
+**Solution**:
+- Verify all imports use `.js` extensions (required for ESM)
+- Check `package.json` has `"type": "module"`
+- Ensure `tsconfig.json` uses `"module": "NodeNext"`
+- Run `yarn build` locally to catch import errors
+
+**Issue**: Cold start performance (first request is slow)
+**Solution**:
+- This is normal for serverless functions (~1-2 seconds)
+- Implement health check warming: periodic requests to keep functions warm
+- Consider Vercel Pro for better cold start performance
+- Optimize dependencies - remove unused packages
+
+**Issue**: Environment variables not available
+**Solution**:
+- Set all env vars in Vercel dashboard for Production environment
+- Redeploy after adding new environment variables
+- Use `process.env.VAR_NAME` (not `import.meta.env`)
+- Check that `DATABASE_URL` is set during build for Prisma generation
 
 ### Monorepo-Specific Issues
 

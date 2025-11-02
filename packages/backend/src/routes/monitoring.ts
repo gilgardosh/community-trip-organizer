@@ -4,7 +4,7 @@
  */
 
 import { Router, Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../utils/db.js';
 import {
   performanceMonitor,
   PerformanceStats,
@@ -12,7 +12,6 @@ import {
 import { responseCache } from '../middleware/cache.js';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 interface CheckStatus {
   status: 'ok' | 'error';

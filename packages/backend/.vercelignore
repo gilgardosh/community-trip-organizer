@@ -1,0 +1,31 @@
+# Development files
+.env.development
+.env.test
+.env.example
+*.log
+
+# Testing
+tests/
+*.test.ts
+vitest.config.ts
+docker-compose*.yml
+
+# Development scripts
+setup-dev.sh
+scripts/
+
+# Documentation
+*.md
+!README.md
+
+# Development tools
+nodemon.json
+.eslintrc.json
+.eslintignore
+eslint.config.js
+
+# Database initialization (not needed in production)
+init-scripts/
+
+# Source TypeScript files (we deploy compiled JS)
+src/
