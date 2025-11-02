@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
     "build": "tsc",
     "db:seed": "dotenv -e .env.development -- tsx prisma/seed.ts",
