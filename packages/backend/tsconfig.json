@@ -8,7 +8,8 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "useUnknownInCatchVariables": true
+    "useUnknownInCatchVariables": true,
+    "checkJs": false
   },
   "include": ["src/**/*", "prisma/**/*", "api/**/*"],
   "exclude": ["node_modules", "tests/**/*", "dist"],
