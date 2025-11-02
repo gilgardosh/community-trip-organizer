@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "buildCommand": "prisma generate && yarn build",
+  "buildCommand": "npx prisma generate && yarn build",
   "rewrites": [
     {
       "source": "/api/(.*)",
