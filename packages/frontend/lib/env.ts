@@ -19,7 +19,7 @@ const envSchema = z.object({
 
   // App Configuration
   NEXT_PUBLIC_APP_NAME: z.string().default('טיולי השכונה'),
-  NEXT_PUBLIC_APP_URL: z.string().url(),
+  NEXT_PUBLIC_APP_URL: z.url(),
 
   // Feature Flags
   NEXT_PUBLIC_ENABLE_REGISTRATION: z
@@ -54,7 +54,6 @@ const envSchema = z.object({
   // WhatsApp Configuration
   NEXT_PUBLIC_DEFAULT_COUNTRY_CODE: z.string().default('+972'),
   NEXT_PUBLIC_WHATSAPP_WEB_URL: z
-    .string()
     .url()
     .default('https://web.whatsapp.com/send'),
 
@@ -65,7 +64,7 @@ const envSchema = z.object({
 
   // Analytics (Optional)
   NEXT_PUBLIC_GA_ID: z.string().optional(),
-  NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
+  NEXT_PUBLIC_SENTRY_DSN: z.url().optional(),
 });
 
 /**
